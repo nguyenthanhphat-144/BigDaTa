@@ -94,8 +94,8 @@ Dự án đã được đóng gói toàn diện với script tự động hóa: 
 
 ### Bước 1: Clone kho lưu trữ về máy
 ```bash
-git clone https://github.com/nguyenthanhphat-144/BigDaTa2.git
-cd BigDaTa2
+git clone https://github.com/nguyenthanhphat-144/BigDaTa.git
+cd BigDaTa
 ```
 
 ---
