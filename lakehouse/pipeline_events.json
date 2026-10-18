@@ -1,0 +1,432 @@
+[
+  {
+    "id": "EVT_1792340844516",
+    "timestamp": "2026-10-18 23:27:24.516",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792340055385",
+    "timestamp": "2026-10-18 23:14:15.385",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v2 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.495 & PR-AUC = 0.8894",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792340054637",
+    "timestamp": "2026-10-18 23:14:14.637",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v2 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.495 & PR-AUC = 0.8894",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792340052119",
+    "timestamp": "2026-10-18 23:14:12.119",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792340051019",
+    "timestamp": "2026-10-18 23:14:11.019",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792340050524",
+    "timestamp": "2026-10-18 23:14:10.524",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792340049190",
+    "timestamp": "2026-10-18 23:14:09.190",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v2 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.495 & PR-AUC = 0.8894",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792340047479",
+    "timestamp": "2026-10-18 23:14:07.479",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339983668",
+    "timestamp": "2026-10-18 23:13:03.668",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339965703",
+    "timestamp": "2026-10-18 23:12:45.703",
+    "source": "Tiến trình Kiểm tra biến động",
+    "target": "Tiến trình Huấn luyện lại mô hình",
+    "action": "Phát hiện chỉ số lệch phân phối PSI (V17) = 0.342 > 0.25 — Tự động kích hoạt huấn luyện lại",
+    "details": "Tích hợp 8 nhãn thẩm định mới — Triển khai Phiên bản v2 (Độ chính xác Top 200 tăng từ 0.48 lên 0.495)",
+    "count": 8,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339870998",
+    "timestamp": "2026-10-18 23:11:10.998",
+    "source": "Bàn làm việc thẩm định",
+    "target": "Kho nhãn phản hồi & Bảng điểm rủi ro",
+    "action": "Xác nhận [Gian lận] cho giao dịch TX_FF168418B4 (Chuyên viên: Chuyên viên Thẩm định 01)",
+    "details": "Lý do: 'Số tiền giao dịch đột biến bất thường kèm thiết bị lạ' — Đã lưu phiên bản v4 & đưa vào danh sách huấn luyện chu kỳ tiếp theo",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339825737",
+    "timestamp": "2026-10-18 23:10:25.737",
+    "source": "Bàn làm việc thẩm định",
+    "target": "Kho nhãn phản hồi & Bảng điểm rủi ro",
+    "action": "Xác nhận [Hợp lệ] cho giao dịch TX_579FEACEEA (Chuyên viên: Chuyên viên Thẩm định 01)",
+    "details": "Lý do: 'Số tiền giao dịch đột biến bất thường kèm thiết bị lạ' — Đã lưu phiên bản v3 & đưa vào danh sách huấn luyện chu kỳ tiếp theo",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339796553",
+    "timestamp": "2026-10-18 23:09:56.553",
+    "source": "Bàn làm việc thẩm định",
+    "target": "Kho nhãn phản hồi & Bảng điểm rủi ro",
+    "action": "Xác nhận [Hợp lệ] cho giao dịch TX_BAA37A6746 (Chuyên viên: Chuyên viên Thẩm định 01)",
+    "details": "Lý do: 'Số tiền giao dịch đột biến bất thường kèm thiết bị lạ' — Đã lưu phiên bản v2 & đưa vào danh sách huấn luyện chu kỳ tiếp theo",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339793148",
+    "timestamp": "2026-10-18 23:09:53.148",
+    "source": "Bàn làm việc thẩm định",
+    "target": "Kho nhãn phản hồi & Bảng điểm rủi ro",
+    "action": "Xác nhận [Hợp lệ] cho giao dịch TX_BAA37A6746 (Chuyên viên: Chuyên viên Thẩm định 01)",
+    "details": "Lý do: 'Số tiền giao dịch đột biến bất thường kèm thiết bị lạ' — Đã lưu phiên bản v1 & đưa vào danh sách huấn luyện chu kỳ tiếp theo",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339675028",
+    "timestamp": "2026-10-18 23:07:55.028",
+    "source": "Delta Lake: gold.diem_rui_ro",
+    "target": "Kafka Topic: alerts -> Web Thẩm Định",
+    "action": "Đẩy 6 cảnh báo điểm cao sang Kafka 'alerts' & Web Queue",
+    "details": "Sẵn sàng cho chuyên gia thẩm định trên giao diện Flask (< 2s SLA)",
+    "count": 6,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339675024",
+    "timestamp": "2026-10-18 23:07:55.024",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: gold.diem_rui_ro (CDF)",
+    "action": "Stream-Static Join + Chấm điểm model_v1 hoàn tất (11.36s)",
+    "details": "Đã chấm điểm 58 GD | Phát hiện 6 cảnh báo rủi ro cao",
+    "count": 58,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339674410",
+    "timestamp": "2026-10-18 23:07:54.410",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 37 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 37 giao dịch mới trong 10.26s",
+    "count": 37,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339666214",
+    "timestamp": "2026-10-18 23:07:46.214",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: bronze.giao_dich",
+    "action": "Ghi Sink 1 (Raw Append, Partition by ngay) — Batch #4",
+    "details": "Đã lưu 58 giao dịch thô hợp lệ CHECK (so_tien > 0)",
+    "count": 58,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339664308",
+    "timestamp": "2026-10-18 23:07:44.308",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #4 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 58",
+    "count": 58,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339652943",
+    "timestamp": "2026-10-18 23:07:32.943",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 23 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 23 giao dịch mới trong 16.68s",
+    "count": 23,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339652578",
+    "timestamp": "2026-10-18 23:07:32.578",
+    "source": "Delta Lake: gold.diem_rui_ro",
+    "target": "Kafka Topic: alerts -> Web Thẩm Định",
+    "action": "Đẩy 1 cảnh báo điểm cao sang Kafka 'alerts' & Web Queue",
+    "details": "Sẵn sàng cho chuyên gia thẩm định trên giao diện Flask (< 2s SLA)",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339652569",
+    "timestamp": "2026-10-18 23:07:32.569",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: gold.diem_rui_ro (CDF)",
+    "action": "Stream-Static Join + Chấm điểm model_v1 hoàn tất (17.84s)",
+    "details": "Đã chấm điểm 2 GD | Phát hiện 1 cảnh báo rủi ro cao",
+    "count": 2,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339638302",
+    "timestamp": "2026-10-18 23:07:18.302",
+    "source": "Bộ phát Kafka (creditcard.csv)",
+    "target": "Kafka Topic: transactions",
+    "action": "Phát 60 giao dịch (Step 1h=10s, Tốc độ 13.8 tx/s)",
+    "details": "Gian lận gốc: 7 | Giao dịch lệch thứ tự (Out-of-order <=30s): 9",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339637375",
+    "timestamp": "2026-10-18 23:07:17.375",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: bronze.giao_dich",
+    "action": "Ghi Sink 1 (Raw Append, Partition by ngay) — Batch #3",
+    "details": "Đã lưu 2 giao dịch thô hợp lệ CHECK (so_tien > 0)",
+    "count": 2,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339635342",
+    "timestamp": "2026-10-18 23:07:15.342",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #3 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 2",
+    "count": 2,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339426465",
+    "timestamp": "2026-10-18 23:03:46.465",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 59 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 59 giao dịch mới trong 10.38s",
+    "count": 59,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339426415",
+    "timestamp": "2026-10-18 23:03:46.415",
+    "source": "Delta Lake: gold.diem_rui_ro",
+    "target": "Kafka Topic: alerts -> Web Thẩm Định",
+    "action": "Đẩy 2 cảnh báo điểm cao sang Kafka 'alerts' & Web Queue",
+    "details": "Sẵn sàng cho chuyên gia thẩm định trên giao diện Flask (< 2s SLA)",
+    "count": 2,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339426412",
+    "timestamp": "2026-10-18 23:03:46.412",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: gold.diem_rui_ro (CDF)",
+    "action": "Stream-Static Join + Chấm điểm model_v1 hoàn tất (11.23s)",
+    "details": "Đã chấm điểm 35 GD | Phát hiện 2 cảnh báo rủi ro cao",
+    "count": 35,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339418042",
+    "timestamp": "2026-10-18 23:03:38.042",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: bronze.giao_dich",
+    "action": "Ghi Sink 1 (Raw Append, Partition by ngay) — Batch #2",
+    "details": "Đã lưu 35 giao dịch thô hợp lệ CHECK (so_tien > 0)",
+    "count": 35,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339415833",
+    "timestamp": "2026-10-18 23:03:35.833",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #2 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 35",
+    "count": 35,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339404988",
+    "timestamp": "2026-10-18 23:03:24.988",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 1 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 1 giao dịch mới trong 9.4s",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339404126",
+    "timestamp": "2026-10-18 23:03:24.126",
+    "source": "Delta Lake: gold.diem_rui_ro",
+    "target": "Kafka Topic: alerts -> Web Thẩm Định",
+    "action": "Đẩy 5 cảnh báo điểm cao sang Kafka 'alerts' & Web Queue",
+    "details": "Sẵn sàng cho chuyên gia thẩm định trên giao diện Flask (< 2s SLA)",
+    "count": 5,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339404124",
+    "timestamp": "2026-10-18 23:03:24.124",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: gold.diem_rui_ro (CDF)",
+    "action": "Stream-Static Join + Chấm điểm model_v1 hoàn tất (7.55s)",
+    "details": "Đã chấm điểm 25 GD | Phát hiện 5 cảnh báo rủi ro cao",
+    "count": 25,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339398754",
+    "timestamp": "2026-10-18 23:03:18.754",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: bronze.giao_dich",
+    "action": "Ghi Sink 1 (Raw Append, Partition by ngay) — Batch #1",
+    "details": "Đã lưu 25 giao dịch thô hợp lệ CHECK (so_tien > 0)",
+    "count": 25,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339398202",
+    "timestamp": "2026-10-18 23:03:18.202",
+    "source": "Bộ phát Kafka (creditcard.csv)",
+    "target": "Kafka Topic: transactions",
+    "action": "Phát 60 giao dịch (Step 1h=10s, Tốc độ 18.6 tx/s)",
+    "details": "Gian lận gốc: 8 | Giao dịch lệch thứ tự (Out-of-order <=30s): 14",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339396716",
+    "timestamp": "2026-10-18 23:03:16.716",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #1 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 25",
+    "count": 25,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339347887",
+    "timestamp": "2026-10-18 23:02:27.887",
+    "source": "Delta Lake: gold.diem_rui_ro",
+    "target": "Kafka Topic: alerts -> Web Thẩm Định",
+    "action": "Đẩy 200 cảnh báo điểm cao sang Kafka 'alerts' & Web Queue",
+    "details": "Sẵn sàng cho chuyên gia thẩm định trên giao diện Flask (< 2s SLA)",
+    "count": 200,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339347885",
+    "timestamp": "2026-10-18 23:02:27.885",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: gold.diem_rui_ro (CDF)",
+    "action": "Stream-Static Join + Chấm điểm model_v1 hoàn tất (56.38s)",
+    "details": "Đã chấm điểm 8193 GD | Phát hiện 200 cảnh báo rủi ro cao",
+    "count": 8193,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339337666",
+    "timestamp": "2026-10-18 23:02:17.666",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 1938 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 8193 giao dịch mới trong 52.29s",
+    "count": 1938,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339323042",
+    "timestamp": "2026-10-18 23:02:03.042",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: bronze.giao_dich",
+    "action": "Ghi Sink 1 (Raw Append, Partition by ngay) — Batch #0",
+    "details": "Đã lưu 8193 giao dịch thô hợp lệ CHECK (so_tien > 0)",
+    "count": 8193,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339306823",
+    "timestamp": "2026-10-18 23:01:46.823",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792339295628",
+    "timestamp": "2026-10-18 23:01:35.628",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #0 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 8193",
+    "count": 8193,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_KHOI_TAO",
+    "timestamp": "2026-10-18 22:57:32.965",
+    "source": "DeltaTableManager",
+    "target": "Delta Lake & HDFS",
+    "action": "Khởi tạo hệ thống hồ dữ liệu",
+    "details": "Hệ thống sẵn sàng tiếp nhận luồng giao dịch mới từ Kafka",
+    "count": 0,
+    "status": "SUCCESS"
+  }
+]

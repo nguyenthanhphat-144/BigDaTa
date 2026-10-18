@@ -1,0 +1,6 @@
+127.0.0.1 localhost
+127.0.0.1 kafka
+127.0.0.1 namenode1
+127.0.0.1 datanode1
+127.0.0.1 datanode2
+127.0.0.1 datanode3

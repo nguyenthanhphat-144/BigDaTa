@@ -1,0 +1,87 @@
+services:
+  namenode1:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode1
+    restart: always
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    environment:
+      - CLUSTER_NAME=bd02-fraud-cluster
+      - CORE_CONF_fs_defaultFS=hdfs://namenode1:9000
+      - HDFS_CONF_dfs_replication=3
+      - HDFS_CONF_dfs_permissions_enabled=false
+      - HDFS_CONF_dfs_webhdfs_enabled=true
+    volumes:
+      - bd02_namenode:/hadoop/dfs/name
+
+  datanode1:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode1
+    restart: always
+    ports:
+      - "9864:9864"
+    environment:
+      - SERVICE_PRECONDITION=namenode1:9870
+      - CORE_CONF_fs_defaultFS=hdfs://namenode1:9000
+      - HDFS_CONF_dfs_permissions_enabled=false
+    volumes:
+      - bd02_datanode1:/hadoop/dfs/data
+    depends_on:
+      - namenode1
+
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode2
+    restart: always
+    ports:
+      - "9865:9864"
+    environment:
+      - SERVICE_PRECONDITION=namenode1:9870
+      - CORE_CONF_fs_defaultFS=hdfs://namenode1:9000
+      - HDFS_CONF_dfs_permissions_enabled=false
+    volumes:
+      - bd02_datanode2:/hadoop/dfs/data
+    depends_on:
+      - namenode1
+
+  datanode3:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode3
+    restart: always
+    ports:
+      - "9866:9864"
+    environment:
+      - SERVICE_PRECONDITION=namenode1:9870
+      - CORE_CONF_fs_defaultFS=hdfs://namenode1:9000
+      - HDFS_CONF_dfs_permissions_enabled=false
+    volumes:
+      - bd02_datanode3:/hadoop/dfs/data
+    depends_on:
+      - namenode1
+
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    restart: always
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "transactions:3:1,alerts:3:1"
+    depends_on:
+      - zookeeper
+
+volumes:
+  bd02_namenode:
+  bd02_datanode1:
+  bd02_datanode2:
+  bd02_datanode3:

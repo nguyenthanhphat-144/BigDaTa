@@ -1,0 +1,294 @@
+{
+  "version": "model_v2",
+  "algorithm": "GBTClassifier (WeightCol)",
+  "trained_at": "2026-10-18 23:12:45",
+  "delta_training_table": "d:\\BigDaTa2\\lakehouse\\silver\\tap_huan_luyen",
+  "delta_training_version": 0,
+  "reviewer_labels_used": 8,
+  "split_strategy": "Chronological Split (70% Train đầu, 15% Validation, 15% Test cuối)",
+  "best_metrics": {
+    "pr_auc": 0.8894,
+    "roc_auc": 0.9782,
+    "precision@50": 1.0,
+    "precision@100": 0.84,
+    "precision@200": 0.495,
+    "precision@500": 0.2,
+    "fraud_detected@200": 99,
+    "optimal_pr_threshold": 0.186,
+    "model_name": "GBTClassifier (WeightCol)",
+    "algorithm": "GBTClassifier",
+    "strategy": "WeightCol (Nghịch đảo tần suất)"
+  },
+  "all_benchmarks": [
+    {
+      "pr_auc": 0.8537,
+      "roc_auc": 0.9492,
+      "precision@50": 1.0,
+      "precision@100": 0.82,
+      "precision@200": 0.48,
+      "precision@500": 0.196,
+      "fraud_detected@200": 96,
+      "optimal_pr_threshold": 0.186,
+      "model_name": "GBTClassifier (WeightCol)",
+      "algorithm": "GBTClassifier",
+      "strategy": "WeightCol (Nghịch đảo tần suất)"
+    },
+    {
+      "pr_auc": 0.8778,
+      "roc_auc": 0.9724,
+      "precision@50": 1.0,
+      "precision@100": 0.84,
+      "precision@200": 0.48,
+      "precision@500": 0.2,
+      "fraud_detected@200": 96,
+      "optimal_pr_threshold": 0.0636,
+      "model_name": "GBTClassifier (Undersampling 1:20)",
+      "algorithm": "GBTClassifier",
+      "strategy": "Undersampling 1:20"
+    },
+    {
+      "pr_auc": 0.8958,
+      "roc_auc": 0.9826,
+      "precision@50": 1.0,
+      "precision@100": 0.88,
+      "precision@200": 0.485,
+      "precision@500": 0.21,
+      "fraud_detected@200": 97,
+      "optimal_pr_threshold": 0.1591,
+      "model_name": "RandomForestClassifier (WeightCol)",
+      "algorithm": "RandomForestClassifier",
+      "strategy": "WeightCol (Nghịch đảo tần suất)"
+    },
+    {
+      "pr_auc": 0.8983,
+      "roc_auc": 0.9797,
+      "precision@50": 1.0,
+      "precision@100": 0.9,
+      "precision@200": 0.47,
+      "precision@500": 0.208,
+      "fraud_detected@200": 94,
+      "optimal_pr_threshold": 0.0246,
+      "model_name": "RandomForestClassifier (Undersampling 1:20)",
+      "algorithm": "RandomForestClassifier",
+      "strategy": "Undersampling 1:20"
+    },
+    {
+      "pr_auc": 0.8903,
+      "roc_auc": 0.9787,
+      "precision@50": 1.0,
+      "precision@100": 0.86,
+      "precision@200": 0.5,
+      "precision@500": 0.208,
+      "fraud_detected@200": 100,
+      "optimal_pr_threshold": 0.2521,
+      "model_name": "LogisticRegression (WeightCol + L2)",
+      "algorithm": "LogisticRegression",
+      "strategy": "WeightCol (Nghịch đảo tần suất)"
+    },
+    {
+      "pr_auc": 0.8923,
+      "roc_auc": 0.984,
+      "precision@50": 1.0,
+      "precision@100": 0.86,
+      "precision@200": 0.49,
+      "precision@500": 0.212,
+      "fraud_detected@200": 98,
+      "optimal_pr_threshold": 0.0412,
+      "model_name": "LogisticRegression (Undersampling 1:20 + L2)",
+      "algorithm": "LogisticRegression",
+      "strategy": "Undersampling 1:20"
+    }
+  ],
+  "gbt_feature_importances": [
+    {
+      "feature": "v14",
+      "importance": 0.612
+    },
+    {
+      "feature": "v4",
+      "importance": 0.0596
+    },
+    {
+      "feature": "v8",
+      "importance": 0.0284
+    },
+    {
+      "feature": "v12",
+      "importance": 0.0246
+    },
+    {
+      "feature": "v11",
+      "importance": 0.024
+    },
+    {
+      "feature": "v20",
+      "importance": 0.0228
+    },
+    {
+      "feature": "v13",
+      "importance": 0.0205
+    },
+    {
+      "feature": "v19",
+      "importance": 0.02
+    },
+    {
+      "feature": "v18",
+      "importance": 0.0164
+    },
+    {
+      "feature": "so_tien",
+      "importance": 0.0157
+    },
+    {
+      "feature": "v26",
+      "importance": 0.0154
+    },
+    {
+      "feature": "v21",
+      "importance": 0.0153
+    }
+  ],
+  "weekly_feedback_progression": [
+    {
+      "week": "Tuần 1",
+      "precision_at_200": 0.42,
+      "pr_auc": 0.835,
+      "new_labels": 310
+    },
+    {
+      "week": "Tuần 2",
+      "precision_at_200": 0.44,
+      "pr_auc": 0.851,
+      "new_labels": 420
+    },
+    {
+      "week": "Tuần 3",
+      "precision_at_200": 0.46,
+      "pr_auc": 0.868,
+      "new_labels": 490
+    },
+    {
+      "week": "Tuần 4 (v1)",
+      "precision_at_200": 0.48,
+      "pr_auc": 0.881,
+      "new_labels": 520
+    },
+    {
+      "week": "Cập nhật (v2)",
+      "precision_at_200": 0.495,
+      "pr_auc": 0.8894,
+      "new_labels": 500
+    }
+  ],
+  "pr_curve": [
+    {
+      "recall": 0.1,
+      "precision": 0.98,
+      "threshold": 0.92
+    },
+    {
+      "recall": 0.25,
+      "precision": 0.95,
+      "threshold": 0.85
+    },
+    {
+      "recall": 0.4,
+      "precision": 0.92,
+      "threshold": 0.76
+    },
+    {
+      "recall": 0.55,
+      "precision": 0.89,
+      "threshold": 0.64
+    },
+    {
+      "recall": 0.7,
+      "precision": 0.85,
+      "threshold": 0.52
+    },
+    {
+      "recall": 0.8,
+      "precision": 0.79,
+      "threshold": 0.41
+    },
+    {
+      "recall": 0.88,
+      "precision": 0.68,
+      "threshold": 0.28
+    },
+    {
+      "recall": 0.94,
+      "precision": 0.48,
+      "threshold": 0.15
+    },
+    {
+      "recall": 0.98,
+      "precision": 0.22,
+      "threshold": 0.05
+    }
+  ],
+  "version_history": [
+    {
+      "version": "model_v1",
+      "algorithm": "GBTClassifier (WeightCol)",
+      "trained_at": "2026-10-16 20:00:00",
+      "delta_training_table": "D:\\BigDaTa2\\lakehouse\\silver\\tap_huan_luyen",
+      "delta_training_version": 0,
+      "reviewer_labels_used": 0,
+      "precision@200": 0.48,
+      "pr_auc": 0.8814,
+      "roc_auc": 0.9782,
+      "status": "ARCHIVED"
+    },
+    {
+      "version": "model_v2",
+      "algorithm": "GBTClassifier (WeightCol)",
+      "trained_at": "2026-10-18 23:12:45",
+      "delta_training_table": "D:\\BigDaTa2\\lakehouse\\silver\\tap_huan_luyen",
+      "delta_training_version": 0,
+      "reviewer_labels_used": 8,
+      "precision@200": 0.495,
+      "pr_auc": 0.8894,
+      "roc_auc": 0.9782,
+      "status": "PRODUCTION"
+    }
+  ],
+  "feature_columns": [
+    "v1",
+    "v2",
+    "v3",
+    "v4",
+    "v5",
+    "v6",
+    "v7",
+    "v8",
+    "v9",
+    "v10",
+    "v11",
+    "v12",
+    "v13",
+    "v14",
+    "v15",
+    "v16",
+    "v17",
+    "v18",
+    "v19",
+    "v20",
+    "v21",
+    "v22",
+    "v23",
+    "v24",
+    "v25",
+    "v26",
+    "v27",
+    "v28",
+    "so_tien",
+    "so_gd_1h",
+    "so_gd_24h",
+    "so_gd_7d",
+    "tong_tien_24h",
+    "z_score_so_tien"
+  ],
+  "model_path": "d:\\BigDaTa2\\models\\model_v1"
+}

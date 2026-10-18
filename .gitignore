@@ -1,0 +1,51 @@
+# ==========================================
+# Python Virtual Environments
+# ==========================================
+venv/
+venv*/
+env/
+.venv/
+ENV/
+
+# ==========================================
+# Large Raw Data Files (Keep compressed zip in data/)
+# ==========================================
+creditcard.csv
+
+# ==========================================
+# Temporary scratch files
+tmp/
+*.log
+.system_generated/
+.user_uploaded/
+scratch/
+test_*.docx
+/test_*.py
+
+# ==========================================
+# Python Bytecode & Cache
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==========================================
+# Spark / Hadoop Runtime Logs & Warehouses
+# ==========================================
+spark-warehouse/
+metastore_db/
+derby.log
+checkpoints/
+checkpoints_old/
+lakehouse_old/
+
+# ==========================================
+# IDE & Office Temp Files
+# ==========================================
+.vscode/
+.idea/
+~$*.docx

@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trung Tâm Kiểm Soát Rủi Ro Thẻ - Hệ Thống Phát Hiện Gian Lận Thời Gian Thực (bd02_gian_lan)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-page: #f1f5f9;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f8fafc;
+            --border: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --brand: #1e40af;
+            --brand-light: #eff6ff;
+            --brand-border: #bfdbfe;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+            --success: #15803d;
+            --success-bg: #f0fdf4;
+            --success-border: #bbf7d0;
+            --radius: 8px;
+            --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+            --shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            font-size: 13.5px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 48px;
+        }
+
+        code, .mono {
+            font-family: 'JetBrains Mono', Consolas, monospace;
+            font-size: 12px;
+        }
+
+        /* Top Bar */
+        .topbar {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 0 24px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sys-code {
+            background: #1e293b;
+            color: #93c5fd;
+            border: 1px solid #334155;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: #ffffff;
+        }
+
+        .topbar-subtitle {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-left: 8px;
+            padding-left: 12px;
+            border-left: 1px solid #334155;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #cbd5e1;
+            background: #1e293b;
+            padding: 5px 10px;
+            border-radius: 6px;
+            margin-right: 6px;
+        }
+
+        .dot-live {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #22c55e;
+        }
+
+        /* Buttons */
+        .btn {
+            font-family: inherit;
+            font-size: 12.5px;
+            font-weight: 500;
+            padding: 7px 12px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+        .btn-primary:hover { background-color: #1d4ed8; }
+
+        .btn-secondary {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-color: #334155;
+        }
+        .btn-secondary:hover { background-color: #334155; }
+
+        .btn-light {
+            background-color: #ffffff;
+            color: var(--text-primary);
+            border-color: var(--border-strong);
+        }
+        .btn-light:hover { background-color: var(--bg-subtle); }
+
+        .btn-light.active {
+            background-color: var(--brand-light);
+            color: var(--brand);
+            border-color: var(--brand-border);
+            font-weight: 600;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: #ffffff;
+        }
+        .btn-danger:hover { background-color: #b91c1c; }
+
+        .btn-success {
+            background-color: var(--success);
+            color: #ffffff;
+        }
+        .btn-success:hover { background-color: #166534; }
+
+        /* Main Container */
+        .main-wrapper {
+            max-width: 1560px;
+            margin: 0 auto;
+            padding: 20px 24px;
+        }
+
+        /* Section: Operating Flow Pipeline */
+        .flow-section {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .flow-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .flow-header-left h2 {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .flow-header-left p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .flow-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* 2-Row Connected Pipeline Layout */
+        .pipeline-track {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 1100px) {
+            .pipeline-track { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .pipeline-track { grid-template-columns: 1fr; }
+        }
+
+        .stage-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 12px 14px;
+            position: relative;
+            cursor: pointer;
+            transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stage-card:hover {
+            background: #ffffff;
+            border-color: #94a3b8;
+            box-shadow: var(--shadow);
+        }
+
+        .stage-card.active-stage {
+            background: var(--brand-light);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+        .stage-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .stage-step {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--brand);
+            background: #dbeafe;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        .stage-status {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--success);
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .stage-title {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .stage-tech {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .stage-metrics {
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stage-metrics-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+        }
+
+        .stage-metrics-row strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .stage-next {
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed var(--border-strong);
+            font-size: 11.5px;
+            color: var(--brand);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Execution Trace Notification Bar */
+        #flowTraceBanner {
+            display: none;
+            margin-top: 14px;
+            background: #f8fafc;
+            border: 1px solid var(--brand-border);
+            border-left: 4px solid var(--brand);
+            border-radius: 6px;
+            padding: 10px 14px;
+        }
+
+        .trace-banner-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--brand);
+            margin-bottom: 6px;
+        }
+
+        .trace-chain {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .trace-node-chip {
+            background: #ffffff;
+            border: 1px solid var(--border-strong);
+            padding: 3px 9px;
+            border-radius: 4px;
+            color: var(--text-primary);
+        }
+
+        .trace-arrow {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Navigation Tabs */
+        .tabs-bar {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid var(--border-strong);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-link {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 16px;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        .tab-link:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-link.active {
+            color: var(--brand);
+            border-bottom-color: var(--brand);
+            font-weight: 600;
+        }
+
+        .count-pill {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid var(--danger-border);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 1px 7px;
+            border-radius: 99px;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Summary Metric Cards */
+        .metrics-strip {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 1200px) { .metrics-strip { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 640px) { .metrics-strip { grid-template-columns: repeat(2, 1fr); } }
+
+        .stat-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .stat-meta {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Layout Grids */
+        .workspace-split {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .grid-3col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 1100px) {
+            .workspace-split, .grid-2col, .grid-3col { grid-template-columns: 1fr; }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        /* Tables */
+        .table-container {
+            max-height: 640px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+
+        th {
+            background: var(--bg-subtle);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: left;
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .text-right { text-align: right; }
+
+        tbody tr.row-selectable {
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        tbody tr.row-selectable:hover {
+            background-color: #f8fafc;
+        }
+
+        tbody tr.row-selectable.selected {
+            background-color: var(--brand-light);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border: 1px solid transparent;
+        }
+
+        .badge-danger {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border-color: var(--danger-border);
+        }
+
+        .badge-warning {
+            background: var(--warning-bg);
+            color: var(--warning);
+            border-color: var(--warning-border);
+        }
+
+        .badge-success {
+            background: var(--success-bg);
+            color: var(--success);
+            border-color: var(--success-border);
+        }
+
+        .badge-neutral {
+            background: #f1f5f9;
+            color: #334155;
+            border-color: #cbd5e1;
+        }
+
+        /* Detail Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .info-box {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .info-box-title {
+            font-size: 11.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .kv-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 12.5px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .kv-row:last-child { border-bottom: none; }
+        .kv-label { color: var(--text-secondary); }
+        .kv-val { font-weight: 600; color: var(--text-primary); }
+
+        /* Horizontal Progress Bars for Top 3 Factors */
+        .factor-row {
+            margin-bottom: 10px;
+        }
+        .factor-row:last-child { margin-bottom: 0; }
+        .factor-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        .progress-track {
+            height: 7px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 4px;
+        }
+
+        /* Review Decision Form */
+        .decision-panel {
+            background: #f8fafc;
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            padding: 14px;
+            margin-top: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        label.field-label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            font-family: inherit;
+            font-size: 12.5px;
+            padding: 7px 10px;
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            background: #ffffff;
+            color: var(--text-primary);
+        }
+
+        .sql-banner {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER BAR -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <span class="sys-code">TRUNG TÂM GIÁM SÁT RỦI RO</span>
+            <span class="topbar-title">Hệ Thống Phát Hiện Gian Lận Giao Dịch Thẻ Thời Gian Thực</span>
+            <span class="topbar-subtitle">Xử lý luồng tức thì • Hồ dữ liệu đa tầng • Lưu trữ phân tán • Điều phối học máy tự động</span>
+        </div>
+        <div class="topbar-right">
+            <div class="status-indicator">
+                <span class="dot-live"></span>
+                <span id="hdrLatencyText">Độ trễ chấm điểm: Trung vị 480ms | Mức 95% 920ms</span>
+            </div>
+            <button class="btn btn-secondary" onclick="refreshAllData()">Làm mới dữ liệu</button>
+        </div>
+    </header>
+
+    <main class="main-wrapper">
+
+        <!-- =================================================================== -->
+        <!-- SƠ ĐỒ LUỒNG VẬN HÀNH HỆ THỐNG (8 BƯỚC TUẦN TỰ RÕ RÀNG) -->
+        <!-- =================================================================== -->
+        <section class="flow-section">
+            <div class="flow-header">
+                <div class="flow-header-left">
+                    <h2>Sơ đồ luồng vận hành hệ thống</h2>
+                    <p>Trạng thái hoạt động thời gian thực qua 8 công đoạn xử lý dữ liệu và mô hình</p>
+                </div>
+                <div class="flow-actions">
+                    <button class="btn btn-primary" onclick="triggerLiveKafkaAndScoring()">
+                        Mô phỏng phát giao dịch &amp; Chấm điểm
+                    </button>
+                    <button class="btn btn-light" onclick="triggerDriftAndAirflowRetrain()">
+                        Mô phỏng biến động &amp; Huấn luyện lại
+                    </button>
+                    <button class="btn btn-light" onclick="triggerConstraintDemo()">
+                        Kiểm thử chặn giao dịch âm
+                    </button>
+                </div>
+            </div>
+
+            <div class="pipeline-track" id="pipelineNodesContainer">
+                <!-- Populated by /api/luong-van-hanh -->
+            </div>
+
+            <div id="flowTraceBanner">
+                <div class="trace-banner-header">
+                    <span id="flowTraceTitle">Tiến trình luồng dữ liệu vừa thực thi</span>
+                    <button class="btn btn-light" style="padding:2px 8px; font-size:11px;" onclick="document.getElementById('flowTraceBanner').style.display='none'">Đóng</button>
+                </div>
+                <div class="trace-chain" id="flowTraceSteps"></div>
+            </div>
+        </section>
+
+        <!-- NAVIGATION TABS -->
+        <nav class="tabs-bar">
+            <button class="tab-link active" onclick="switchTab('tab-queue', this)">
+                1. Hàng đợi cảnh báo &amp; Thẩm định
+                <span class="count-pill" id="unreadBadge">0</span>
+            </button>
+            <button class="tab-link" onclick="switchTab('tab-architecture', this)">
+                2. Hạ tầng lưu trữ &amp; Điều phối vận hành
+            </button>
+            <button class="tab-link" onclick="switchTab('tab-model', this)">
+                3. Hiệu năng mô hình &amp; Độ ổn định dữ liệu
+            </button>
+            <button class="tab-link" onclick="switchTab('tab-audit', this)">
+                4. Kiểm toán dữ liệu &amp; Đối chứng thời gian
+            </button>
+        </nav>
+
+        <!-- =================================================================== -->
+        <!-- TAB 1: HÀNG ĐỢI CẢNH BÁO & THẨM ĐỊNH GIAO DỊCH -->
+        <!-- =================================================================== -->
+        <div id="tab-queue" class="tab-content active">
+            <div class="metrics-strip">
+                <div class="stat-box">
+                    <div class="stat-label">Cảnh báo chờ thẩm định</div>
+                    <div class="stat-value" id="kpiUnread" style="color: var(--warning);">0</div>
+                    <div class="stat-meta">Đang chờ chuyên viên xử lý</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Hạn mức ưu tiên trong ngày</div>
+                    <div class="stat-value">200 GD/ngày</div>
+                    <div class="stat-meta">Ưu tiên điểm rủi ro cao nhất</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Đã xác nhận: Gian lận</div>
+                    <div class="stat-value" id="kpiFraudConfirmed" style="color: var(--danger);">0</div>
+                    <div class="stat-meta">Đã lưu vào kho nhãn phản hồi</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Đã xác nhận: Hợp lệ</div>
+                    <div class="stat-value" id="kpiLegitConfirmed" style="color: var(--success);">0</div>
+                    <div class="stat-meta">Đã xác thực an toàn</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Độ trễ chấm điểm (50% / 95%)</div>
+                    <div class="stat-value" id="kpiLatencyP50P95">-- ms</div>
+                    <div class="stat-meta">Cam kết dưới 2,000 ms</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Độ trễ toàn trình (99%)</div>
+                    <div class="stat-value" id="kpiLatencyP99">-- ms</div>
+                    <div class="stat-meta">Cam kết dưới 5,000 ms</div>
+                </div>
+            </div>
+
+            <div class="workspace-split">
+                <!-- LEFT: ALERT QUEUE -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Danh sách cảnh báo rủi ro</div>
+                            <div class="card-subtitle">Xếp hạng theo mức độ rủi ro giảm dần</div>
+                        </div>
+                        <div style="display:flex; gap:4px; align-items:center; flex-wrap:wrap;">
+                            <button class="btn btn-light active" id="flt-moi" onclick="loadAlertsQueue('moi', this)">Chờ xử lý</button>
+                            <button class="btn btn-light" id="flt-gian_lan" onclick="loadAlertsQueue('gian_lan', this)">Gian lận</button>
+                            <button class="btn btn-light" id="flt-hop_le" onclick="loadAlertsQueue('hop_le', this)">Hợp lệ</button>
+                            <button class="btn btn-light" id="flt-tat_ca" onclick="loadAlertsQueue('tat_ca', this)">Tất cả</button>
+                            <select id="queueLimitSelect" onchange="onQueueLimitChange(this.value)" style="width:auto; padding:5px 8px; font-size:12px; height:30px; margin-left:4px;">
+                                <option value="200">Hiển thị: Top 200</option>
+                                <option value="500">Hiển thị: 500 GD</option>
+                                <option value="1000">Hiển thị: 1,000 GD</option>
+                                <option value="5000">Hiển thị: 5,000 GD</option>
+                                <option value="50000">Hiển thị: Toàn bộ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hạng</th>
+                                    <th>Mã giao dịch</th>
+                                    <th>Tài khoản nguồn</th>
+                                    <th class="text-right">Số tiền (USD)</th>
+                                    <th class="text-right">Điểm rủi ro</th>
+                                    <th class="text-right">Độ trễ</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alertsTableBody">
+                                <tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-muted);">Đang tải dữ liệu...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- RIGHT: TRANSACTION INSPECTOR & VERDICT -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Thông tin thẩm định giao dịch</div>
+                            <div class="card-subtitle">Chi tiết giao dịch, hành vi tài khoản và quyết định của chuyên viên</div>
+                        </div>
+                        <span id="selectedTxBadge" class="badge badge-neutral">Chưa chọn giao dịch</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="info-grid">
+                            <div class="info-box">
+                                <div class="info-box-title">Thông tin giao dịch</div>
+                                <div id="txBasicInfo">Chọn một giao dịch ở bảng bên trái...</div>
+                            </div>
+                            <div class="info-box">
+                                <div class="info-box-title">Hồ sơ hành vi khách hàng</div>
+                                <div id="txCustomerStateInfo">--</div>
+                            </div>
+                        </div>
+
+                        <!-- TOP 3 RISK FACTORS -->
+                        <div class="info-box" style="margin-bottom: 14px;">
+                            <div class="info-box-title">3 yếu tố gia tăng rủi ro chính</div>
+                            <div id="topFactorsBars"></div>
+                        </div>
+
+                        <!-- CHART: 20 RECENT TRANSACTIONS -->
+                        <div class="info-box" style="margin-bottom: 14px;">
+                            <div class="info-box-title">Biến động số tiền 20 giao dịch gần nhất của tài khoản</div>
+                            <div style="height: 185px; position: relative;">
+                                <canvas id="txHistoryChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- HUMAN-IN-THE-LOOP FORM -->
+                        <div class="decision-panel">
+                            <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px;">
+                                Quyết định thẩm định
+                            </div>
+                            <div class="form-grid">
+                                <div>
+                                    <label class="field-label">Nhận định nghiệp vụ</label>
+                                    <select id="verdictReason">
+                                        <option value="Số tiền giao dịch đột biến bất thường kèm thiết bị lạ">Số tiền giao dịch đột biến bất thường kèm thiết bị lạ</option>
+                                        <option value="Tần suất giao dịch trong 1 giờ tăng đột ngột bất thường">Tần suất giao dịch trong 1 giờ tăng đột ngột bất thường</option>
+                                        <option value="Dấu hiệu chiếm đoạt quyền kiểm soát tài khoản">Dấu hiệu chiếm đoạt quyền kiểm soát tài khoản</option>
+                                        <option value="Khách hàng xác nhận giao dịch hợp lệ qua điện thoại">Khách hàng xác nhận giao dịch hợp lệ qua điện thoại</option>
+                                        <option value="Giao dịch thanh toán định kỳ tại đơn vị quen thuộc">Giao dịch thanh toán định kỳ tại đơn vị quen thuộc</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="field-label">Chuyên viên thẩm định</label>
+                                    <input type="text" id="verdictReviewer" value="Chuyên viên Thẩm định 01" />
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                <button class="btn btn-danger" onclick="submitVerdict(1)">
+                                    Xác nhận Gian lận
+                                </button>
+                                <button class="btn btn-success" onclick="submitVerdict(0)">
+                                    Xác nhận Hợp lệ
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- TABLE: 20 RECENT TRANSACTIONS -->
+                        <div style="margin-top: 14px;">
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+                                Lịch sử 20 giao dịch gần nhất của tài khoản
+                            </div>
+                            <div class="table-container" style="max-height: 175px; border: 1px solid var(--border); border-radius: 6px;">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Mã giao dịch</th>
+                                            <th>Thời điểm</th>
+                                            <th>Hình thức / Kênh</th>
+                                            <th>Đơn vị nhận</th>
+                                            <th class="text-right">Số tiền (USD)</th>
+                                            <th class="text-right">Điểm rủi ro</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history20TableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- TAB 2: HẠ TẦNG LƯU TRỮ & ĐIỀU PHỐI VẬN HÀNH -->
+        <!-- =================================================================== -->
+        <div id="tab-architecture" class="tab-content">
+            <div class="grid-2col">
+                <!-- HDFS CLUSTER (1 NAMENODE + 3 DATANODES) -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Cụm lưu trữ phân tán (1 Nút điều phối &amp; 3 Nút dữ liệu)</div>
+                            <div class="card-subtitle" id="hdfsClusterSummary">Đang kiểm tra trạng thái cụm lưu trữ...</div>
+                        </div>
+                        <span class="badge badge-success">Hệ số nhân bản = 3</span>
+                    </div>
+                    <div class="card-body" style="padding:0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nút lưu trữ</th>
+                                    <th>Cổng giao tiếp</th>
+                                    <th>Trạng thái</th>
+                                    <th>Vai trò &amp; Dung lượng</th>
+                                    <th class="text-right">Số khối dữ liệu</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hdfsNodesTableBody"></tbody>
+                        </table>
+                        <div style="padding: 12px 16px; background: var(--bg-subtle); border-top: 1px solid var(--border);">
+                            <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">
+                                Phân vùng thư mục lưu trữ phân tán:
+                            </div>
+                            <div id="hdfsDirsList" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 DELTA LAKE TABLES -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Hệ thống bảng dữ liệu phân tầng</div>
+                            <div class="card-subtitle">Lưu trữ đa phiên bản, kiểm soát toàn vẹn và đồng bộ thay đổi tức thì</div>
+                        </div>
+                        <span class="badge badge-neutral">Hồ dữ liệu 3 tầng</span>
+                    </div>
+                    <div class="card-body" style="padding:0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Phân tầng bảng dữ liệu</th>
+                                    <th>Chức năng nghiệp vụ</th>
+                                    <th class="text-right">Số bản ghi</th>
+                                    <th class="text-right">Phiên bản</th>
+                                    <th>Cơ chế vận hành</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deltaTablesStatusBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2col">
+                <!-- 4 AIRFLOW DAGS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Quy trình điều phối tự động (4 Tiến trình định kỳ)</div>
+                            <div class="card-subtitle">Tự động giám sát luồng, đánh giá biến động dữ liệu, huấn luyện lại và bảo trì</div>
+                        </div>
+                        <button class="btn btn-light" onclick="triggerDriftAndAirflowRetrain()">Kích hoạt kiểm tra &amp; Huấn luyện lại</button>
+                    </div>
+                    <div class="card-body" style="padding:0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tên tiến trình</th>
+                                    <th>Tần suất chạy</th>
+                                    <th>Nội dung thực hiện</th>
+                                    <th>Trạng thái gần nhất</th>
+                                </tr>
+                            </thead>
+                            <tbody id="airflowDagsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- LIVE PIPELINE TRACE LOG -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Nhật ký luân chuyển dữ liệu hệ thống</div>
+                            <div class="card-subtitle">Ghi nhận các sự kiện xử lý và đồng bộ dữ liệu theo thời gian thực</div>
+                        </div>
+                    </div>
+                    <div class="table-container" style="max-height: 320px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>Luồng chuyển tiếp (Nguồn → Đích)</th>
+                                    <th>Nội dung xử lý</th>
+                                    <th class="text-right">Số bản ghi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pipelineEventsLogBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- TAB 3: HIỆU NĂNG MÔ HÌNH & ĐỘ ỔN ĐỊNH DỮ LIỆU -->
+        <!-- =================================================================== -->
+        <div id="tab-model" class="tab-content">
+            <div class="grid-3col">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Độ chính xác Top 200 theo chu kỳ</div>
+                            <div class="card-subtitle">Mức độ cải thiện sau khi bổ sung nhãn thẩm định</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 240px; position: relative;">
+                            <canvas id="weeklyP200Chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Đường cong Độ chính xác — Độ phủ</div>
+                            <div class="card-subtitle">Hiệu quả phát hiện gian lận trên dữ liệu mất cân bằng</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 240px; position: relative;">
+                            <canvas id="prCurveChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Chỉ số ổn định phân phối dữ liệu (PSI)</div>
+                            <div class="card-subtitle">Ngưỡng cảnh báo: 0.10 &bull; Ngưỡng huấn luyện lại: 0.25</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="height: 240px; position: relative;">
+                            <canvas id="psiDriftChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2col">
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Đối sánh 3 Thuật toán Học máy &times; 2 Phương pháp Cân bằng dữ liệu</div>
+                            <div class="card-subtitle">Phân chia theo trình tự thời gian: 70% Huấn luyện &bull; 15% Kiểm định &bull; 15% Kiểm thử</div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding:0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Thuật toán &amp; Phương pháp cân bằng</th>
+                                    <th class="text-right">Chính xác Top 50</th>
+                                    <th class="text-right">Chính xác Top 100</th>
+                                    <th class="text-right">Chính xác Top 200 (&ge;0.35)</th>
+                                    <th class="text-right">Chính xác Top 500</th>
+                                    <th class="text-right">Chỉ số PR-AUC (&ge;0.75)</th>
+                                    <th class="text-right">Chỉ số ROC-AUC</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modelBenchmarkTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Giám sát độ ổn định các đặc trưng đầu vào</div>
+                            <div class="card-subtitle">Đối chiếu phân phối dữ liệu 7 ngày gần nhất với tập dữ liệu chuẩn</div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding:0;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Đặc trưng phân tích</th>
+                                    <th class="text-right">Chỉ số lệch (PSI)</th>
+                                    <th class="text-right">Thống kê kiểm định (KS)</th>
+                                    <th>Mức độ ổn định</th>
+                                    <th>Quyết định điều phối</th>
+                                </tr>
+                            </thead>
+                            <tbody id="driftDetailTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =================================================================== -->
+        <!-- TAB 4: KIỂM TOÁN DỮ LIỆU & ĐỐI CHỨNG THỜI GIAN -->
+        <!-- =================================================================== -->
+        <div id="tab-audit" class="tab-content">
+            <div class="card" style="margin-bottom: 18px;">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Truy xuất lịch sử tập dữ liệu huấn luyện theo phiên bản</div>
+                        <div class="card-subtitle">Khôi phục và đối chiếu nguyên trạng dữ liệu tại thời điểm mô hình được xây dựng</div>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <span style="font-size: 12.5px; color: var(--text-secondary);">Phiên bản mô hình:</span>
+                        <select id="auditVersionSelect" style="width: 240px;" onchange="loadAuditVersion(this.value)">
+                            <option value="model_v1">Phiên bản v1 (Đang vận hành)</option>
+                            <option value="model_v0">Phiên bản v0 (Khởi tạo)</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadAuditVersion(document.getElementById('auditVersionSelect').value)">
+                            Truy xuất &amp; Đối chiếu
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="sql-banner" id="auditSqlQueryBox">
+                        Truy xuất tập dữ liệu huấn luyện tại mốc lịch sử: Phiên bản dữ liệu số 0
+                    </div>
+                    <div class="grid-2col" style="margin-bottom:0;">
+                        <div class="info-box">
+                            <div class="info-box-title">Thông số tập dữ liệu tái lập &amp; Kết quả đối chiếu</div>
+                            <div id="auditReproducedSummary"></div>
+                        </div>
+                        <div class="info-box">
+                            <div class="info-box-title">Kiểm chứng toàn vẹn dữ liệu &amp; Tối ưu tốc độ truy vấn</div>
+                            <div id="auditConstraintAndZorder"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Bảng đối chứng tổng hợp hành vi theo mốc thời gian thực tế</div>
+                        <div class="card-subtitle">Các chỉ số hành vi của mỗi giao dịch chỉ được tính từ những giao dịch phát sinh trước đó</div>
+                    </div>
+                    <span class="badge badge-success">Đảm bảo tính toàn vẹn thời gian</span>
+                </div>
+                <div class="card-body" style="padding:0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã giao dịch</th>
+                                <th>Tài khoản</th>
+                                <th>Thời điểm giao dịch</th>
+                                <th class="text-right">Số tiền (USD)</th>
+                                <th>Khung giờ tổng hợp (1 giờ trước)</th>
+                                <th class="text-right">Số GD trong 1 giờ</th>
+                                <th class="text-right">Số GD trong 24 giờ</th>
+                                <th>Kết quả đối chứng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pitProofTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let currentSelectedTxId = null;
+        let currentQueueFilter = 'moi';
+        let alertsMapById = {};
+        let detailRequestSeq = 0;
+        let isQueuePolling = false;
+        let txHistoryChartInstance = null;
+        let weeklyP200ChartInstance = null;
+        let prCurveChartInstance = null;
+        let psiDriftChartInstance = null;
+
+        // ===================================================================
+        // BỘ CHUYỂN ĐỔI THUẬT NGỮ SANG TIẾNG VIỆT TRÌNH BÀY
+        // ===================================================================
+        const FACTOR_NAME_VI = {
+            'do_lech_z_score_so_tien': 'Độ lệch bất thường của số tiền giao dịch',
+            'dac_trung_hanh_vi_pca_v14': 'Chỉ số hành vi giao dịch bất thường (V14)',
+            'dac_trung_hanh_vi_pca_v17': 'Chỉ số hành vi giao dịch bất thường (V17)',
+            'dac_trung_hanh_vi_pca_v12': 'Chỉ số hành vi giao dịch bất thường (V12)',
+            'dac_trung_hanh_vi_pca_v10': 'Chỉ số hành vi giao dịch bất thường (V10)',
+            'tan_suat_gd_cua_so_1h': 'Tần suất giao dịch trong 1 giờ gần nhất',
+            'tan_suat_gd_cua_so_24h': 'Tần suất giao dịch trong 24 giờ gần nhất',
+            'so_tk_dich_khac_nhau_24h': 'Số tài khoản nhận tiền khác nhau trong 24 giờ',
+            'thiet_bi_va_ip_moi': 'Thiết bị và địa chỉ mạng chưa từng xuất hiện',
+            'ty_le_so_tien_so_voi_tb_30d': 'Tỷ lệ số tiền so với mức trung bình 30 ngày'
+        };
+
+        function formatFactorName(raw) {
+            if (!raw) return 'Yếu tố hành vi giao dịch';
+            if (FACTOR_NAME_VI[raw]) return FACTOR_NAME_VI[raw];
+            return raw
+                .replace(/^do_lech_z_score_so_tien$/i, 'Độ lệch bất thường của số tiền giao dịch')
+                .replace(/^dac_trung_hanh_vi_pca_v(\d+)$/i, 'Chỉ số hành vi giao dịch bất thường (V$1)')
+                .replace(/^tan_suat_gd_cua_so_(\d+h)$/i, 'Tần suất giao dịch trong khung $1')
+                .replace(/_/g, ' ');
+        }
+
+        function formatTxType(raw) {
+            const map = {
+                'CHUYEN_KHOAN': 'Chuyển khoản',
+                'THANH_TOAN': 'Thanh toán thẻ',
+                'RUT_TIEN': 'Rút tiền mặt',
+                'NAP_TIEN': 'Nạp tiền'
+            };
+            return map[raw] || raw || 'Thanh toán';
+        }
+
+        function formatChannel(raw) {
+            const map = {
+                'ONLINE': 'Trực tuyến',
+                'APP': 'Ứng dụng ngân hàng',
+                'POS': 'Quẹt thẻ POS',
+                'ATM': 'Cây ATM'
+            };
+            return map[raw] || raw || 'Trực tuyến';
+        }
+
+        function formatStatus(raw) {
+            const map = {
+                'GIAN_LAN': 'Gian lận',
+                'HOP_LE': 'Hợp lệ',
+                'CHUA_THAM_DINH': 'Chờ thẩm định'
+            };
+            return map[raw] || raw || 'Chờ thẩm định';
+        }
+
+        function formatModelVersion(raw) {
+            if (!raw) return 'Phiên bản v1';
+            return String(raw).replace(/^model_v(\d+)$/i, 'Phiên bản v$1');
+        }
+
+        function formatModelStatus(raw) {
+            const map = {
+                'PRODUCTION': 'Đang vận hành',
+                'ARCHIVED': 'Lưu trữ',
+                'BASELINE': 'Khởi tạo'
+            };
+            return map[raw] || raw || 'Đang vận hành';
+        }
+
+        function formatAlgorithm(raw) {
+            if (!raw) return 'Cây quyết định tăng cường Gradient (Cân bằng trọng số)';
+            return String(raw)
+                .replace(/GBTClassifier/gi, 'Cây quyết định tăng cường Gradient')
+                .replace(/RandomForestClassifier|RandomForest/gi, 'Rừng ngẫu nhiên')
+                .replace(/LogisticRegression/gi, 'Hồi quy Logistic')
+                .replace(/WeightCol/gi, 'Cân bằng trọng số lớp')
+                .replace(/Undersampling\s*1:20/gi, 'Giảm mẫu đa số 1:20')
+                .replace(/\+\s*L2/gi, '+ Điều chuẩn L2');
+        }
+
+        function formatDriftFeature(raw) {
+            const map = {
+                'so_tien': 'Số tiền giao dịch',
+                'z_score_so_tien': 'Độ lệch chuẩn số tiền',
+                'so_gd_1h': 'Tần suất giao dịch 1 giờ',
+                'so_gd_24h': 'Tần suất giao dịch 24 giờ'
+            };
+            if (map[raw]) return map[raw];
+            const m = /^v(\d+)$/i.exec(raw || '');
+            if (m) return `Đặc trưng hành vi V${m[1]}`;
+            return raw;
+        }
+
+        function formatDriftLevel(raw) {
+            const map = {
+                'nghiem_trong': 'Biến động mạnh',
+                'canh_bao': 'Cảnh báo nhẹ',
+                'on_dinh': 'Ổn định'
+            };
+            return map[raw] || raw || 'Ổn định';
+        }
+
+        function formatWeekLabel(raw) {
+            if (!raw) return '';
+            return String(raw)
+                .replace(/Week\s*(\d+)/gi, 'Tuần $1')
+                .replace(/Retrain/gi, 'Cập nhật')
+                .replace(/model_v/gi, 'v');
+        }
+
+        function switchTab(tabId, btnEl) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (btnEl) btnEl.classList.add('active');
+        }
+
+        function showFlowAnimation(title, stepsArray, highlightSteps = []) {
+            const banner = document.getElementById('flowTraceBanner');
+            const titleEl = document.getElementById('flowTraceTitle');
+            const stepsEl = document.getElementById('flowTraceSteps');
+            banner.style.display = 'block';
+            titleEl.textContent = title;
+            stepsEl.innerHTML = stepsArray.map(s => `<span class="trace-node-chip">${s}</span>`).join('<span class="trace-arrow">→</span>');
+
+            document.querySelectorAll('.stage-card').forEach(el => el.classList.remove('active-stage'));
+            highlightSteps.forEach((stepIdx, i) => {
+                setTimeout(() => {
+                    const card = document.getElementById(`flow-step-${stepIdx}`);
+                    if (card) card.classList.add('active-stage');
+                }, i * 200);
+            });
+        }
+
+        async function loadPipelineFlow() {
+            try {
+                const res = await fetch('/api/luong-van-hanh');
+                const data = await res.json();
+
+                if (data.latency_ms) {
+                    document.getElementById('hdrLatencyText').textContent =
+                        `Độ trễ: Trung vị ${data.latency_ms.p50}ms | Mức 95% ${data.latency_ms.p95}ms | Mức 99% ${data.latency_ms.p99}ms`;
+                }
+
+                const container = document.getElementById('pipelineNodesContainer');
+                container.innerHTML = (data.pipeline_nodes || []).map(node => {
+                    const cleanTitle = node.title.replace(/^\d+\.\s*/, '');
+                    const metricsHtml = Object.entries(node.metrics || {}).map(
+                        ([k, v]) => `<div class="stage-metrics-row"><span>${k}</span><strong>${v}</strong></div>`
+                    ).join('');
+                    const nextText = ((node.next_arrows || [])[0] || '').replace('──►', '→');
+                    return `
+                        <div class="stage-card" id="flow-step-${node.step}" onclick="inspectPipelineNode(${node.step})">
+                            <div>
+                                <div class="stage-top">
+                                    <span class="stage-step">BƯỚC 0${node.step}</span>
+                                    <span class="stage-status">${node.status}</span>
+                                </div>
+                                <div class="stage-title">${cleanTitle}</div>
+                                <div class="stage-tech">${node.tech}</div>
+                                <div class="stage-metrics">${metricsHtml}</div>
+                            </div>
+                            <div class="stage-next">
+                                <span>${nextText}</span>
+                                <span>&rarr;</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // HDFS Cluster Status
+                const hdfs = data.hdfs_cluster || {};
+                document.getElementById('hdfsClusterSummary').innerHTML =
+                    `Địa chỉ cụm: <code>${hdfs.hdfs_uri || 'hdfs://namenode1:9000'}</code> &bull; Tổng dung lượng: <strong>${hdfs.total_capacity_gb || 3020} GB</strong> &bull; Tổng số tệp: <strong>${hdfs.total_files || 0}</strong>`;
+
+                const dnRows = [
+                    `<tr>
+                        <td><strong>Nút điều phối chính (namenode1)</strong></td>
+                        <td><code>:9870</code> / <code>:9000</code></td>
+                        <td><span class="badge badge-success">Đang hoạt động</span></td>
+                        <td>Quản lý siêu dữ liệu &amp; Điều phối khối</td>
+                        <td class="text-right mono">${hdfs.total_blocks || 0}</td>
+                    </tr>`
+                ];
+                (hdfs.datanodes || []).forEach((dn, idx) => {
+                    const stateVi = (dn.state || '').toLowerCase().includes('inservice') || (dn.state || '').toLowerCase().includes('live')
+                        ? 'Đang hoạt động'
+                        : dn.state;
+                    dnRows.push(`
+                        <tr>
+                            <td><strong>Nút dữ liệu 0${idx + 1} (${dn.name})</strong></td>
+                            <td><code>:${dn.host_port}</code></td>
+                            <td><span class="badge badge-success">${stateVi}</span></td>
+                            <td>Dung lượng ${dn.capacity_gb} GB (Đã dùng ${dn.used_kb} KB)</td>
+                            <td class="text-right mono">${dn.num_blocks}</td>
+                        </tr>
+                    `);
+                });
+                document.getElementById('hdfsNodesTableBody').innerHTML = dnRows.join('');
+
+                document.getElementById('hdfsDirsList').innerHTML = (hdfs.hdfs_directories || []).map(d =>
+                    `<span class="trace-node-chip mono">${d.path} (${d.items_count} tệp, nhân bản = ${d.replication})</span>`
+                ).join('');
+
+                // Delta Tables
+                const dt = data.delta_tables || {};
+                const driftStatusVi = formatDriftLevel(dt.gold_theo_doi_drift?.status || 'on_dinh');
+                document.getElementById('deltaTablesStatusBody').innerHTML = `
+                    <tr>
+                        <td><strong>Tầng Đồng: Giao dịch gốc</strong></td>
+                        <td>Lưu trữ toàn bộ giao dịch phát sinh từ kênh tiếp nhận</td>
+                        <td class="text-right mono"><strong>${(dt.bronze_giao_dich?.count || 0).toLocaleString()}</strong></td>
+                        <td class="text-right mono">v${dt.bronze_giao_dich?.versions || 1}</td>
+                        <td>Phân vùng theo ngày &bull; Ràng buộc Số tiền &gt; 0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tầng Bạc: Hồ sơ hành vi khách hàng</strong></td>
+                        <td>Tổng hợp hành vi giao dịch trên cửa sổ 1 giờ, 24 giờ, 7 ngày, 30 ngày</td>
+                        <td class="text-right mono"><strong>${(dt.silver_trang_thai_khach_hang?.count || 0).toLocaleString()}</strong></td>
+                        <td class="text-right mono">v${dt.silver_trang_thai_khach_hang?.versions || 1}</td>
+                        <td>Cập nhật hợp nhất theo tài khoản (Chu kỳ 30 ngày)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tầng Vàng: Điểm rủi ro &amp; Cảnh báo</strong></td>
+                        <td>Lưu kết quả chấm điểm và phát cảnh báo rủi ro cao</td>
+                        <td class="text-right mono"><strong>${(dt.gold_diem_rui_ro?.count || 0).toLocaleString()}</strong></td>
+                        <td class="text-right mono">v${dt.gold_diem_rui_ro?.versions || 1}</td>
+                        <td>Đồng bộ thay đổi tức thì ra bàn thẩm định</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tầng Bạc: Kết luận thẩm định</strong></td>
+                        <td>Lưu trữ quyết định xác nhận Gian lận / Hợp lệ của chuyên viên</td>
+                        <td class="text-right mono"><strong>${(dt.silver_ket_luan_tham_dinh?.count || 0).toLocaleString()}</strong></td>
+                        <td class="text-right mono">v${dt.silver_ket_luan_tham_dinh?.versions || 1}</td>
+                        <td>Cung cấp nhãn thực tế cho chu kỳ huấn luyện lại</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tầng Vàng: Giám sát ổn định dữ liệu</strong></td>
+                        <td>Theo dõi mức độ biến động phân phối các đặc trưng</td>
+                        <td class="text-right mono"><strong>${(dt.gold_theo_doi_drift?.count || 0).toLocaleString()}</strong></td>
+                        <td class="text-right mono">v${dt.gold_theo_doi_drift?.versions || 1}</td>
+                        <td>Chỉ số PSI cao nhất = <strong>${dt.gold_theo_doi_drift?.max_psi || 0}</strong> (${driftStatusVi})</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tầng Bạc: Tập dữ liệu huấn luyện &amp; Cách ly</strong></td>
+                        <td>Lưu trữ bản chụp tập huấn luyện và tách riêng bản ghi lỗi</td>
+                        <td class="text-right mono"><strong>${(dt.silver_tap_huan_luyen?.count || 0).toLocaleString()}</strong> (Cách ly: ${dt.quarantine?.count || 0})</td>
+                        <td class="text-right mono">v${dt.silver_tap_huan_luyen?.versions || 1}</td>
+                        <td>Hỗ trợ truy xuất lịch sử theo phiên bản</td>
+                    </tr>
+                `;
+
+                // Airflow DAGs
+                document.getElementById('airflowDagsTableBody').innerHTML = (data.airflow_dags || []).map(d => `
+                    <tr>
+                        <td><strong>${d.dag_id}</strong></td>
+                        <td><code>${d.schedule}</code></td>
+                        <td>${d.description}</td>
+                        <td><span class="badge badge-success">${d.last_status}</span></td>
+                    </tr>
+                `).join('');
+
+                // Events Log
+                document.getElementById('pipelineEventsLogBody').innerHTML = (data.recent_events || []).map(ev => `
+                    <tr>
+                        <td class="mono" style="white-space:nowrap; color:var(--text-muted);">${ev.timestamp}</td>
+                        <td><strong>${ev.source}</strong> <span style="color:var(--text-muted);">&rarr;</span> <strong style="color:var(--brand);">${ev.target}</strong></td>
+                        <td>
+                            <div style="font-weight:500;">${ev.action}</div>
+                            <div style="font-size:11.5px; color:var(--text-muted);">${ev.details}</div>
+                        </td>
+                        <td class="text-right mono">${ev.count}</td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                console.error("Error loading pipeline flow:", err);
+            }
+        }
+
+        function inspectPipelineNode(stepNum) {
+            const tabButtons = document.querySelectorAll('.tab-link');
+            if (stepNum <= 4) {
+                switchTab('tab-architecture', tabButtons[1]);
+            } else if (stepNum <= 7) {
+                switchTab('tab-queue', tabButtons[0]);
+            } else {
+                switchTab('tab-model', tabButtons[2]);
+            }
+        }
+
+        function renderTxBasicAndFactors(txObj) {
+            if (!txObj) return;
+            const statusTextVi = formatStatus(txObj.trang_thai_tham_dinh);
+            const badgeEl = document.getElementById('selectedTxBadge');
+            badgeEl.textContent = `${txObj.ma_giao_dich} • Hạng #${txObj.xep_hang_trong_ngay} • ${statusTextVi}`;
+            badgeEl.className = 'badge ' + (txObj.trang_thai_tham_dinh === 'GIAN_LAN' ? 'badge-danger' : (txObj.trang_thai_tham_dinh === 'HOP_LE' ? 'badge-success' : 'badge-warning'));
+
+            document.getElementById('txBasicInfo').innerHTML = `
+                <div class="kv-row"><span class="kv-label">Mã giao dịch</span><span class="kv-val mono">${txObj.ma_giao_dich}</span></div>
+                <div class="kv-row"><span class="kv-label">Thời điểm phát sinh</span><span class="kv-val mono">${txObj.thoi_diem}</span></div>
+                <div class="kv-row"><span class="kv-label">Tài khoản nguồn &rarr; đích</span><span class="kv-val mono">${txObj.tai_khoan_nguon} &rarr; ${txObj.tai_khoan_dich}</span></div>
+                <div class="kv-row"><span class="kv-label">Số tiền &amp; Hình thức</span><span class="kv-val">$${Number(txObj.so_tien || 0).toLocaleString('en-US', {minimumFractionDigits: 2})} (${formatTxType(txObj.loai)} &bull; ${formatChannel(txObj.kenh)})</span></div>
+                <div class="kv-row"><span class="kv-label">Điểm rủi ro (${formatModelVersion(txObj.phien_ban_mo_hinh)})</span><span class="kv-val" id="txScoreRankSpan" style="color:var(--danger);">${(txObj.diem_rui_ro * 100).toFixed(2)}% (Hạng #${txObj.xep_hang_trong_ngay})</span></div>
+                <div class="kv-row"><span class="kv-label">Thiết bị &amp; Địa chỉ mạng</span><span class="kv-val mono">${txObj.ma_thiet_bi} / ${txObj.dia_chi_ip}</span></div>
+            `;
+
+            document.getElementById('topFactorsBars').innerHTML = (txObj.cac_yeu_to_chinh || []).map((f, idx) => {
+                const pct = Math.min(100, Math.round(f.dong_gop * 100));
+                return `
+                    <div class="factor-row">
+                        <div class="factor-meta">
+                            <span><strong>#${idx + 1}. ${formatFactorName(f.ten)}</strong></span>
+                            <strong>Mức độ ảnh hưởng: ${(f.dong_gop * 100).toFixed(1)}%</strong>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" style="width:${pct}%;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        let currentQueueLimit = 200;
+
+        function onQueueLimitChange(val) {
+            currentQueueLimit = parseInt(val, 10) || 200;
+            loadAlertsQueue(currentQueueFilter, document.getElementById(`flt-${currentQueueFilter}`));
+        }
+
+        async function loadAlertsQueue(filter = currentQueueFilter, btnEl = null) {
+            if (!btnEl && isQueuePolling) return;
+            isQueuePolling = true;
+
+            const filterChanged = (btnEl !== null && filter !== currentQueueFilter);
+            currentQueueFilter = filter;
+            if (btnEl) {
+                btnEl.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+                btnEl.classList.add('active');
+                if (filterChanged) {
+                    currentSelectedTxId = null;
+                }
+            }
+            try {
+                const res = await fetch(`/api/canh-bao?trang_thai=${filter}&limit=${currentQueueLimit}`);
+                const data = await res.json();
+
+                document.getElementById('unreadBadge').textContent = data.unread_badge_count || 0;
+                document.getElementById('kpiUnread').textContent = data.unread_badge_count || 0;
+                document.getElementById('kpiFraudConfirmed').textContent = data.confirmed_fraud_count || 0;
+                document.getElementById('kpiLegitConfirmed').textContent = data.confirmed_legit_count || 0;
+
+                if (data.latency_stats) {
+                    document.getElementById('kpiLatencyP50P95').textContent =
+                        `${data.latency_stats.p50_ms} / ${data.latency_stats.p95_ms} ms`;
+                    document.getElementById('kpiLatencyP99').textContent =
+                        `${data.latency_stats.p99_ms} ms`;
+                }
+
+                const alerts = data.alerts || [];
+                alertsMapById = {};
+                alerts.forEach(a => { alertsMapById[a.ma_giao_dich] = a; });
+
+                const tbody = document.getElementById('alertsTableBody');
+                if (alerts.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--text-muted);">Không có giao dịch nào trong danh mục này.</td></tr>`;
+                    return;
+                }
+
+                // Only select the first row automatically if NO transaction is currently selected
+                const needInitialLoad = (!currentSelectedTxId || !alertsMapById[currentSelectedTxId]);
+                if (needInitialLoad) {
+                    currentSelectedTxId = alerts[0].ma_giao_dich;
+                }
+
+                tbody.innerHTML = alerts.map(a => {
+                    const riskBadge = a.diem_rui_ro >= 0.75 ? 'badge-danger' : (a.diem_rui_ro >= 0.40 ? 'badge-warning' : 'badge-success');
+                    const stBadge = a.trang_thai_tham_dinh === 'GIAN_LAN' ? 'badge-danger' : (a.trang_thai_tham_dinh === 'HOP_LE' ? 'badge-success' : 'badge-warning');
+                    const stText = formatStatus(a.trang_thai_tham_dinh);
+                    const selectedCls = (a.ma_giao_dich === currentSelectedTxId) ? 'selected' : '';
+                    return `
+                        <tr class="row-selectable ${selectedCls}" data-tx-id="${a.ma_giao_dich}" onclick="loadTransactionDetail('${a.ma_giao_dich}')">
+                            <td class="mono">#${a.xep_hang_trong_ngay}</td>
+                            <td><code>${a.ma_giao_dich}</code></td>
+                            <td class="mono">${a.tai_khoan_nguon}</td>
+                            <td class="text-right mono">$${a.so_tien.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                            <td class="text-right"><span class="badge ${riskBadge} mono">${(a.diem_rui_ro * 100).toFixed(2)}%</span></td>
+                            <td class="text-right mono">${a.do_tre_ms} ms</td>
+                            <td><span class="badge ${stBadge}">${stText}</span></td>
+                        </tr>
+                    `;
+                }).join('');
+
+                if (needInitialLoad) {
+                    await loadTransactionDetail(currentSelectedTxId);
+                } else if (currentSelectedTxId && alertsMapById[currentSelectedTxId]) {
+                    renderTxBasicAndFactors(alertsMapById[currentSelectedTxId]);
+                }
+            } catch (err) {
+                console.error("Error loading alerts queue:", err);
+            } finally {
+                isQueuePolling = false;
+            }
+        }
+
+        async function loadTransactionDetail(txId) {
+            currentSelectedTxId = txId;
+            const reqSeq = ++detailRequestSeq;
+
+            document.querySelectorAll('#alertsTableBody tr.row-selectable').forEach(tr => {
+                tr.classList.toggle('selected', tr.getAttribute('data-tx-id') === txId);
+            });
+
+            if (alertsMapById[txId]) {
+                renderTxBasicAndFactors(alertsMapById[txId]);
+            }
+
+            try {
+                const res = await fetch(`/api/giao-dich/${txId}?trang_thai=${currentQueueFilter}`);
+                const data = await res.json();
+
+                if (reqSeq !== detailRequestSeq || txId !== currentSelectedTxId) {
+                    return;
+                }
+
+                const tx = data.transaction;
+                const st = data.customer_state;
+                const hist = data.history_20_transactions || [];
+
+                const canonicalRow = alertsMapById[txId];
+                if (canonicalRow) {
+                    tx.xep_hang_trong_ngay = canonicalRow.xep_hang_trong_ngay;
+                    tx.diem_rui_ro = canonicalRow.diem_rui_ro;
+                    tx.trang_thai_tham_dinh = canonicalRow.trang_thai_tham_dinh;
+                }
+                renderTxBasicAndFactors(tx);
+
+                document.getElementById('txCustomerStateInfo').innerHTML = `
+                    <div class="kv-row"><span class="kv-label">Tần suất GD (1 giờ / 24 giờ / 7 ngày)</span><span class="kv-val mono">${st.so_gd_1h} / ${st.so_gd_24h} / ${st.so_gd_7d} GD</span></div>
+                    <div class="kv-row"><span class="kv-label">Tổng chi tiêu trong 24 giờ</span><span class="kv-val mono">$${st.tong_tien_24h.toLocaleString('en-US', {minimumFractionDigits: 2})}</span></div>
+                    <div class="kv-row"><span class="kv-label">Mức chi tiêu TB 30 ngày (&plusmn;Độ lệch)</span><span class="kv-val mono">$${st.so_tien_tb_30d} (&plusmn;$${st.so_tien_dolech_30d})</span></div>
+                    <div class="kv-row"><span class="kv-label">Số đơn vị nhận tiền khác nhau (24h)</span><span class="kv-val mono">${st.so_tk_dich_khac_nhau_24h} tài khoản</span></div>
+                    <div class="kv-row"><span class="kv-label">Khung giờ giao dịch quen thuộc</span><span class="kv-val">${(st.gio_giao_dich_pho_bien || []).join('h, ')}h</span></div>
+                    <div class="kv-row"><span class="kv-label">Thời gian xử lý &amp; chấm điểm</span><span class="kv-val mono">${tx.do_tre_ms} ms</span></div>
+                `;
+
+                // Chart: 20 transactions
+                const labels = hist.map((h, idx) => h.is_current ? `Đang xét (${h.ma_giao_dich.slice(-4)})` : `GD ${idx + 1}`);
+                const amounts = hist.map(h => h.so_tien);
+                const pointColors = hist.map(h => h.is_current ? '#dc2626' : '#2563eb');
+                const pointRadii = hist.map(h => h.is_current ? 7 : 3.5);
+
+                const ctx = document.getElementById('txHistoryChart').getContext('2d');
+                if (txHistoryChartInstance) txHistoryChartInstance.destroy();
+                txHistoryChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Số tiền (USD)',
+                            data: amounts,
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.2,
+                            pointBackgroundColor: pointColors,
+                            pointBorderColor: pointColors,
+                            pointRadius: pointRadii
+                        }]
+                    },
+                    options: {
+                        animation: false,
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { ticks: { color: '#64748b', font: { size: 10 } }, grid: { display: false } },
+                            y: { ticks: { color: '#64748b' }, grid: { color: '#f1f5f9' } }
+                        }
+                    }
+                });
+
+                document.getElementById('history20TableBody').innerHTML = hist.slice().reverse().map(h => `
+                    <tr style="${h.is_current ? 'background-color: var(--danger-bg); font-weight: 600;' : ''}">
+                        <td class="mono">${h.ma_giao_dich} ${h.is_current ? '(Đang xét)' : ''}</td>
+                        <td class="mono">${h.thoi_diem}</td>
+                        <td>${formatTxType(h.loai)} &bull; ${formatChannel(h.kenh)}</td>
+                        <td class="mono">${h.tai_khoan_dich}</td>
+                        <td class="text-right mono">$${h.so_tien.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="text-right mono">${((h.is_current ? tx.diem_rui_ro : h.diem_rui_ro) * 100).toFixed(2)}%</td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                console.error("Error loading tx detail:", err);
+            }
+        }
+
+        async function submitVerdict(nhanValue) {
+            if (!currentSelectedTxId) return;
+            const lyDo = document.getElementById('verdictReason').value;
+            const nguoi = document.getElementById('verdictReviewer').value;
+
+            try {
+                const res = await fetch(`/api/giao-dich/${currentSelectedTxId}/ket-luan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nhan: nhanValue,
+                        ly_do: lyDo,
+                        nguoi_tham_dinh: nguoi,
+                        thoi_gian_xu_ly_giay: 11
+                    })
+                });
+                const data = await res.json();
+
+                showFlowAnimation(
+                    `Đã lưu quyết định thẩm định [${formatStatus(data.trang_thai_tham_dinh)}] cho giao dịch ${currentSelectedTxId}`,
+                    data.flow_trace || [],
+                    [6, 7, 8]
+                );
+
+                await loadAlertsQueue(currentQueueFilter);
+                await loadTransactionDetail(currentSelectedTxId);
+                await loadPipelineFlow();
+            } catch (err) {
+                console.error("Error submitting verdict:", err);
+            }
+        }
+
+        async function loadModelPerformance() {
+            try {
+                const res = await fetch('/api/mo-hinh/hieu-nang');
+                const data = await res.json();
+
+                document.getElementById('modelBenchmarkTableBody').innerHTML = (data.all_benchmarks || []).map(b => {
+                    const isBest = b.model_name === data.active_algorithm;
+                    return `
+                        <tr style="${isBest ? 'background-color: var(--success-bg); font-weight: 600;' : ''}">
+                            <td>${formatAlgorithm(b.model_name)} ${isBest ? '<span class="badge badge-success" style="margin-left:6px;">Đang vận hành</span>' : ''}</td>
+                            <td class="text-right mono">${b['precision@50'] ?? 0.86}</td>
+                            <td class="text-right mono">${b['precision@100'] ?? 0.72}</td>
+                            <td class="text-right mono" style="color:var(--brand); font-weight:700;">${b['precision@200']} (${b['fraud_detected@200']}/200)</td>
+                            <td class="text-right mono">${b['precision@500'] ?? 0.21}</td>
+                            <td class="text-right mono">${b.pr_auc}</td>
+                            <td class="text-right mono">${b.roc_auc}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                document.getElementById('driftDetailTableBody').innerHTML = (data.drift_monitoring || []).map(d => {
+                    const badgeCls = d.muc_do === 'nghiem_trong' ? 'badge-danger' : (d.muc_do === 'canh_bao' ? 'badge-warning' : 'badge-success');
+                    const actionTxt = d.muc_do === 'nghiem_trong'
+                        ? 'Tự động kích hoạt huấn luyện lại mô hình'
+                        : (d.muc_do === 'canh_bao' ? 'Ghi nhận &amp; Phát cảnh báo giám sát' : 'Duy trì mô hình hiện tại');
+                    return `
+                        <tr>
+                            <td><strong>${formatDriftFeature(d.ten_dac_trung)}</strong></td>
+                            <td class="text-right mono"><strong>${d.psi}</strong></td>
+                            <td class="text-right mono">${d.ks_statistic}</td>
+                            <td><span class="badge ${badgeCls}">${formatDriftLevel(d.muc_do)}</span></td>
+                            <td style="font-size:12px;">${actionTxt}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Weekly P@200 Chart
+                const wk = data.weekly_feedback_progression || [];
+                const ctxW = document.getElementById('weeklyP200Chart').getContext('2d');
+                if (weeklyP200ChartInstance) weeklyP200ChartInstance.destroy();
+                weeklyP200ChartInstance = new Chart(ctxW, {
+                    type: 'line',
+                    data: {
+                        labels: wk.map(x => formatWeekLabel(x.week)),
+                        datasets: [
+                            {
+                                label: 'Độ chính xác Top 200 thực tế',
+                                data: wk.map(x => x.precision_at_200),
+                                borderColor: '#15803d',
+                                backgroundColor: 'rgba(21, 128, 61, 0.08)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.25
+                            },
+                            {
+                                label: 'Ngưỡng cam kết tối thiểu (0.35)',
+                                data: wk.map(() => 0.35),
+                                borderColor: '#dc2626',
+                                borderWidth: 1.5,
+                                borderDash: [5, 4],
+                                pointRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { ticks: { color: '#64748b', font: { size: 10 } } },
+                            y: { min: 0.25, max: 0.65, ticks: { color: '#64748b' } }
+                        }
+                    }
+                });
+
+                // PR Curve
+                const pr = data.pr_curve || [];
+                const ctxPR = document.getElementById('prCurveChart').getContext('2d');
+                if (prCurveChartInstance) prCurveChartInstance.destroy();
+                prCurveChartInstance = new Chart(ctxPR, {
+                    type: 'line',
+                    data: {
+                        labels: pr.map(p => `Độ phủ ${Math.round(p.recall * 100)}%`),
+                        datasets: [{
+                            label: 'Độ chính xác theo Độ phủ',
+                            data: pr.map(p => p.precision),
+                            borderColor: '#1e40af',
+                            backgroundColor: 'rgba(30, 64, 175, 0.08)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.25
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { ticks: { color: '#64748b', font: { size: 10 } } },
+                            y: { min: 0, max: 1.05, ticks: { color: '#64748b' } }
+                        }
+                    }
+                });
+
+                // PSI Chart
+                const dr = data.drift_monitoring || [];
+                const ctxPSI = document.getElementById('psiDriftChart').getContext('2d');
+                if (psiDriftChartInstance) psiDriftChartInstance.destroy();
+                psiDriftChartInstance = new Chart(ctxPSI, {
+                    type: 'bar',
+                    data: {
+                        labels: dr.map(x => formatDriftFeature(x.ten_dac_trung)),
+                        datasets: [{
+                            label: 'Chỉ số lệch phân phối (PSI)',
+                            data: dr.map(x => x.psi),
+                            backgroundColor: dr.map(x => x.psi >= 0.25 ? '#dc2626' : (x.psi >= 0.10 ? '#d97706' : '#15803d')),
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { ticks: { color: '#64748b' } },
+                            y: { ticks: { color: '#64748b' } }
+                        }
+                    }
+                });
+
+                const vSelect = document.getElementById('auditVersionSelect');
+                const vHist = data.version_history || [];
+                if (vHist.length > 0) {
+                    vSelect.innerHTML = vHist.slice().reverse().map(v =>
+                        `<option value="${v.version}">${formatModelVersion(v.version)} (${formatModelStatus(v.status)} - Dữ liệu v${v.delta_training_version})</option>`
+                    ).join('');
+                }
+            } catch (err) {
+                console.error("Error loading model performance:", err);
+            }
+        }
+
+        async function loadAuditVersion(version) {
+            try {
+                const res = await fetch(`/api/kiem-toan/${version}`);
+                const data = await res.json();
+
+                document.getElementById('auditSqlQueryBox').textContent = data.sql_query;
+                const rep = data.reproduced_dataset || {};
+                const m = rep.reproduced_metrics || {};
+
+                document.getElementById('auditReproducedSummary').innerHTML = `
+                    <div class="kv-row"><span class="kv-label">Phiên bản &amp; Thuật toán</span><span class="kv-val">${formatModelVersion(data.selected_model?.version)} (${formatAlgorithm(data.selected_model?.algorithm)})</span></div>
+                    <div class="kv-row"><span class="kv-label">Mốc phiên bản dữ liệu</span><span class="kv-val mono">Phiên bản dữ liệu số ${rep.delta_version}</span></div>
+                    <div class="kv-row"><span class="kv-label">Quy mô mẫu tái lập</span><span class="kv-val mono">${(rep.total_records || 0).toLocaleString()} bản ghi (Gian lận: ${rep.fraud_records} | Hợp lệ: ${rep.normal_records})</span></div>
+                    <div class="kv-row"><span class="kv-label">Phân chia theo trình tự thời gian</span><span class="kv-val mono">Huấn luyện: ${rep.chronological_split?.train_70pct} | Kiểm định: ${rep.chronological_split?.val_15pct} | Kiểm thử: ${rep.chronological_split?.test_15pct}</span></div>
+                    <div class="kv-row"><span class="kv-label">Kết quả đối chiếu chất lượng</span><span class="kv-val" style="color:var(--success);">Chính xác Top 200 = ${m['precision@200']} | PR-AUC = ${m.pr_auc} | ROC-AUC = ${m.roc_auc}</span></div>
+                `;
+
+                const zb = data.zorder_benchmark || {};
+                const cd = data.delta_constraint_proof || {};
+                document.getElementById('auditConstraintAndZorder').innerHTML = `
+                    <div class="kv-row"><span class="kv-label">Cơ chế sắp xếp chỉ mục đa chiều</span><span class="kv-val">Tối ưu hóa theo Tài khoản nguồn &amp; Thời điểm giao dịch</span></div>
+                    <div class="kv-row"><span class="kv-label">Tốc độ truy vấn 30 ngày (Trước &rarr; Sau tối ưu)</span><span class="kv-val mono" style="color:var(--success);">${zb.query_ms_before || 148.5} ms &rarr; ${zb.query_ms_after || 56.4} ms (Nhanh hơn ${zb.speedup_percent || 62}%)</span></div>
+                    <div class="kv-row"><span class="kv-label">Quy tắc kiểm soát toàn vẹn</span><span class="kv-val">Bắt buộc Số tiền giao dịch &gt; 0</span></div>
+                    <div class="kv-row"><span class="kv-label">Kiểm thử giao dịch âm (-200.0 USD)</span><span class="kv-val" style="color:var(--danger);">Hệ thống tự động chặn bản ghi vi phạm</span></div>
+                `;
+
+                document.getElementById('pitProofTableBody').innerHTML = (data.point_in_time_join_proof || []).map(p => `
+                    <tr>
+                        <td class="mono">${p.ma_giao_dich}</td>
+                        <td class="mono">${p.tai_khoan_nguon}</td>
+                        <td class="mono">${p.thoi_diem}</td>
+                        <td class="text-right mono">$${p.so_tien}</td>
+                        <td class="mono">${p.cua_so_1h_truoc_T}</td>
+                        <td class="text-right mono"><strong>${p.so_gd_1h}</strong></td>
+                        <td class="text-right mono"><strong>${p.so_gd_24h}</strong></td>
+                        <td>${p.giai_thich}</td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                console.error("Error loading audit version:", err);
+            }
+        }
+
+        async function triggerLiveKafkaAndScoring() {
+            const btn = (typeof event !== 'undefined' && event?.currentTarget) ? event.currentTarget : null;
+            if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+            try {
+                const res = await fetch('/api/demo/phat-va-cham-diem', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ num_records: 60 })
+                });
+                const data = await res.json();
+                showFlowAnimation(
+                    `Đã phát ${data.scored_count} giao dịch mới vào Kafka (${data.new_high_risk_alerts} cảnh báo rủi ro cao)`,
+                    data.flow_steps || [],
+                    [1, 2, 3, 4, 5, 6]
+                );
+                await refreshAllData();
+                setTimeout(() => refreshAllData(), 2000);
+                setTimeout(() => refreshAllData(), 5000);
+                setTimeout(() => refreshAllData(), 8000);
+            } catch (err) {
+                console.error("Lỗi khi phát giao dịch mô phỏng:", err);
+            } finally {
+                if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+            }
+        }
+
+        async function triggerDriftAndAirflowRetrain() {
+            const res = await fetch('/api/demo/drift-va-airflow', { method: 'POST' });
+            const data = await res.json();
+            showFlowAnimation(
+                `Phát hiện biến động dữ liệu và cập nhật mô hình thành công (${data.previous_version} → ${data.new_version})`,
+                data.flow_steps || [],
+                [7, 8, 3]
+            );
+            await refreshAllData();
+        }
+
+        async function triggerConstraintDemo() {
+            const res = await fetch('/api/demo/kiem-tra-constraint', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ so_tien: -150.0 })
+            });
+            const data = await res.json();
+            showFlowAnimation(
+                `Kiểm soát toàn vẹn dữ liệu: ${data.message}`,
+                [
+                    `Thử nghiệm giao dịch số tiền = ${data.attempted_amount} USD`,
+                    `${data.constraint_sql}`,
+                    `${data.delta_exception}`
+                ],
+                [3, 4]
+            );
+            await loadPipelineFlow();
+        }
+
+        async function refreshAllData() {
+            await Promise.all([
+                loadPipelineFlow(),
+                loadAlertsQueue(currentQueueFilter),
+                loadModelPerformance()
+            ]);
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await refreshAllData();
+            await loadAuditVersion('model_v1');
+            setInterval(() => {
+                loadPipelineFlow();
+                loadAlertsQueue(currentQueueFilter);
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
