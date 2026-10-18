@@ -5,7 +5,7 @@ echo   DANG DAY TOAN BO DU AN LEN GITHUB (nguyenthanhphat-144/BigDaTa)
 echo ===============================================================================
 
 cd /d "%~dp0"
-git push -u origin main
+git push -u origin main --force
 
 if %errorlevel% equ 0 (
     echo.

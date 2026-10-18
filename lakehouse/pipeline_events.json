@@ -1,5 +1,135 @@
 [
   {
+    "id": "EVT_1792348684462",
+    "timestamp": "2026-10-19 01:38:04.462",
+    "source": "Spark Writer",
+    "target": "bronze.giao_dich (Delta Constraint)",
+    "action": "CHẶN BẢN GHI VI PHẠM: so_tien = -200.0 <= 0",
+    "details": "Delta Constraint 'so_tien_duong CHECK (so_tien > 0)' từ chối ghi dữ liệu!",
+    "count": 1,
+    "status": "BLOCKED_BY_CONSTRAINT"
+  },
+  {
+    "id": "EVT_1792348000230",
+    "timestamp": "2026-10-19 01:26:40.230",
+    "source": "Spark Writer",
+    "target": "bronze.giao_dich (Delta Constraint)",
+    "action": "CHẶN BẢN GHI VI PHẠM: so_tien = -200.0 <= 0",
+    "details": "Delta Constraint 'so_tien_duong CHECK (so_tien > 0)' từ chối ghi dữ liệu!",
+    "count": 1,
+    "status": "BLOCKED_BY_CONSTRAINT"
+  },
+  {
+    "id": "EVT_1792347914374",
+    "timestamp": "2026-10-19 01:25:14.374",
+    "source": "Job: ml/kiem_tra_drift.py",
+    "target": "Delta Lake: gold.theo_doi_drift -> Airflow Branching",
+    "action": "Kiểm tra Drift hoàn tất: Mức độ 'NGHIEM_TRONG' (Max PSI = 1.1049)",
+    "details": "Rẽ nhánh Airflow: PSI > 0.25 -> Kích hoạt TriggerDagRunOperator(gl_huan_luyen_lai)",
+    "count": 9,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792347835489",
+    "timestamp": "2026-10-19 01:23:55.489",
+    "source": "Spark Writer",
+    "target": "bronze.giao_dich (Delta Constraint)",
+    "action": "CHẶN BẢN GHI VI PHẠM: so_tien = -200.0 <= 0",
+    "details": "Delta Constraint 'so_tien_duong CHECK (so_tien > 0)' từ chối ghi dữ liệu!",
+    "count": 1,
+    "status": "BLOCKED_BY_CONSTRAINT"
+  },
+  {
+    "id": "EVT_1792347638391",
+    "timestamp": "2026-10-19 01:20:38.391",
+    "source": "Spark Writer",
+    "target": "bronze.giao_dich (Delta Constraint)",
+    "action": "CHẶN BẢN GHI VI PHẠM: so_tien = -200.0 <= 0",
+    "details": "Delta Constraint 'so_tien_duong CHECK (so_tien > 0)' từ chối ghi dữ liệu!",
+    "count": 1,
+    "status": "BLOCKED_BY_CONSTRAINT"
+  },
+  {
+    "id": "EVT_1792346488240",
+    "timestamp": "2026-10-19 01:01:28.240",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792346481365",
+    "timestamp": "2026-10-19 01:01:21.365",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 18 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 18 giao dịch mới trong 24.24s",
+    "count": 18,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792346444213",
+    "timestamp": "2026-10-19 01:00:44.213",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 41 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 42 giao dịch mới trong 92.73s",
+    "count": 41,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792346443364",
+    "timestamp": "2026-10-19 01:00:43.364",
+    "source": "Delta Lake: gold.diem_rui_ro",
+    "target": "Kafka Topic: alerts -> Web Thẩm Định",
+    "action": "Đẩy 14 cảnh báo điểm cao sang Kafka 'alerts' & Web Queue",
+    "details": "Sẵn sàng cho chuyên gia thẩm định trên giao diện Flask (< 2s SLA)",
+    "count": 14,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792346443357",
+    "timestamp": "2026-10-19 01:00:43.357",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: gold.diem_rui_ro (CDF)",
+    "action": "Stream-Static Join + Chấm điểm model_v2 hoàn tất (83.53s)",
+    "details": "Đã chấm điểm 60 GD | Phát hiện 14 cảnh báo rủi ro cao",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792346392144",
+    "timestamp": "2026-10-19 00:59:52.144",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: bronze.giao_dich",
+    "action": "Ghi Sink 1 (Raw Append, Partition by ngay) — Batch #5",
+    "details": "Đã lưu 60 giao dịch thô hợp lệ CHECK (so_tien > 0)",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792346363892",
+    "timestamp": "2026-10-19 00:59:23.892",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #5 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 60",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1792346343930",
+    "timestamp": "2026-10-19 00:59:03.930",
+    "source": "Bộ phát Kafka (creditcard.csv)",
+    "target": "Kafka Topic: transactions",
+    "action": "Phát 60 giao dịch (Step 1h=10s, Tốc độ 21.4 tx/s)",
+    "details": "Gian lận gốc: 14 | Giao dịch lệch thứ tự (Out-of-order <=30s): 12",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
     "id": "EVT_1792340844516",
     "timestamp": "2026-10-18 23:27:24.516",
     "source": "Phân hệ Kiểm toán",
