@@ -206,8 +206,8 @@ d:\BigDaTa2/
 │   │   └── 06_airflow_dag_pipeline.log
 │   └── screenshots/              # Ảnh chụp giao diện Dashboard, Alerts, Drift và Terminal thực tế
 ├── NHAT_KY_THUC_HIEN.md          # Nhật ký mốc thời gian, tỷ lệ đóng góp thành viên & 4 lỗi kỹ thuật
-├── BaoCao_DoAn_BigData_FraudDetection_Nhom15.pdf   # Báo cáo đồ án PDF chính thức (628 KB)
-├── BaoCao_DoAn_BigData_FraudDetection_Nhom15.docx  # Báo cáo Word định dạng chuẩn HUIT
+├── BigDaTa_nhom15.pdf            # Báo cáo đồ án PDF chính thức (678 KB)
+├── BigDaTa_nhom15.docx           # Báo cáo Word định dạng chuẩn HUIT (90 KB)
 ├── chay.bat / chay.ps1           # Script 1-click khởi động 4 cửa sổ đồng bộ
 ├── setup.bat                     # Script 1-click thiết lập môi trường tự động
 ├── reset_he_thong.py             # Script làm sạch dữ liệu về v0 và khôi phục model gốc
@@ -221,8 +221,8 @@ d:\BigDaTa2/
 
 Toàn bộ hồ sơ nộp đồ án được tổ chức khoa học, minh bạch và có thể tái hiện 100%:
 1. **Báo cáo chính thức**:
-   * PDF hoàn chỉnh: [BaoCao_DoAn_BigData_FraudDetection_Nhom15.pdf](BaoCao_DoAn_BigData_FraudDetection_Nhom15.pdf) (100% chuẩn đen trắng, 6 chương, 8 bảng dữ liệu, 4 phụ lục).
-   * File Word gốc: [BaoCao_DoAn_BigData_FraudDetection_Nhom15.docx](BaoCao_DoAn_BigData_FraudDetection_Nhom15.docx).
+   * PDF hoàn chỉnh: [BigDaTa_nhom15.pdf](BigDaTa_nhom15.pdf) (100% chuẩn đen trắng, 6 chương, 8 bảng dữ liệu, 4 phụ lục).
+   * File Word gốc: [BigDaTa_nhom15.docx](BigDaTa_nhom15.docx).
 2. **Nhật ký thực hiện & Đóng góp thành viên**:
    * [NHAT_KY_THUC_HIEN.md](NHAT_KY_THUC_HIEN.md) — Tỷ lệ đóng góp (Phát 34%, Đạt 33%, Phong 33%), mốc thời gian Tuần 1-8, 4 lỗi kỹ thuật hóc búa & cách giải quyết triệt để.
 3. **Thư mục minh chứng & Log thực tế đối chiếu (Dành cho AI & Giảng viên)**:
