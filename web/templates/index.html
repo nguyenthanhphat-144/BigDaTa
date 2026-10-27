@@ -766,7 +766,7 @@
             <div id="flowTraceBanner">
                 <div class="trace-banner-header">
                     <span id="flowTraceTitle">Tiến trình luồng dữ liệu vừa thực thi</span>
-                    <button class="btn btn-light" style="padding:2px 8px; font-size:11px;" onclick="document.getElementById('flowTraceBanner').style.display='none'">Đóng</button>
+                    <button class="btn btn-light" style="padding:2px 8px; font-size:11px;" onclick="dismissFlowBanner()">Đóng ✕</button>
                 </div>
                 <div class="trace-chain" id="flowTraceSteps"></div>
             </div>
@@ -835,10 +835,10 @@
                             <div class="card-subtitle">Xếp hạng theo mức độ rủi ro giảm dần</div>
                         </div>
                         <div style="display:flex; gap:4px; align-items:center; flex-wrap:wrap;">
-                            <button class="btn btn-light active" id="flt-moi" onclick="loadAlertsQueue('moi', this)">Chờ xử lý</button>
-                            <button class="btn btn-light" id="flt-gian_lan" onclick="loadAlertsQueue('gian_lan', this)">Gian lận</button>
-                            <button class="btn btn-light" id="flt-hop_le" onclick="loadAlertsQueue('hop_le', this)">Hợp lệ</button>
-                            <button class="btn btn-light" id="flt-tat_ca" onclick="loadAlertsQueue('tat_ca', this)">Tất cả</button>
+                            <button class="btn btn-light active" id="flt-moi" onclick="loadAlertsQueue('moi', this)">Chờ xử lý <span class="badge badge-warning" id="fltCountMoi" style="margin-left:4px; font-size:11px;">0</span></button>
+                            <button class="btn btn-light" id="flt-gian_lan" onclick="loadAlertsQueue('gian_lan', this)">Gian lận <span class="badge badge-danger" id="fltCountGianLan" style="margin-left:4px; font-size:11px;">0</span></button>
+                            <button class="btn btn-light" id="flt-hop_le" onclick="loadAlertsQueue('hop_le', this)">Hợp lệ <span class="badge badge-success" id="fltCountHopLe" style="margin-left:4px; font-size:11px;">0</span></button>
+                            <button class="btn btn-light" id="flt-tat_ca" onclick="loadAlertsQueue('tat_ca', this)">Tất cả <span class="badge" id="fltCountTatCa" style="background:#e2e8f0; color:#334155; margin-left:4px; font-size:11px;">0</span></button>
                             <select id="queueLimitSelect" onchange="onQueueLimitChange(this.value)" style="width:auto; padding:5px 8px; font-size:12px; height:30px; margin-left:4px;">
                                 <option value="200">Hiển thị: Top 200</option>
                                 <option value="500">Hiển thị: 500 GD</option>
@@ -932,6 +932,9 @@
                                 <button class="btn btn-success" onclick="submitVerdict(0)">
                                     Xác nhận Hợp lệ
                                 </button>
+                            </div>
+                            <div style="font-size:11.5px; color:var(--text-muted); margin-top:8px; line-height:1.4;">
+                                <span style="color:var(--brand); font-weight:600;">ℹ Lưu ý:</span> Khi thẩm định, kết luận được ghi nhận vĩnh viễn vào Delta Lake (<code>silver.ket_luan_tham_dinh</code>) và tự động chuyển sang tab <strong>"Gian lận"</strong> / <strong>"Hợp lệ"</strong>. Dữ liệu được bảo toàn vĩnh viễn, không bị mất khi F5 tải lại trang.
                             </div>
                         </div>
 
@@ -1364,8 +1367,15 @@
         function switchTab(tabId, btnEl) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) targetContent.classList.add('active');
+            if (!btnEl) {
+                btnEl = document.querySelector(`.tab-link[onclick*="${tabId}"]`);
+            }
             if (btnEl) btnEl.classList.add('active');
+            try {
+                sessionStorage.setItem('activeTabId', tabId);
+            } catch (e) {}
         }
 
         function showFlowAnimation(title, stepsArray, highlightSteps = []) {
@@ -1383,6 +1393,46 @@
                     if (card) card.classList.add('active-stage');
                 }, i * 200);
             });
+
+            try {
+                sessionStorage.setItem('lastFlowTrace', JSON.stringify({
+                    title: title,
+                    steps: stepsArray,
+                    highlightSteps: highlightSteps,
+                    timestamp: Date.now()
+                }));
+            } catch (e) {}
+        }
+
+        function dismissFlowBanner() {
+            const banner = document.getElementById('flowTraceBanner');
+            if (banner) banner.style.display = 'none';
+            try {
+                sessionStorage.removeItem('lastFlowTrace');
+            } catch (e) {}
+            document.querySelectorAll('.stage-card').forEach(el => el.classList.remove('active-stage'));
+        }
+
+        function restoreLastFlowTrace() {
+            try {
+                const raw = sessionStorage.getItem('lastFlowTrace');
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (Date.now() - (data.timestamp || 0) < 3600000) {
+                    const banner = document.getElementById('flowTraceBanner');
+                    const titleEl = document.getElementById('flowTraceTitle');
+                    const stepsEl = document.getElementById('flowTraceSteps');
+                    if (banner && titleEl && stepsEl) {
+                        banner.style.display = 'block';
+                        titleEl.textContent = data.title;
+                        stepsEl.innerHTML = (data.steps || []).map(s => `<span class="trace-node-chip">${s}</span>`).join('<span class="trace-arrow">→</span>');
+                        (data.highlightSteps || []).forEach(stepIdx => {
+                            const card = document.getElementById(`flow-step-${stepIdx}`);
+                            if (card) card.classList.add('active-stage');
+                        });
+                    }
+                }
+            } catch (e) {}
         }
 
         async function loadPipelineFlow() {
@@ -1587,21 +1637,36 @@
 
             const filterChanged = (btnEl !== null && filter !== currentQueueFilter);
             currentQueueFilter = filter;
-            if (btnEl) {
-                btnEl.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
-                btnEl.classList.add('active');
+            try {
+                sessionStorage.setItem('currentQueueFilter', filter);
+            } catch (e) {}
+
+            const activeBtn = btnEl || document.getElementById(`flt-${currentQueueFilter}`);
+            if (activeBtn && activeBtn.parentElement) {
+                activeBtn.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+                activeBtn.classList.add('active');
                 if (filterChanged) {
                     currentSelectedTxId = null;
+                    try { sessionStorage.removeItem('selectedTxId'); } catch (e) {}
                 }
             }
             try {
                 const res = await fetch(`/api/canh-bao?trang_thai=${filter}&limit=${currentQueueLimit}`);
                 const data = await res.json();
 
-                document.getElementById('unreadBadge').textContent = data.unread_badge_count || 0;
-                document.getElementById('kpiUnread').textContent = data.unread_badge_count || 0;
-                document.getElementById('kpiFraudConfirmed').textContent = data.confirmed_fraud_count || 0;
-                document.getElementById('kpiLegitConfirmed').textContent = data.confirmed_legit_count || 0;
+                document.getElementById('unreadBadge').textContent = (data.unread_badge_count || 0).toLocaleString();
+                document.getElementById('kpiUnread').textContent = (data.unread_badge_count || 0).toLocaleString();
+                document.getElementById('kpiFraudConfirmed').textContent = (data.confirmed_fraud_count || 0).toLocaleString();
+                document.getElementById('kpiLegitConfirmed').textContent = (data.confirmed_legit_count || 0).toLocaleString();
+
+                const elMoi = document.getElementById('fltCountMoi');
+                const elGianLan = document.getElementById('fltCountGianLan');
+                const elHopLe = document.getElementById('fltCountHopLe');
+                const elTatCa = document.getElementById('fltCountTatCa');
+                if (elMoi) elMoi.textContent = (data.unread_badge_count || 0).toLocaleString();
+                if (elGianLan) elGianLan.textContent = (data.confirmed_fraud_count || 0).toLocaleString();
+                if (elHopLe) elHopLe.textContent = (data.confirmed_legit_count || 0).toLocaleString();
+                if (elTatCa) elTatCa.textContent = (data.total_alerts || 0).toLocaleString();
 
                 if (data.latency_stats) {
                     document.getElementById('kpiLatencyP50P95').textContent =
@@ -1620,10 +1685,15 @@
                     return;
                 }
 
-                // Only select the first row automatically if NO transaction is currently selected
-                const needInitialLoad = (!currentSelectedTxId || !alertsMapById[currentSelectedTxId]);
-                if (needInitialLoad) {
+                // Restore saved transaction if available
+                const savedTxId = (function(){ try { return sessionStorage.getItem('selectedTxId'); } catch(e){ return null; } })();
+                let needInitialLoad = false;
+                if (savedTxId && alertsMapById[savedTxId]) {
+                    currentSelectedTxId = savedTxId;
+                    needInitialLoad = true;
+                } else if (!currentSelectedTxId || !alertsMapById[currentSelectedTxId]) {
                     currentSelectedTxId = alerts[0].ma_giao_dich;
+                    needInitialLoad = true;
                 }
 
                 tbody.innerHTML = alerts.map(a => {
@@ -1658,6 +1728,9 @@
 
         async function loadTransactionDetail(txId) {
             currentSelectedTxId = txId;
+            try {
+                sessionStorage.setItem('selectedTxId', txId);
+            } catch (e) {}
             const reqSeq = ++detailRequestSeq;
 
             document.querySelectorAll('#alertsTableBody tr.row-selectable').forEach(tr => {
@@ -1768,10 +1841,16 @@
                 });
                 const data = await res.json();
 
+                const verdictText = formatStatus(data.trang_thai_tham_dinh);
                 showFlowAnimation(
-                    `Đã lưu quyết định thẩm định [${formatStatus(data.trang_thai_tham_dinh)}] cho giao dịch ${currentSelectedTxId}`,
+                    `Đã lưu quyết định thẩm định [${verdictText}] cho giao dịch ${currentSelectedTxId}`,
                     data.flow_trace || [],
                     [6, 7, 8]
+                );
+
+                showToast(
+                    `Đã xác nhận [${verdictText}] cho GD ${currentSelectedTxId}! Dữ liệu đã lưu vĩnh viễn vào Delta Lake và chuyển sang tab tương ứng.`,
+                    nhanValue === 1 ? 'danger' : 'success'
                 );
 
                 await loadAlertsQueue(currentQueueFilter);
@@ -2021,6 +2100,25 @@
             await loadPipelineFlow();
         }
 
+        function showToast(message, type = 'info') {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.style.cssText = 'position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none;';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            const bg = type === 'success' ? '#15803d' : (type === 'danger' ? '#dc2626' : '#1e40af');
+            toast.style.cssText = `background:${bg}; color:#ffffff; padding:10px 16px; border-radius:6px; font-size:12.5px; box-shadow:0 4px 12px rgba(0,0,0,0.18); pointer-events:auto; max-width:400px; transition:opacity 0.35s ease; display:flex; align-items:center; gap:8px; line-height:1.4;`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 400);
+            }, 5000);
+        }
+
         async function refreshAllData() {
             await Promise.all([
                 loadPipelineFlow(),
@@ -2030,8 +2128,30 @@
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
+            // 1. Khôi phục tab đang làm việc nếu đã chọn trước đó
+            try {
+                const savedTab = sessionStorage.getItem('activeTabId');
+                if (savedTab && document.getElementById(savedTab)) {
+                    switchTab(savedTab);
+                }
+            } catch (e) {}
+
+            // 2. Khôi phục bộ lọc hàng đợi (Chờ xử lý, Gian lận, Hợp lệ, Tất cả)
+            try {
+                const savedFilter = sessionStorage.getItem('currentQueueFilter');
+                if (savedFilter) {
+                    currentQueueFilter = savedFilter;
+                }
+            } catch (e) {}
+
+            // 3. Khôi phục banner tiến trình luồng và hiệu ứng highlight các bước
+            restoreLastFlowTrace();
+
+            // 4. Tải toàn bộ dữ liệu hệ thống
             await refreshAllData();
             await loadAuditVersion('model_v1');
+
+            // 5. Chu kỳ cập nhật tự động (mỗi 3 giây)
             setInterval(() => {
                 loadPipelineFlow();
                 loadAlertsQueue(currentQueueFilter);

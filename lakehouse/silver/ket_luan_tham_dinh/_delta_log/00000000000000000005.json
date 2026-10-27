@@ -1,0 +1,2 @@
+{"commitInfo": {"timestamp": 1793114109830, "operation": "MERGE_FEEDBACK", "operationParameters": {"mode": "Append"}, "isBlindAppend": true}}
+{"add": {"path": "part-00000-ab3d2777-e9b1-465e-936c-8336b3a5c1c0-c000.snappy.parquet", "partitionValues": {}, "size": 4586, "modificationTime": 1793114109830, "dataChange": true}}

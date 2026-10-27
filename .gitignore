@@ -42,6 +42,8 @@ derby.log
 checkpoints/
 checkpoints_old/
 lakehouse_old/
+*.crc
+.*.crc
 
 # ==========================================
 # IDE & Office Temp Files

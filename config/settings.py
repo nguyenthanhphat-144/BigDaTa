@@ -68,14 +68,45 @@ for d in [
     os.makedirs(d, exist_ok=True)
 
 
+def ensure_utf8_console():
+    """Ensures Windows Console code page is UTF-8 (65001) and sys.std* streams handle UTF-8 cleanly."""
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
+        except Exception:
+            pass
+    if hasattr(sys.stderr, "reconfigure"):
+        try:
+            sys.stderr.reconfigure(encoding="utf-8", line_buffering=True)
+        except Exception:
+            pass
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            kernel32 = ctypes.windll.kernel32
+            kernel32.SetConsoleOutputCP(65001)
+            kernel32.SetConsoleCP(65001)
+        except Exception:
+            pass
+        try:
+            os.system("chcp 65001 >nul 2>&1")
+        except Exception:
+            pass
+
+
+# Automatically configure console UTF-8 on load
+ensure_utf8_console()
+
+
 def set_console_title(title_text):
     """Sets the Windows PowerShell / CMD window title bar to show the currently running file."""
     try:
         if os.name == "nt":
             import ctypes
             ctypes.windll.kernel32.SetConsoleTitleW(str(title_text))
-        sys.stdout.write(f"\x1b]0;{title_text}\x07")
-        sys.stdout.flush()
+        else:
+            sys.stdout.write(f"\x1b]0;{title_text}\x07")
+            sys.stdout.flush()
     except Exception:
         pass
 

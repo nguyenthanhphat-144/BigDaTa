@@ -1,5 +1,165 @@
 [
   {
+    "id": "EVT_1793115157865",
+    "timestamp": "2026-10-27 22:32:37.865",
+    "source": "Spark Writer",
+    "target": "bronze.giao_dich (Delta Constraint)",
+    "action": "CHẶN BẢN GHI VI PHẠM: so_tien = -200.0 <= 0",
+    "details": "Delta Constraint 'so_tien_duong CHECK (so_tien > 0)' từ chối ghi dữ liệu!",
+    "count": 1,
+    "status": "BLOCKED_BY_CONSTRAINT"
+  },
+  {
+    "id": "EVT_1793114185054",
+    "timestamp": "2026-10-27 22:16:25.054",
+    "source": "Bàn làm việc thẩm định",
+    "target": "Kho nhãn phản hồi & Bảng điểm rủi ro",
+    "action": "Xác nhận [Gian lận] cho giao dịch TX_26CF3D2317 (Chuyên viên: Chuyên viên Thẩm định 01)",
+    "details": "Lý do: 'Số tiền giao dịch đột biến bất thường kèm thiết bị lạ' — Đã lưu phiên bản v7 & đưa vào danh sách huấn luyện chu kỳ tiếp theo",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114160967",
+    "timestamp": "2026-10-27 22:16:00.967",
+    "source": "Bàn làm việc thẩm định",
+    "target": "Kho nhãn phản hồi & Bảng điểm rủi ro",
+    "action": "Xác nhận [Gian lận] cho giao dịch TX_26CF3D2317 (Chuyên viên: Chuyên viên Thẩm định 01)",
+    "details": "Lý do: 'Số tiền giao dịch đột biến bất thường kèm thiết bị lạ' — Đã lưu phiên bản v6 & đưa vào danh sách huấn luyện chu kỳ tiếp theo",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114119292",
+    "timestamp": "2026-10-27 22:15:19.292",
+    "source": "Bàn làm việc thẩm định",
+    "target": "Kho nhãn phản hồi & Bảng điểm rủi ro",
+    "action": "Xác nhận [Gian lận] cho giao dịch TX_D3441FD15E (Chuyên viên: Chuyên viên Thẩm định 01)",
+    "details": "Lý do: 'Dấu hiệu chiếm đoạt quyền kiểm soát tài khoản' — Đã lưu phiên bản v5 & đưa vào danh sách huấn luyện chu kỳ tiếp theo",
+    "count": 1,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114056262",
+    "timestamp": "2026-10-27 22:14:16.262",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 36 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 36 giao dịch mới trong 9.33s",
+    "count": 36,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114049746",
+    "timestamp": "2026-10-27 22:14:09.746",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: gold.diem_rui_ro (CDF)",
+    "action": "Stream-Static Join + Chấm điểm model_v2 hoàn tất (8.5s)",
+    "details": "Đã chấm điểm 11 GD | Phát hiện 0 cảnh báo rủi ro cao",
+    "count": 11,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114042745",
+    "timestamp": "2026-10-27 22:14:02.745",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: bronze.giao_dich",
+    "action": "Ghi Sink 1 (Raw Append, Partition by ngay) — Batch #7",
+    "details": "Đã lưu 11 giao dịch thô hợp lệ CHECK (so_tien > 0)",
+    "count": 11,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114041326",
+    "timestamp": "2026-10-27 22:14:01.326",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #7 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 11",
+    "count": 11,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114039548",
+    "timestamp": "2026-10-27 22:13:59.548",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 24 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 24 giao dịch mới trong 28.26s",
+    "count": 24,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114030597",
+    "timestamp": "2026-10-27 22:13:50.597",
+    "source": "Delta Lake: gold.diem_rui_ro",
+    "target": "Kafka Topic: alerts -> Web Thẩm Định",
+    "action": "Đẩy 11 cảnh báo điểm cao sang Kafka 'alerts' & Web Queue",
+    "details": "Sẵn sàng cho chuyên gia thẩm định trên giao diện Flask (< 2s SLA)",
+    "count": 11,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114030592",
+    "timestamp": "2026-10-27 22:13:50.592",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: gold.diem_rui_ro (CDF)",
+    "action": "Stream-Static Join + Chấm điểm model_v2 hoàn tất (23.84s)",
+    "details": "Đã chấm điểm 49 GD | Phát hiện 11 cảnh báo rủi ro cao",
+    "count": 49,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114012984",
+    "timestamp": "2026-10-27 22:13:32.984",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114012892",
+    "timestamp": "2026-10-27 22:13:32.892",
+    "source": "Spark Streaming: cham_diem.py",
+    "target": "Delta Lake: bronze.giao_dich",
+    "action": "Ghi Sink 1 (Raw Append, Partition by ngay) — Batch #6",
+    "details": "Đã lưu 49 giao dịch thô hợp lệ CHECK (so_tien > 0)",
+    "count": 49,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114012799",
+    "timestamp": "2026-10-27 22:13:32.799",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114007753",
+    "timestamp": "2026-10-27 22:13:27.753",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #6 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 49",
+    "count": 49,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793114002474",
+    "timestamp": "2026-10-27 22:13:22.474",
+    "source": "Bộ phát Kafka (creditcard.csv)",
+    "target": "Kafka Topic: transactions",
+    "action": "Phát 60 giao dịch (Step 1h=10s, Tốc độ 23.9 tx/s)",
+    "details": "Gian lận gốc: 10 | Giao dịch lệch thứ tự (Out-of-order <=30s): 14",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
     "id": "EVT_1793035113680",
     "timestamp": "2026-10-27 00:18:33.680",
     "source": "Phân hệ Kiểm toán",
