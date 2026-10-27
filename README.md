@@ -192,10 +192,6 @@ d:\BigDaTa2/
 ├── web/
 │   ├── app.py                    # Backend Flask Server điều hành và API thẩm định
 │   └── templates/index.html      # Giao diện Web Dashboard 8 bước và Thẩm định viên
-├── chay.bat / chay.ps1           # Script 1-click khởi động 4 cửa sổ đồng bộ
-├── setup.bat                     # Script 1-click thiết lập môi trường tự động
-├── reset_he_thong.py             # Script làm sạch dữ liệu về v0 và khôi phục model gốc
-├── requirements.txt              # Danh sách thư viện Python cần thiết
 ├── docs/
 │   ├── minh_chung/               # 6 tệp log bằng chứng thực tế cho Giảng viên / AI chấm điểm
 │   │   ├── 01_kiem_tra_hdfs.log

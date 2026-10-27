@@ -89,7 +89,8 @@ Trong quá trình xây dựng hệ thống Big Data trên môi trường thực 
 | `ff0c095` | nguyenthanhphat-144 | 2026-10-19 00:16 | **feat: Initial commit of Big Data Fraud Detection Real-Time System**<br>- Khởi tạo 174 files toàn bộ kiến trúc dự án.<br>- Thiết lập cấu hình Hadoop, Spark, Kafka, Delta Lake, Airflow, Web UI. |
 | `791c983` | nguyenthanhphat-144 | 2026-10-19 00:56 | **docs: Update repository clone URL to BigDaTa**<br>- Cập nhật đường dẫn kho lưu trữ GitHub chính thức. |
 | `29960df` | nguyenthanhphat-144 | 2026-10-19 00:58 | **chore: Add push.bat helper**<br>- Thêm tập lệnh hỗ trợ đồng bộ hóa mã nguồn tự động lên GitHub. |
-| *(Mới)* | nguyenthanhphat-144 | 2026-10-19 01:40 | **docs: Add official PDF report, NHAT_KY_THUC_HIEN, 6 audit logs and screenshots**<br>- Xuất 6 file log minh chứng kỹ thuật (`01_kiem_tra_hdfs.log` -> `06_airflow_dag_pipeline.log`).<br>- Lưu 6 ảnh chụp màn hình giao diện & lỗi kỹ thuật vào `docs/screenshots/`.<br>- Hoàn thiện nhật ký thực hiện chi tiết `NHAT_KY_THUC_HIEN.md`.<br>- Cập nhật Báo cáo PDF chính thức `BigDaTa_nhom15.pdf`. |
+| `eebbd38` | nguyenthanhphat-144 | 2026-10-19 01:40 | **docs: Add official PDF report, NHAT_KY_THUC_HIEN, 6 audit logs and screenshots**<br>- Xuất 6 file log minh chứng kỹ thuật (`01_kiem_tra_hdfs.log` -> `06_airflow_dag_pipeline.log`).<br>- Lưu 6 ảnh chụp màn hình giao diện & lỗi kỹ thuật vào `docs/screenshots/`.<br>- Hoàn thiện nhật ký thực hiện chi tiết `NHAT_KY_THUC_HIEN.md`.<br>- Cập nhật Báo cáo PDF chính thức `BigDaTa_nhom15.pdf`. |
+| `7820397` | nguyenthanhphat-144 | 2026-10-27 00:34 | **clean: Remove duplicate report files and unused generator scripts, align with BigDaTa_nhom15**<br>- Xóa các file trùng lặp và các script sinh tài liệu tạm.<br>- Đồng bộ hóa toàn bộ kho lưu trữ GitHub khớp 100% với thư mục cục bộ. |
 
 ---
 
