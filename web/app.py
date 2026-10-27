@@ -8,6 +8,7 @@ import uuid
 import shutil
 import socket
 import datetime
+import threading
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, request, render_template
@@ -48,6 +49,8 @@ class DeltaFastEngine:
     _TABLE_CACHE = {}
     _HISTORY_CACHE = {}
     _IN_MEMORY_OVERLAYS = {}
+    _PARQUET_FILE_CACHE = {}
+    _LOCK = threading.RLock()
 
     @staticmethod
     def _get_log_signature(table_path, version_as_of=None):
@@ -56,7 +59,10 @@ class DeltaFastEngine:
         if not os.path.exists(log_dir):
             return ("NO_LOG", overlay_len, "", version_as_of)
         try:
-            json_names = sorted(f for f in os.listdir(log_dir) if f.endswith(".json"))
+            json_names = sorted(
+                f for f in os.listdir(log_dir)
+                if f.endswith(".json") and not f.startswith(".") and f.replace(".json", "").isdigit()
+            )
             last_name = json_names[-1] if json_names else ""
             last_mtime = os.path.getmtime(os.path.join(log_dir, last_name)) if last_name else 0
             return ("OK", len(json_names) + overlay_len, last_name, last_mtime, version_as_of)
@@ -68,44 +74,48 @@ class DeltaFastEngine:
         log_dir = os.path.join(table_path, "_delta_log")
         if not os.path.exists(log_dir):
             return []
-        sig = DeltaFastEngine._get_log_signature(table_path)
-        cached = DeltaFastEngine._HISTORY_CACHE.get(table_path)
-        if cached and cached[0] == sig:
-            return cached[1]
+        with DeltaFastEngine._LOCK:
+            sig = DeltaFastEngine._get_log_signature(table_path)
+            cached = DeltaFastEngine._HISTORY_CACHE.get(table_path)
+            if cached and cached[0] == sig:
+                return cached[1]
 
-        json_files = sorted(glob.glob(os.path.join(log_dir, "*.json")))
-        history = []
-        for jf in json_files:
-            ver = int(os.path.basename(jf).replace(".json", ""))
-            op = "WRITE"
-            ts = int(os.path.getmtime(jf) * 1000)
-            params = {}
-            try:
-                with open(jf, "r", encoding="utf-8") as f:
-                    for line in f:
-                        obj = json.loads(line)
-                        if "commitInfo" in obj:
-                            ci = obj["commitInfo"]
-                            op = ci.get("operation", op)
-                            ts = ci.get("timestamp", ts)
-                            params = ci.get("operationParameters", {})
-            except Exception:
-                pass
-            history.append({
-                "version": ver,
-                "timestamp": datetime.datetime.fromtimestamp(ts / 1000.0).strftime("%Y-%m-%d %H:%M:%S"),
-                "operation": op,
-                "parameters": params
-            })
-        res = sorted(history, key=lambda x: x["version"], reverse=True)
-        DeltaFastEngine._HISTORY_CACHE[table_path] = (sig, res)
-        return res
+            json_files = sorted(
+                jf for jf in glob.glob(os.path.join(log_dir, "*.json"))
+                if os.path.basename(jf).replace(".json", "").isdigit()
+            )
+            history = []
+            for jf in json_files:
+                ver = int(os.path.basename(jf).replace(".json", ""))
+                op = "WRITE"
+                ts = int(os.path.getmtime(jf) * 1000)
+                params = {}
+                try:
+                    with open(jf, "r", encoding="utf-8") as f:
+                        for line in f:
+                            obj = json.loads(line)
+                            if "commitInfo" in obj:
+                                ci = obj["commitInfo"]
+                                op = ci.get("operation", op)
+                                ts = ci.get("timestamp", ts)
+                                params = ci.get("operationParameters", {})
+                except Exception:
+                    pass
+                history.append({
+                    "version": ver,
+                    "timestamp": datetime.datetime.fromtimestamp(ts / 1000.0).strftime("%Y-%m-%d %H:%M:%S"),
+                    "operation": op,
+                    "parameters": params
+                })
+            res = sorted(history, key=lambda x: x["version"], reverse=True)
+            DeltaFastEngine._HISTORY_CACHE[table_path] = (sig, res)
+            return res
 
     @staticmethod
     def read_delta_table(table_path, version_as_of=None):
         """Reconstructs active Parquet files from _delta_log up to version_as_of (Time Travel)
-        and loads them into a Pandas DataFrame, using _delta_log signature cache for <1ms reads.
-        Includes in-memory overlay records to reflect immediate UI updates safely.
+        and loads them into a Pandas DataFrame, using _delta_log signature cache and per-file
+        immutable Parquet cache for <2ms incremental reads.
         """
         log_dir = os.path.join(table_path, "_delta_log")
         cache_key = (table_path, version_as_of)
@@ -114,59 +124,79 @@ class DeltaFastEngine:
         if cached and cached[0] == sig:
             return cached[1]
 
-        dfs = []
-        if os.path.exists(log_dir):
-            json_files = sorted(glob.glob(os.path.join(log_dir, "*.json")))
-            active_files = []
-            active_set = set()
+        with DeltaFastEngine._LOCK:
+            sig = DeltaFastEngine._get_log_signature(table_path, version_as_of)
+            cached = DeltaFastEngine._TABLE_CACHE.get(cache_key)
+            if cached and cached[0] == sig:
+                return cached[1]
 
-            for jf in json_files:
-                ver = int(os.path.basename(jf).replace(".json", ""))
-                if version_as_of is not None and ver > int(version_as_of):
-                    break
-                try:
-                    with open(jf, "r", encoding="utf-8") as f:
-                        for line in f:
-                            obj = json.loads(line)
-                            if "add" in obj and "path" in obj["add"]:
-                                p = obj["add"]["path"]
-                                if p not in active_set:
-                                    active_set.add(p)
-                                    active_files.append(p)
-                            elif "remove" in obj and "path" in obj["remove"]:
-                                p = obj["remove"]["path"]
-                                if p in active_set:
-                                    active_set.discard(p)
-                                    active_files = [x for x in active_files if x != p]
-                except Exception:
-                    pass
+            dfs = []
+            if os.path.exists(log_dir):
+                json_files = sorted(
+                    jf for jf in glob.glob(os.path.join(log_dir, "*.json"))
+                    if os.path.basename(jf).replace(".json", "").isdigit()
+                )
+                active_files = []
+                active_set = set()
 
-            for rel_path in active_files:
-                full_p = os.path.join(table_path, rel_path.replace("/", os.sep))
-                if os.path.exists(full_p):
+                for jf in json_files:
+                    ver = int(os.path.basename(jf).replace(".json", ""))
+                    if version_as_of is not None and ver > int(version_as_of):
+                        break
                     try:
-                        dfs.append(pd.read_parquet(full_p))
+                        with open(jf, "r", encoding="utf-8") as f:
+                            for line in f:
+                                obj = json.loads(line)
+                                if "add" in obj and "path" in obj["add"]:
+                                    p = obj["add"]["path"]
+                                    if p not in active_set:
+                                        active_set.add(p)
+                                        active_files.append(p)
+                                elif "remove" in obj and "path" in obj["remove"]:
+                                    p = obj["remove"]["path"]
+                                    if p in active_set:
+                                        active_set.discard(p)
+                                        active_files = [x for x in active_files if x != p]
                     except Exception:
                         pass
 
-        if not dfs and os.path.exists(table_path):
-            # Fallback: scan parquet files directly in deterministic sorted order
-            all_pq = sorted(glob.glob(os.path.join(table_path, "**", "*.parquet"), recursive=True))
-            for pq in all_pq:
-                if "_delta_log" not in pq and "_change_data" not in pq:
-                    try:
-                        dfs.append(pd.read_parquet(pq))
-                    except Exception:
-                        pass
+                for rel_path in active_files:
+                    full_p = os.path.join(table_path, rel_path.replace("/", os.sep))
+                    part_df = DeltaFastEngine._PARQUET_FILE_CACHE.get(full_p)
+                    if part_df is not None:
+                        dfs.append(part_df)
+                    elif os.path.exists(full_p):
+                        try:
+                            part_df = pd.read_parquet(full_p)
+                            DeltaFastEngine._PARQUET_FILE_CACHE[full_p] = part_df
+                            dfs.append(part_df)
+                        except Exception:
+                            pass
 
-        result_df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
-        # Merge in-memory overlay if any live records have been generated
-        if table_path in DeltaFastEngine._IN_MEMORY_OVERLAYS and DeltaFastEngine._IN_MEMORY_OVERLAYS[table_path]:
-            to_combine = [result_df] + DeltaFastEngine._IN_MEMORY_OVERLAYS[table_path]
-            result_df = pd.concat([d for d in to_combine if not d.empty], ignore_index=True)
+            if not dfs and os.path.exists(table_path):
+                # Fallback: scan parquet files directly in deterministic sorted order
+                all_pq = sorted(glob.glob(os.path.join(table_path, "**", "*.parquet"), recursive=True))
+                for pq in all_pq:
+                    if "_delta_log" not in pq and "_change_data" not in pq:
+                        part_df = DeltaFastEngine._PARQUET_FILE_CACHE.get(pq)
+                        if part_df is not None:
+                            dfs.append(part_df)
+                        else:
+                            try:
+                                part_df = pd.read_parquet(pq)
+                                DeltaFastEngine._PARQUET_FILE_CACHE[pq] = part_df
+                                dfs.append(part_df)
+                            except Exception:
+                                pass
 
-        DeltaFastEngine._TABLE_CACHE[cache_key] = (sig, result_df)
-        return result_df
+            result_df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
+            # Merge in-memory overlay if any live records have been generated
+            if table_path in DeltaFastEngine._IN_MEMORY_OVERLAYS and DeltaFastEngine._IN_MEMORY_OVERLAYS[table_path]:
+                to_combine = [result_df] + DeltaFastEngine._IN_MEMORY_OVERLAYS[table_path]
+                result_df = pd.concat([d for d in to_combine if not d.empty], ignore_index=True)
+
+            DeltaFastEngine._TABLE_CACHE[cache_key] = (sig, result_df)
+            return result_df
 
     @staticmethod
     def append_delta_record(table_path, df_new, operation="WRITE"):
@@ -237,7 +267,10 @@ class DeltaFastEngine:
 
 # In-memory cache of reviewer status updates for instant CDF merging
 REVIEW_STATUS_OVERRIDES = {}
+_REVIEW_OVERRIDES_SIG = {"sig": None}
 _RANKED_GOLD_CACHE = {"sig": None, "df_gold": pd.DataFrame()}
+_CALIBRATED_SCORE_CACHE = {}
+_GOLD_RANK_LOCK = threading.RLock()
 _HDFS_STATUS_CACHE = {"ts": 0.0, "data": None}
 
 
@@ -252,9 +285,12 @@ def _get_cached_hdfs_status():
 
 
 def _load_review_overrides():
+    kl_sig = DeltaFastEngine._get_log_signature(SILVER_KET_LUAN)
+    if _REVIEW_OVERRIDES_SIG["sig"] == kl_sig and REVIEW_STATUS_OVERRIDES:
+        return
     df_kl = DeltaFastEngine.read_delta_table(SILVER_KET_LUAN)
     if not df_kl.empty and "ma_giao_dich" in df_kl.columns:
-        for _, row in df_kl.iterrows():
+        for row in df_kl.to_dict("records"):
             status = "GIAN_LAN" if int(row.get("nhan", 1)) == 1 else "HOP_LE"
             REVIEW_STATUS_OVERRIDES[str(row["ma_giao_dich"])] = {
                 "trang_thai_tham_dinh": status,
@@ -262,6 +298,7 @@ def _load_review_overrides():
                 "ly_do": str(row.get("ly_do", "")),
                 "thoi_diem_ket_luan": str(row.get("thoi_diem_ket_luan", ""))
             }
+    _REVIEW_OVERRIDES_SIG["sig"] = kl_sig
 
 
 import zlib
@@ -336,50 +373,59 @@ def _prepare_ranked_gold_df(trang_thai_filter="moi"):
     applies reviewer overrides, calibrates risk scores, and caches the ranked DataFrame
     so GET /api/canh-bao and GET /api/giao-dich/<tx_id> respond in <2ms with 100% identical ranks.
     """
-    _load_review_overrides()
+    with _GOLD_RANK_LOCK:
+        _load_review_overrides()
 
-    active_model_ver = "model_v1"
-    meta_path = os.path.join(MODELS_DIR, "model_metadata.json")
-    if os.path.exists(meta_path):
-        try:
-            with open(meta_path, "r", encoding="utf-8") as f:
-                active_model_ver = json.load(f).get("version", "model_v1")
-        except Exception:
-            pass
+        active_model_ver = "model_v1"
+        meta_path = os.path.join(MODELS_DIR, "model_metadata.json")
+        if os.path.exists(meta_path):
+            try:
+                with open(meta_path, "r", encoding="utf-8") as f:
+                    active_model_ver = json.load(f).get("version", "model_v1")
+            except Exception:
+                pass
 
-    gold_sig = (
-        DeltaFastEngine._get_log_signature(GOLD_DIEM_RUI_RO),
-        len(REVIEW_STATUS_OVERRIDES),
-        tuple(sorted((k, v["trang_thai_tham_dinh"]) for k, v in REVIEW_STATUS_OVERRIDES.items())),
-        active_model_ver
-    )
+        gold_sig = (
+            DeltaFastEngine._get_log_signature(GOLD_DIEM_RUI_RO),
+            len(REVIEW_STATUS_OVERRIDES),
+            tuple(sorted((k, v["trang_thai_tham_dinh"]) for k, v in REVIEW_STATUS_OVERRIDES.items())),
+            active_model_ver
+        )
 
-    if _RANKED_GOLD_CACHE["sig"] == gold_sig and not _RANKED_GOLD_CACHE["df_gold"].empty:
-        df_gold = _RANKED_GOLD_CACHE["df_gold"]
-    else:
-        raw_gold = DeltaFastEngine.read_delta_table(GOLD_DIEM_RUI_RO)
-        if raw_gold.empty or "ma_giao_dich" not in raw_gold.columns:
-            return pd.DataFrame(), pd.DataFrame()
+        if _RANKED_GOLD_CACHE["sig"] == gold_sig and not _RANKED_GOLD_CACHE["df_gold"].empty:
+            df_gold = _RANKED_GOLD_CACHE["df_gold"]
+        else:
+            raw_gold = DeltaFastEngine.read_delta_table(GOLD_DIEM_RUI_RO)
+            if raw_gold.empty or "ma_giao_dich" not in raw_gold.columns:
+                return pd.DataFrame(), pd.DataFrame()
 
-        df_gold = raw_gold.drop_duplicates(subset=["ma_giao_dich"], keep="first").copy()
+            df_gold = raw_gold.drop_duplicates(subset=["ma_giao_dich"], keep="first").copy()
 
-        for idx, row in df_gold.iterrows():
-            tx_id = str(row["ma_giao_dich"])
-            if tx_id in REVIEW_STATUS_OVERRIDES:
-                df_gold.at[idx, "trang_thai_tham_dinh"] = REVIEW_STATUS_OVERRIDES[tx_id]["trang_thai_tham_dinh"]
-            raw_sc = row.get("diem_rui_ro", 0.0)
-            amt = row.get("so_tien", 0.0)
-            df_gold.at[idx, "diem_rui_ro"] = _calibrate_risk_score(raw_sc, tx_id, amt)
-            df_gold.at[idx, "phien_ban_mo_hinh"] = active_model_ver
+            tx_ids = df_gold["ma_giao_dich"].astype(str).tolist()
+            raw_scores = df_gold["diem_rui_ro"].tolist() if "diem_rui_ro" in df_gold.columns else [0.5] * len(tx_ids)
+            calibrated_scores = []
+            for s, tx_id in zip(raw_scores, tx_ids):
+                cached_sc = _CALIBRATED_SCORE_CACHE.get(tx_id)
+                if cached_sc is None:
+                    cached_sc = _calibrate_risk_score(s, tx_id)
+                    _CALIBRATED_SCORE_CACHE[tx_id] = cached_sc
+                calibrated_scores.append(cached_sc)
 
-        df_gold = df_gold.sort_values(
-            by=["diem_rui_ro", "so_tien", "ma_giao_dich"],
-            ascending=[False, False, True]
-        ).reset_index(drop=True)
-        df_gold["xep_hang_toan_he_thong"] = df_gold.index + 1
+            df_gold["diem_rui_ro"] = calibrated_scores
+            df_gold["phien_ban_mo_hinh"] = active_model_ver
 
-        _RANKED_GOLD_CACHE["sig"] = gold_sig
-        _RANKED_GOLD_CACHE["df_gold"] = df_gold
+            if REVIEW_STATUS_OVERRIDES:
+                ov_map = {k: v["trang_thai_tham_dinh"] for k, v in REVIEW_STATUS_OVERRIDES.items()}
+                df_gold["trang_thai_tham_dinh"] = df_gold["ma_giao_dich"].map(ov_map).fillna(df_gold["trang_thai_tham_dinh"])
+
+            df_gold = df_gold.sort_values(
+                by=["diem_rui_ro", "so_tien", "ma_giao_dich"],
+                ascending=[False, False, True]
+            ).reset_index(drop=True)
+            df_gold["xep_hang_toan_he_thong"] = df_gold.index + 1
+
+            _RANKED_GOLD_CACHE["sig"] = gold_sig
+            _RANKED_GOLD_CACHE["df_gold"] = df_gold
 
     f_mode = (trang_thai_filter or "moi").lower()
     if f_mode in ("moi", "chua_tham_dinh"):
@@ -836,7 +882,7 @@ def api_canh_bao():
     top_df = filtered_df.head(limit)
 
     alerts_out = []
-    for _, row in top_df.iterrows():
+    for row in top_df.to_dict("records"):
         factors = _normalize_factors(row.get("cac_yeu_to_chinh"))
         tx_id = str(row["ma_giao_dich"])
         alerts_out.append({

@@ -1631,6 +1631,73 @@
             loadAlertsQueue(currentQueueFilter, document.getElementById(`flt-${currentQueueFilter}`));
         }
 
+        function renderAlertsPayload(data, triggerDetailLoad = true) {
+            if (!data) return false;
+            document.getElementById('unreadBadge').textContent = (data.unread_badge_count || 0).toLocaleString();
+            document.getElementById('kpiUnread').textContent = (data.unread_badge_count || 0).toLocaleString();
+            document.getElementById('kpiFraudConfirmed').textContent = (data.confirmed_fraud_count || 0).toLocaleString();
+            document.getElementById('kpiLegitConfirmed').textContent = (data.confirmed_legit_count || 0).toLocaleString();
+
+            const elMoi = document.getElementById('fltCountMoi');
+            const elGianLan = document.getElementById('fltCountGianLan');
+            const elHopLe = document.getElementById('fltCountHopLe');
+            const elTatCa = document.getElementById('fltCountTatCa');
+            if (elMoi) elMoi.textContent = (data.unread_badge_count || 0).toLocaleString();
+            if (elGianLan) elGianLan.textContent = (data.confirmed_fraud_count || 0).toLocaleString();
+            if (elHopLe) elHopLe.textContent = (data.confirmed_legit_count || 0).toLocaleString();
+            if (elTatCa) elTatCa.textContent = (data.total_alerts || 0).toLocaleString();
+
+            if (data.latency_stats) {
+                document.getElementById('kpiLatencyP50P95').textContent =
+                    `${data.latency_stats.p50_ms} / ${data.latency_stats.p95_ms} ms`;
+                document.getElementById('kpiLatencyP99').textContent =
+                    `${data.latency_stats.p99_ms} ms`;
+            }
+
+            const alerts = data.alerts || [];
+            alertsMapById = {};
+            alerts.forEach(a => { alertsMapById[a.ma_giao_dich] = a; });
+
+            const tbody = document.getElementById('alertsTableBody');
+            if (alerts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--text-muted);">Không có giao dịch nào trong danh mục này.</td></tr>`;
+                return false;
+            }
+
+            const savedTxId = (function(){ try { return sessionStorage.getItem('selectedTxId'); } catch(e){ return null; } })();
+            let needInitialLoad = false;
+            if (savedTxId && alertsMapById[savedTxId]) {
+                if (currentSelectedTxId !== savedTxId) needInitialLoad = true;
+                currentSelectedTxId = savedTxId;
+            } else if (!currentSelectedTxId || !alertsMapById[currentSelectedTxId]) {
+                currentSelectedTxId = alerts[0].ma_giao_dich;
+                needInitialLoad = true;
+            }
+
+            tbody.innerHTML = alerts.map(a => {
+                const riskBadge = a.diem_rui_ro >= 0.75 ? 'badge-danger' : (a.diem_rui_ro >= 0.40 ? 'badge-warning' : 'badge-success');
+                const stBadge = a.trang_thai_tham_dinh === 'GIAN_LAN' ? 'badge-danger' : (a.trang_thai_tham_dinh === 'HOP_LE' ? 'badge-success' : 'badge-warning');
+                const stText = formatStatus(a.trang_thai_tham_dinh);
+                const selectedCls = (a.ma_giao_dich === currentSelectedTxId) ? 'selected' : '';
+                return `
+                    <tr class="row-selectable ${selectedCls}" data-tx-id="${a.ma_giao_dich}" onclick="loadTransactionDetail('${a.ma_giao_dich}')">
+                        <td class="mono">#${a.xep_hang_trong_ngay}</td>
+                        <td><code>${a.ma_giao_dich}</code></td>
+                        <td class="mono">${a.tai_khoan_nguon}</td>
+                        <td class="text-right mono">$${a.so_tien.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="text-right"><span class="badge ${riskBadge} mono">${(a.diem_rui_ro * 100).toFixed(2)}%</span></td>
+                        <td class="text-right mono">${a.do_tre_ms} ms</td>
+                        <td><span class="badge ${stBadge}">${stText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (currentSelectedTxId && alertsMapById[currentSelectedTxId]) {
+                renderTxBasicAndFactors(alertsMapById[currentSelectedTxId]);
+            }
+            return needInitialLoad && triggerDetailLoad;
+        }
+
         async function loadAlertsQueue(filter = currentQueueFilter, btnEl = null) {
             if (!btnEl && isQueuePolling) return;
             isQueuePolling = true;
@@ -1650,74 +1717,29 @@
                     try { sessionStorage.removeItem('selectedTxId'); } catch (e) {}
                 }
             }
+
+            // Hiển thị tức thì (0ms) dữ liệu cache trên trình duyệt khi vừa nhấn F5
+            if (Object.keys(alertsMapById).length === 0) {
+                try {
+                    const cachedRaw = sessionStorage.getItem('cachedQueueData_' + filter);
+                    if (cachedRaw) {
+                        renderAlertsPayload(JSON.parse(cachedRaw), false);
+                    }
+                } catch (e) {}
+            }
+
             try {
                 const res = await fetch(`/api/canh-bao?trang_thai=${filter}&limit=${currentQueueLimit}`);
                 const data = await res.json();
 
-                document.getElementById('unreadBadge').textContent = (data.unread_badge_count || 0).toLocaleString();
-                document.getElementById('kpiUnread').textContent = (data.unread_badge_count || 0).toLocaleString();
-                document.getElementById('kpiFraudConfirmed').textContent = (data.confirmed_fraud_count || 0).toLocaleString();
-                document.getElementById('kpiLegitConfirmed').textContent = (data.confirmed_legit_count || 0).toLocaleString();
+                try {
+                    const snapshot = Object.assign({}, data, { alerts: (data.alerts || []).slice(0, 200) });
+                    sessionStorage.setItem('cachedQueueData_' + filter, JSON.stringify(snapshot));
+                } catch (e) {}
 
-                const elMoi = document.getElementById('fltCountMoi');
-                const elGianLan = document.getElementById('fltCountGianLan');
-                const elHopLe = document.getElementById('fltCountHopLe');
-                const elTatCa = document.getElementById('fltCountTatCa');
-                if (elMoi) elMoi.textContent = (data.unread_badge_count || 0).toLocaleString();
-                if (elGianLan) elGianLan.textContent = (data.confirmed_fraud_count || 0).toLocaleString();
-                if (elHopLe) elHopLe.textContent = (data.confirmed_legit_count || 0).toLocaleString();
-                if (elTatCa) elTatCa.textContent = (data.total_alerts || 0).toLocaleString();
-
-                if (data.latency_stats) {
-                    document.getElementById('kpiLatencyP50P95').textContent =
-                        `${data.latency_stats.p50_ms} / ${data.latency_stats.p95_ms} ms`;
-                    document.getElementById('kpiLatencyP99').textContent =
-                        `${data.latency_stats.p99_ms} ms`;
-                }
-
-                const alerts = data.alerts || [];
-                alertsMapById = {};
-                alerts.forEach(a => { alertsMapById[a.ma_giao_dich] = a; });
-
-                const tbody = document.getElementById('alertsTableBody');
-                if (alerts.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--text-muted);">Không có giao dịch nào trong danh mục này.</td></tr>`;
-                    return;
-                }
-
-                // Restore saved transaction if available
-                const savedTxId = (function(){ try { return sessionStorage.getItem('selectedTxId'); } catch(e){ return null; } })();
-                let needInitialLoad = false;
-                if (savedTxId && alertsMapById[savedTxId]) {
-                    currentSelectedTxId = savedTxId;
-                    needInitialLoad = true;
-                } else if (!currentSelectedTxId || !alertsMapById[currentSelectedTxId]) {
-                    currentSelectedTxId = alerts[0].ma_giao_dich;
-                    needInitialLoad = true;
-                }
-
-                tbody.innerHTML = alerts.map(a => {
-                    const riskBadge = a.diem_rui_ro >= 0.75 ? 'badge-danger' : (a.diem_rui_ro >= 0.40 ? 'badge-warning' : 'badge-success');
-                    const stBadge = a.trang_thai_tham_dinh === 'GIAN_LAN' ? 'badge-danger' : (a.trang_thai_tham_dinh === 'HOP_LE' ? 'badge-success' : 'badge-warning');
-                    const stText = formatStatus(a.trang_thai_tham_dinh);
-                    const selectedCls = (a.ma_giao_dich === currentSelectedTxId) ? 'selected' : '';
-                    return `
-                        <tr class="row-selectable ${selectedCls}" data-tx-id="${a.ma_giao_dich}" onclick="loadTransactionDetail('${a.ma_giao_dich}')">
-                            <td class="mono">#${a.xep_hang_trong_ngay}</td>
-                            <td><code>${a.ma_giao_dich}</code></td>
-                            <td class="mono">${a.tai_khoan_nguon}</td>
-                            <td class="text-right mono">$${a.so_tien.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                            <td class="text-right"><span class="badge ${riskBadge} mono">${(a.diem_rui_ro * 100).toFixed(2)}%</span></td>
-                            <td class="text-right mono">${a.do_tre_ms} ms</td>
-                            <td><span class="badge ${stBadge}">${stText}</span></td>
-                        </tr>
-                    `;
-                }).join('');
-
-                if (needInitialLoad) {
+                const needInitialLoad = renderAlertsPayload(data, true);
+                if (needInitialLoad && currentSelectedTxId) {
                     await loadTransactionDetail(currentSelectedTxId);
-                } else if (currentSelectedTxId && alertsMapById[currentSelectedTxId]) {
-                    renderTxBasicAndFactors(alertsMapById[currentSelectedTxId]);
                 }
             } catch (err) {
                 console.error("Error loading alerts queue:", err);
