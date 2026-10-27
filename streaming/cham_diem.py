@@ -81,11 +81,11 @@ class RealTimeScoringEngine:
             except Exception:
                 self.model_path = base_v1_path
         if os.path.exists(self.model_path):
-            print(f"[ScoringEngine] Đang nạp PipelineModel ({self.model_version}) từ {self.model_path}...")
+            print(f"[ScoringEngine] Dang nap PipelineModel ({self.model_version}) tu {self.model_path}...")
             self.model = PipelineModel.load(self.model_path)
-            print(f"[ScoringEngine] Đã nạp mô hình {self.model_version} thành công.")
+            print(f"[ScoringEngine] Da nap mo hinh {self.model_version} thanh cong.")
         else:
-            print(f"[Warning] Chưa có mô hình tại {self.model_path}. Dùng cơ chế chấm điểm dự phòng.")
+            print(f"[Warning] Chua co mo hinh tai {self.model_path}. Dung co che cham diem du phong.")
 
     def _publish_alerts_to_kafka(self, alerts_pdf):
         """Pushes high-risk alerts from gold.diem_rui_ro to Kafka topic 'alerts'."""
@@ -129,7 +129,7 @@ class RealTimeScoringEngine:
 
         batch_start_time = time.time()
         record_count = batch_df.count()
-        print(f"\n[ScoringEngine] === BẮT ĐẦU XỬ LÝ MICRO-BATCH #{batch_id} ({record_count} giao dịch) ===")
+        print(f"\n[ScoringEngine] === BAT DAU XU LY MICRO-BATCH #{batch_id} ({record_count} giao dich) ===")
 
         log_pipeline_event(
             "Kafka Topic: transactions",
@@ -292,11 +292,11 @@ class RealTimeScoringEngine:
             "timestamp": datetime.datetime.now().isoformat()
         })
 
-        print(f"[ScoringEngine] Hoàn tất batch #{batch_id} trong {elapsed}s (Alerts phát Kafka: {alerts_sent}).")
+        print(f"[ScoringEngine] Hoan tat batch #{batch_id} trong {elapsed}s (Alerts phat Kafka: {alerts_sent}).")
 
     def start_streaming(self, trigger_interval="5 seconds"):
         """Starts real-time Structured Streaming pipeline with 1-minute watermark."""
-        print(f"[ScoringEngine] Khởi tạo luồng đọc Kafka '{KAFKA_TOPIC_TRANSACTIONS}' với Watermark 1 minute...")
+        print(f"[ScoringEngine] Khoi tao luong doc Kafka '{KAFKA_TOPIC_TRANSACTIONS}' voi Watermark 1 minute...")
         raw_stream = (
             self.spark.readStream.format("kafka")
             .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVERS)
@@ -330,8 +330,8 @@ if __name__ == "__main__":
     import argparse
     set_console_title("[CUA SO 2 - NHAN KAFKA & GHI BRONZE/GOLD] File: streaming/cham_diem.py")
     print("=" * 80)
-    print(" CỬA SỐ 2 — ĐANG CHẠY FILE: d:\\BigDaTa2\\streaming\\cham_diem.py")
-    print(" VAI TRÒ : Spark Streaming nhận Kafka -> Ghi Bronze -> Chấm điểm GBT -> Ghi Gold")
+    print(" CUA SO 2 - DANG CHAY FILE: d:\\BigDaTa2\\streaming\\cham_diem.py")
+    print(" VAI TRO : Spark Streaming nhan Kafka -> Ghi Bronze -> Cham diem GBT -> Ghi Gold")
     print("=" * 80)
     parser = argparse.ArgumentParser(description="Real-Time Fraud Scoring Engine")
     parser.add_argument("--turbo", action="store_true", help="Chạy với trigger 2 giây")

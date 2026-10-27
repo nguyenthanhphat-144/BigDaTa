@@ -1,5 +1,5 @@
 # ===============================================================================
-# KHOI DONG 4 CUA SO TERMINAL DOC LAP TU VSCODE HOAC POWERSHELL
+# KHOI DONG 4 CUA SO TERMINAL DOC LAP (NEN DEN - COMMAND PROMPT)
 # ===============================================================================
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 [Console]::InputEncoding = [System.Text.Encoding]::UTF8
@@ -10,10 +10,8 @@ $env:PYTHONIOENCODING = "utf-8"
 $projectDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $projectDir
 
-$utf8Preamble = "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; [Console]::InputEncoding = [System.Text.Encoding]::UTF8; `$OutputEncoding = [System.Text.Encoding]::UTF8; chcp 65001 | Out-Null; `$env:PYTHONIOENCODING = 'utf-8';"
-
 Write-Host "===============================================================================" -ForegroundColor Cyan
-Write-Host "   KHOI DONG HE THONG 4 CUA SO TERMINAL DOC LAP - FRAUD DETECTION" -ForegroundColor Yellow
+Write-Host "   KHOI DONG HE THONG 4 CUA SO TERMINAL NEN DEN - FRAUD DETECTION" -ForegroundColor Yellow
 Write-Host "===============================================================================" -ForegroundColor Cyan
 
 # 0. Kiem tra va giai nen tap du lieu neu can
@@ -46,24 +44,24 @@ if (Test-Path (Join-Path $projectDir "venv311\Scripts\python.exe")) {
 Write-Host "`n[0/4] Kiem tra cum Docker (Kafka, Zookeeper, HDFS)..." -ForegroundColor Green
 docker compose up -d
 
-# 4. Cua so 1: Web Server Flask
+# 4. Cua so 1: Web Server Flask (Nen den - color 0F)
 Write-Host "[1/4] Dang mo Cua so 1: WEB SERVER FLASK (http://127.0.0.1:5000)..." -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "$utf8Preamble `$Host.UI.RawUI.WindowTitle='CUA SO 1 - WEB FLASK SERVER (http://127.0.0.1:5000)'; Set-Location '$projectDir'; & '$pythonExe' web/app.py"
+Start-Process cmd -ArgumentList "/k", "title CUA SO 1 - WEB FLASK SERVER (http://127.0.0.1:5000) && color 0F && chcp 65001 >nul && cd /d `"$projectDir`" && `"$pythonExe`" web/app.py"
 Start-Sleep -Seconds 2
 
-# 5. Cua so 2: Spark Streaming Cham Diem
+# 5. Cua so 2: Spark Streaming Cham Diem (Nen den - color 0F)
 Write-Host "[2/4] Dang mo Cua so 2: SPARK STREAMING (cham_diem.py)..." -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "$utf8Preamble `$Host.UI.RawUI.WindowTitle='CUA SO 2 - SPARK STREAMING (cham_diem.py)'; Set-Location '$projectDir'; `$env:TEMP='$tmpDir'; `$env:TMP='$tmpDir'; & '$pythonExe' streaming/cham_diem.py --turbo"
+Start-Process cmd -ArgumentList "/k", "title CUA SO 2 - SPARK STREAMING (cham_diem.py) && color 0F && chcp 65001 >nul && cd /d `"$projectDir`" && set TEMP=$tmpDir && set TMP=$tmpDir && `"$pythonExe`" streaming/cham_diem.py --turbo"
 Start-Sleep -Seconds 3
 
-# 6. Cua so 3: Spark Stateful Cap Nhat Trang Thai
+# 6. Cua so 3: Spark Stateful Cap Nhat Trang Thai (Nen den - color 0F)
 Write-Host "[3/4] Dang mo Cua so 3: SPARK STATEFUL (cap_nhat_trang_thai.py)..." -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "$utf8Preamble `$Host.UI.RawUI.WindowTitle='CUA SO 3 - SPARK STATEFUL (cap_nhat_trang_thai.py)'; Set-Location '$projectDir'; `$env:TEMP='$tmpDir'; `$env:TMP='$tmpDir'; & '$pythonExe' streaming/cap_nhat_trang_thai.py --turbo"
+Start-Process cmd -ArgumentList "/k", "title CUA SO 3 - SPARK STATEFUL (cap_nhat_trang_thai.py) && color 0F && chcp 65001 >nul && cd /d `"$projectDir`" && set TEMP=$tmpDir && set TMP=$tmpDir && `"$pythonExe`" streaming/cap_nhat_trang_thai.py --turbo"
 Start-Sleep -Seconds 4
 
-# 7. Cua so 4: Kafka Producer Phat Giao Dich
+# 7. Cua so 4: Kafka Producer Phat Giao Dich (Nen den - color 0F)
 Write-Host "[4/4] Dang mo Cua so 4: KAFKA PRODUCER (generator.py)..." -ForegroundColor Green
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "$utf8Preamble `$Host.UI.RawUI.WindowTitle='CUA SO 4 - KAFKA PRODUCER (generator.py)'; Set-Location '$projectDir'; & '$pythonExe' -u data/generator.py"
+Start-Process cmd -ArgumentList "/k", "title CUA SO 4 - KAFKA PRODUCER (generator.py) && color 0F && chcp 65001 >nul && cd /d `"$projectDir`" && `"$pythonExe`" -u data/generator.py"
 
-Write-Host "`n[THANH CONG] Da bat 4 cua so terminal noi tren man hinh!" -ForegroundColor Yellow
+Write-Host "`n[THANH CONG] Da bat 4 cua so terminal nen den (Command Prompt) chuan dep!" -ForegroundColor Yellow
 Write-Host "Dia chi Web UI: http://127.0.0.1:5000" -ForegroundColor Cyan

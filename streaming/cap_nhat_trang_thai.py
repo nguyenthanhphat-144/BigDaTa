@@ -128,7 +128,7 @@ class CustomerStateUpdater:
         import time
         t0 = time.time()
         cnt = batch_df.count()
-        print(f"\n[CustomerState] >>> TIẾP NHẬN BATCH #{batch_id} ({cnt} giao dịch mới từ Kafka)...")
+        print(f"\n[CustomerState] >>> TIEP NHAN BATCH #{batch_id} ({cnt} giao dich moi tu Kafka)...")
         now_ts = F.current_timestamp()
 
         agg_new = batch_df.groupBy("tai_khoan_nguon").agg(
@@ -194,8 +194,8 @@ class CustomerStateUpdater:
             "timeout_policy": "GroupStateTimeout.ProcessingTimeTimeout (30 days)",
             "timestamp": datetime.datetime.now().isoformat()
         })
-        print(f"[CustomerState] MERGE hoàn tất thành công cho {updated_accounts} tài khoản trong {elapsed}s!")
-        print(f"[CustomerState] >>> Sẵn sàng lắng nghe đợt giao dịch tiếp theo từ Kafka...\n")
+        print(f"[CustomerState] MERGE hoan tat thanh cong cho {updated_accounts} tai khoan trong {elapsed}s!")
+        print(f"[CustomerState] >>> San sang lang nghe dot giao dich tiep theo tu Kafka...\n")
 
     def start_streaming(self, trigger_interval="10 seconds"):
         """Starts stateful Structured Streaming job reading Kafka transactions."""
@@ -232,17 +232,17 @@ if __name__ == "__main__":
     import argparse
     set_console_title("[CUA SO 3 - STATEFUL SILVER] File: streaming/cap_nhat_trang_thai.py")
     print("=" * 80)
-    print(" CỬA SỐ 3 — ĐANG CHẠY FILE: d:\\BigDaTa2\\streaming\\cap_nhat_trang_thai.py")
-    print(" VAI TRÒ : Stateful Streaming cập nhật trạng thái khách hàng (silver.trang_thai_khach_hang)")
+    print(" CUA SO 3 - DANG CHAY FILE: d:\\BigDaTa2\\streaming\\cap_nhat_trang_thai.py")
+    print(" VAI TRO : Stateful Streaming cap nhat trang thai khach hang (silver.trang_thai_khach_hang)")
     print("=" * 80)
     parser = argparse.ArgumentParser(description="Customer State Stateful Streaming")
-    parser.add_argument("--turbo", action="store_true", help="Chạy với trigger 3 giây")
-    parser.add_argument("--trigger", type=str, default=None, help="Chu kỳ trigger")
+    parser.add_argument("--turbo", action="store_true", help="Chay voi trigger 3 giay")
+    parser.add_argument("--trigger", type=str, default=None, help="Chu ky trigger")
     args = parser.parse_args()
 
     trig = args.trigger or ("3 seconds" if args.turbo else "5 seconds")
-    print(f"[CustomerState] Khởi động luồng streaming với trigger: {trig}...")
+    print(f"[CustomerState] Khoi dong luong streaming voi trigger: {trig}...")
     updater = CustomerStateUpdater()
     q = updater.start_streaming(trigger_interval=trig)
-    print(f"[CustomerState] Luồng đã kích hoạt. Sẵn sàng nhận thông điệp từ Kafka!\n")
+    print(f"[CustomerState] Luong da kich hoat. San sang nhan thong diep tu Kafka!\n")
     q.awaitTermination()

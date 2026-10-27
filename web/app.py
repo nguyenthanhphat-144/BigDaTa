@@ -1612,7 +1612,7 @@ def api_demo_drift_va_airflow():
 if __name__ == "__main__":
     set_console_title("[CUA SO 1 - WEB SERVER FLASK] File: web/app.py (http://127.0.0.1:5000)")
     print("=" * 80)
-    print(" CỬA SỐ 1 — ĐANG CHẠY FILE: d:\\BigDaTa2\\web\\app.py")
-    print(" VAI TRÒ : Flask Web Server & Giao diện Giám sát/Thẩm định (http://127.0.0.1:5000)")
+    print(" CUA SO 1 - DANG CHAY FILE: d:\\BigDaTa2\\web\\app.py")
+    print(" VAI TRO : Flask Web Server & Giao dien Giam sat/Tham dinh (http://127.0.0.1:5000)")
     print("=" * 80)
     app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)

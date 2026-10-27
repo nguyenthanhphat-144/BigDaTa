@@ -53,14 +53,14 @@ class TransactionGenerator:
             return
 
         if os.path.exists(self.csv_path):
-            print(f"[Generator] Đang nạp dữ liệu từ {self.csv_path}...")
+            print(f"[Generator] Dang nap du lieu tu {self.csv_path}...")
             df = pd.read_csv(self.csv_path)
             df["Amount"] = df["Amount"].apply(lambda x: max(float(x), 0.01))
             _GLOBAL_CREDITCARD_DF = df
             self.df = _GLOBAL_CREDITCARD_DF
-            print(f"[Generator] Đã nạp {len(self.df):,} dòng giao dịch từ creditcard.csv.")
+            print(f"[Generator] Da nap {len(self.df):,} dong giao dich tu creditcard.csv.")
         else:
-            print(f"[Warning] Không tìm thấy {self.csv_path}. Sẽ sinh dữ liệu giả lập.")
+            print(f"[Warning] Khong tim thay {self.csv_path}. Se sinh du lieu gia lap.")
 
     def build_transaction_record(self, row, current_time=None, simulate_out_of_order=True):
         """Builds a transaction record conforming to bronze.giao_dich & Kafka schema."""
@@ -126,14 +126,14 @@ class TransactionGenerator:
                     batch_size=batch_size,
                     request_timeout_ms=4000
                 )
-                print(f"[Generator] KẾT NỐI KAFKA THÀNH CÔNG tại {KAFKA_BOOTSTRAP_SERVERS}!")
+                print(f"[Generator] KET NOI KAFKA THANH CONG tai {KAFKA_BOOTSTRAP_SERVERS}!")
                 return p
             except Exception as e:
                 if not wait_forever:
                     raise
-                print(f"[CẢNH BÁO] Chưa kết nối được Kafka broker ({KAFKA_BOOTSTRAP_SERVERS})!")
-                print("  -> Vui lòng MỞ ỨNG DỤNG DOCKER DESKTOP để kích hoạt Kafka container.")
-                print("  -> Đang tự động kiểm tra lại sau 5 giây... (Nhấn Ctrl+C để dừng)\n")
+                print(f"[CANH BAO] Chua ket noi duoc Kafka broker ({KAFKA_BOOTSTRAP_SERVERS})!")
+                print("  -> Vui long kiem tra container Kafka trong Docker.")
+                print("  -> Dang tu dong kiem tra lai sau 5 giay... (Nhan Ctrl+C de dung)\n")
                 time.sleep(5)
 
     def stream_to_kafka(self, num_records=500, delay_sec=0.01, fraud_ratio=0.08, topic=KAFKA_TOPIC_TRANSACTIONS, wait_forever=False, verbose=False):
@@ -327,50 +327,50 @@ if __name__ == "__main__":
     import argparse
     set_console_title("[CUA SO 4 - KAFKA PRODUCER] Phat giao dich the vao Kafka")
     print("=" * 80)
-    print(" CỬA SỐ 4 — ĐANG CHẠY FILE: d:\\BigDaTa2\\data\\generator.py")
-    print(" VAI TRÒ : Bộ phát giao dịch thẻ trực tuyến (PaySim / creditcard.csv) vào Kafka")
+    print(" CUA SO 4 - DANG CHAY FILE: d:\\BigDaTa2\\data\\generator.py")
+    print(" VAI TRO : Bo phat giao dich the truc tuyen (PaySim / creditcard.csv) vao Kafka")
     print("=" * 80)
     parser = argparse.ArgumentParser(description="Kafka Transaction Generator (PaySim / ULB Credit Card)")
-    parser.add_argument("--turbo", action="store_true", help="Chạy tốc độ cao 300 tx/s")
-    parser.add_argument("--records", type=int, default=60, help="Số bản ghi phát mỗi đợt")
-    parser.add_argument("--tps", type=int, default=300, help="Tốc độ mục tiêu tx/s")
-    parser.add_argument("--auto", action="store_true", help="Tự động phát liên tục")
+    parser.add_argument("--turbo", action="store_true", help="Chay toc do cao 300 tx/s")
+    parser.add_argument("--records", type=int, default=60, help="So ban ghi phat moi dot")
+    parser.add_argument("--tps", type=int, default=300, help="Toc do muc tieu tx/s")
+    parser.add_argument("--auto", action="store_true", help="Tu dong phat lien tuc")
     args = parser.parse_args()
 
     gen = TransactionGenerator()
 
-    # Nếu truyền cờ --auto trực tiếp từ dòng lệnh
+    # Neu truyen co --auto truc tiep tu dong lenh
     if args.auto:
-        print("\n[CỬA SỐ 4] BẮT ĐẦU CHẾ ĐỘ PHÁT TỰ ĐỘNG LIÊN TỤC VÀO KAFKA...")
-        print(" (Để dừng phát, nhấn phím Ctrl + C bất cứ lúc nào)\n")
+        print("\n[CUA SO 4] BAT DAU CHE DO PHAT TU DONG LIEN TUC VAO KAFKA...")
+        print(" (De dung phat, nhan phim Ctrl + C bat cu luc nao)\n")
         batch_idx = 1
         while True:
             try:
-                print(f"\n>>> [ĐỢT {batch_idx}] Đang phát {args.records} giao dịch mới vào Kafka topic '{KAFKA_TOPIC_TRANSACTIONS}'...")
+                print(f"\n>>> [DOT {batch_idx}] Dang phat {args.records} giao dich moi vao Kafka topic '{KAFKA_TOPIC_TRANSACTIONS}'...")
                 res = gen.stream_to_kafka(num_records=args.records, delay_sec=0.03, wait_forever=True, verbose=True)
-                print(f">>> [ĐỢT {batch_idx} XONG] Đã gửi {res['total_sent']} GD | Gian lận: {res['fraud_count']} | Lệch thứ tự: {res['out_of_order_count']} | Tốc độ: {res['tps']} GD/s")
+                print(f">>> [DOT {batch_idx} XONG] Da gui {res['total_sent']} GD | Gian lan: {res['fraud_count']} | Lech thu tu: {res['out_of_order_count']} | Toc do: {res['tps']} GD/s")
                 batch_idx += 1
                 time.sleep(3)
             except KeyboardInterrupt:
-                print("\n[CỬA SỐ 4] Đã dừng phát giao dịch.")
+                print("\n[CUA SO 4] Da dung phat giao dich.")
                 break
     elif args.turbo:
-        print("\n[CỬA SỐ 4] BẮT ĐẦU CHẾ ĐỘ KIỂM THỬ TẢI CAO (TURBO 300 GD/giây)...")
+        print("\n[CUA SO 4] BAT DAU CHE DO KIEM THU TAI CAO (TURBO 300 GD/giay)...")
         res = gen.stream_to_kafka_turbo(target_tps=args.tps, total_records=args.records, wait_forever=True)
-        print(f">>> [TURBO XONG] Tổng gửi: {res['total_sent']} GD | Tốc độ: {res['tps']} GD/giây")
+        print(f">>> [TURBO XONG] Tong gui: {res['total_sent']} GD | Toc do: {res['tps']} GD/giay")
     else:
-        # BẢNG ĐIỀU KHIỂN TƯƠNG TÁC (DÀNH CHO BẢO VỆ ĐỒ ÁN)
+        # BANG DIEU KHIEN TUONG TAC (DANH CHO BAO VE DO AN)
         print("\n" + "=" * 80)
-        print(" [SẴN SÀNG] ĐÃ KẾT NỐI KAFKA BROKER (localhost:9092) — TOPIC: transactions")
-        print(" HƯỚNG DẪN ĐIỀU KHIỂN:")
-        print("   -> Nhấn [ENTER]        : Bắn 1 đợt (60 giao dịch) vào Kafka để kiểm thử")
-        print("   -> Nhập số (VD: 100)   : Bắn số lượng giao dịch tùy chọn")
-        print("   -> Nhập 'auto'         : Bật chế độ tự động bắn liên tục (3s một đợt)")
-        print("   -> Nhập 'turbo'        : Bật chế độ kiểm thử tải cao (300 GD/giây)")
-        print("   -> Nhập 'q'            : Thoát chương trình")
-        print(" (*) MẸO: Bạn cũng có thể bấm nút 'Mô phỏng phát giao dịch & Chấm điểm'")
-        print("          trực tiếp trên giao diện Web UI (http://127.0.0.1:5000)!")
-        print("          Cửa sổ 4 sẽ tự động nhận lệnh và hiển thị trực tiếp lên màn hình.")
+        print(" [SAN SANG] DA KET NOI KAFKA BROKER (localhost:9092) - TOPIC: transactions")
+        print(" HUONG DAN DIEU KHIEN:")
+        print("   -> Nhan [ENTER]        : Ban 1 dot (60 giao dich) vao Kafka de kiem thu")
+        print("   -> Nhap so (VD: 100)   : Ban so luong giao dich tuy chon")
+        print("   -> Nhap 'auto'         : Bat che do tu dong ban lien tuc (3s mot dot)")
+        print("   -> Nhap 'turbo'        : Bat che do kiem thu tai cao (300 GD/giay)")
+        print("   -> Nhap 'q'            : Thoat chuong trinh")
+        print(" (*) MEO: Ban cung co the bam nut 'Chay Buoc 01 -> 06: Phat giao dich & Cham diem'")
+        print("          truc tiep tren giao dien Web UI (http://127.0.0.1:5000)!")
+        print("          Cua so 4 se tu dong nhan lenh va hien thi truc tiep len man hinh.")
         print("=" * 80 + "\n")
 
         trigger_file = os.path.join(TMP_DIR, "web_trigger.json")
@@ -383,18 +383,18 @@ if __name__ == "__main__":
         batch_no = 1
         while True:
             try:
-                prompt_msg = f"[ĐỢT {batch_no}] Nhấn ENTER để phát 60 GD (hoặc gõ 'auto', 'turbo', 'q'): "
+                prompt_msg = f"[DOT {batch_no}] Nhan ENTER de phat 60 GD (hoac go 'auto', 'turbo', 'q'): "
                 action, payload = wait_console_or_web_trigger(prompt_msg, trigger_file)
 
                 if action == "trigger":
                     n_rec = int(payload.get("num_records", 60))
                     trig_id = payload.get("id", f"TRIG_{int(time.time()*1000)}")
                     print("\n" + "=" * 80)
-                    print(f" [TÍN HIỆU TỪ GIAO DIỆN WEB] Nhận lệnh từ nút bấm Web UI:")
-                    print(f" >>> Đang trực tiếp phát {n_rec} giao dịch vào Kafka topic '{KAFKA_TOPIC_TRANSACTIONS}'...")
+                    print(f" [TIN HIEU TU GIAO DIEN WEB] Nhan lenh tu nut bam Web UI:")
+                    print(f" >>> Dang truc tiep phat {n_rec} giao dich vao Kafka topic '{KAFKA_TOPIC_TRANSACTIONS}'...")
                     print("=" * 80)
                     res = gen.stream_to_kafka(num_records=n_rec, delay_sec=0.02, wait_forever=True, verbose=True)
-                    print(f">>> [ĐỢT {batch_no} XONG - TỪ WEB UI] Đã gửi {res['total_sent']} GD | Gian lận: {res['fraud_count']} | Lệch thứ tự: {res['out_of_order_count']} | Tốc độ: {res['tps']} GD/giây\n")
+                    print(f">>> [DOT {batch_no} XONG - TU WEB UI] Da gui {res['total_sent']} GD | Gian lan: {res['fraud_count']} | Lech thu tu: {res['out_of_order_count']} | Toc do: {res['tps']} GD/giay\n")
                     batch_no += 1
 
                     done_file = os.path.join(TMP_DIR, f"web_trigger_done_{trig_id}.json")
@@ -407,36 +407,36 @@ if __name__ == "__main__":
 
                 cmd = payload.lower()
                 if cmd in ("q", "exit", "quit"):
-                    print("\n[CỬA SỐ 4] Đã thoát chương trình phát giao dịch.")
+                    print("\n[CUA SO 4] Da thoat chuong trinh phat giao dich.")
                     break
                 elif cmd == "turbo":
-                    print(f"\n>>> [TURBO] Đang phát 600 giao dịch với tốc độ cao 300 GD/giây...")
+                    print(f"\n>>> [TURBO] Dang phat 600 giao dich voi toc do cao 300 GD/giay...")
                     res = gen.stream_to_kafka_turbo(target_tps=300, total_records=600, wait_forever=True)
-                    print(f">>> [HOÀN TẤT] Tổng gửi: {res['total_sent']} GD | Tốc độ: {res['tps']} GD/giây\n")
+                    print(f">>> [HOAN TAT] Tong gui: {res['total_sent']} GD | Toc do: {res['tps']} GD/giay\n")
                     batch_no += 1
                 elif cmd == "auto":
-                    print("\n>>> [CHẾ ĐỘ TỰ ĐỘNG] Đang bắn liên tục vào Kafka (Nhấn Ctrl+C để tạm dừng)...")
+                    print("\n>>> [CHE DO TU DONG] Dang ban lien tuc vao Kafka (Nhan Ctrl+C de tam dung)...")
                     sub_idx = 1
                     try:
                         while True:
-                            print(f"\n--- [Tự động - Lần {sub_idx}] Đang phát 60 giao dịch mới... ---")
+                            print(f"\n--- [Tu dong - Lan {sub_idx}] Dang phat 60 giao dich moi... ---")
                             res = gen.stream_to_kafka(num_records=60, delay_sec=0.02, wait_forever=True, verbose=True)
-                            print(f"--- Đã gửi {res['total_sent']} GD. Tạm nghỉ 3 giây... ---")
+                            print(f"--- Da gui {res['total_sent']} GD. Tam nghi 3 giay... ---")
                             sub_idx += 1
                             time.sleep(3)
                     except KeyboardInterrupt:
-                        print("\n>>> Đã tạm dừng chế độ tự động. Trở về bảng điều khiển thủ công.\n")
+                        print("\n>>> Da tam dung che do tu dong. Tro ve bang dieu khien thu cong.\n")
                     batch_no += sub_idx
                 else:
                     n_rec = 60
                     if cmd.isdigit():
                         n_rec = max(1, int(cmd))
-                    print(f"\n>>> Đang phát {n_rec} giao dịch thẻ vào Kafka topic '{KAFKA_TOPIC_TRANSACTIONS}'...")
+                    print(f"\n>>> Dang phat {n_rec} giao dich the vao Kafka topic '{KAFKA_TOPIC_TRANSACTIONS}'...")
                     res = gen.stream_to_kafka(num_records=n_rec, delay_sec=0.03, wait_forever=True, verbose=True)
-                    print(f">>> [ĐỢT {batch_no} XONG] Đã gửi {res['total_sent']} GD | Gian lận: {res['fraud_count']} | Lệch thứ tự: {res['out_of_order_count']} | Tốc độ: {res['tps']} GD/giây\n")
+                    print(f">>> [DOT {batch_no} XONG] Da gui {res['total_sent']} GD | Gian lan: {res['fraud_count']} | Lech thu tu: {res['out_of_order_count']} | Toc do: {res['tps']} GD/giay\n")
                     batch_no += 1
             except KeyboardInterrupt:
-                print("\n[CỬA SỐ 4] Đã dừng chương trình.")
+                print("\n[CUA SO 4] Da dung chuong trinh.")
                 break
             except Exception as err:
-                print(f"[CỬA SỐ 4 LỖI] {err}\n")
+                print(f"[CUA SO 4 LOI] {err}\n")
