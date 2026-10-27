@@ -94,8 +94,45 @@ def ensure_utf8_console():
             pass
 
 
-# Automatically configure console UTF-8 on load
+def ensure_hosts_file():
+    """Dynamically ensures local machine hostname and Docker container hosts resolve in hosts file."""
+    try:
+        hosts_path = os.path.join(BASE_DIR, "hosts")
+        local_host = socket.gethostname()
+        required_hosts = [
+            ("127.0.0.1", "localhost"),
+            ("127.0.0.1", "127.0.0.1"),
+            ("127.0.0.1", local_host),
+            ("127.0.0.1", "kafka"),
+            ("127.0.0.1", "namenode1"),
+            ("127.0.0.1", "datanode1"),
+            ("127.0.0.1", "datanode2"),
+            ("127.0.0.1", "datanode3"),
+        ]
+        existing_lines = []
+        if os.path.exists(hosts_path):
+            with open(hosts_path, "r", encoding="utf-8") as f:
+                existing_lines = [l.strip() for l in f if l.strip()]
+        seen = set()
+        new_lines = []
+        for line in existing_lines:
+            parts = line.split()
+            if len(parts) >= 2:
+                seen.add(parts[1])
+                new_lines.append(line)
+        for ip, host in required_hosts:
+            if host not in seen:
+                seen.add(host)
+                new_lines.append(f"{ip} {host}")
+        with open(hosts_path, "w", encoding="utf-8") as f:
+            f.write("\n".join(new_lines) + "\n")
+    except Exception:
+        pass
+
+
+# Automatically configure console UTF-8 and hosts resolution on load
 ensure_utf8_console()
+ensure_hosts_file()
 
 
 def set_console_title(title_text):
@@ -171,8 +208,7 @@ def get_spark_session(app_name="BD02_FraudDetection", master="local[*]", ui_port
         .config("spark.driver.port", "0")
         .config("spark.blockManager.port", "0")
         .config("spark.network.timeout", "800s")
-        .config("spark.executor.heartbeatInterval", "60s")
-        .config("spark.storage.blockManagerSlaveTimeoutMs", "800000")
+        .config("spark.executor.heartbeatInterval", "10s")
         .config("spark.port.maxRetries", "64")
         .config("spark.driver.extraJavaOptions", java_17_opts)
         .config("spark.executor.extraJavaOptions", java_17_opts)

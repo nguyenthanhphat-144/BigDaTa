@@ -1,5 +1,95 @@
 [
   {
+    "id": "EVT_1793117757778",
+    "timestamp": "2026-10-27 23:15:57.778",
+    "source": "Kafka Topic: transactions",
+    "target": "Spark Streaming: cham_diem.py",
+    "action": "Tiêu thụ Micro-batch #8 với withWatermark('thoi_diem', '1 minute')",
+    "details": "Số giao dịch trong batch: 120",
+    "count": 120,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793117756837",
+    "timestamp": "2026-10-27 23:15:56.837",
+    "source": "Bộ phát Kafka (creditcard.csv)",
+    "target": "Kafka Topic: transactions",
+    "action": "Phát 10 giao dịch (Step 1h=10s, Tốc độ 52.2 tx/s)",
+    "details": "Gian lận gốc: 3 | Giao dịch lệch thứ tự (Out-of-order <=30s): 4",
+    "count": 10,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793117267893",
+    "timestamp": "2026-10-27 23:07:47.893",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 47 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 48 giao dịch mới trong 4.57s",
+    "count": 47,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793117253192",
+    "timestamp": "2026-10-27 23:07:33.192",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 12 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 12 giao dịch mới trong 5.47s",
+    "count": 12,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793117249045",
+    "timestamp": "2026-10-27 23:07:29.045",
+    "source": "Bộ phát Kafka (creditcard.csv)",
+    "target": "Kafka Topic: transactions",
+    "action": "Phát 60 giao dịch (Step 1h=10s, Tốc độ 23.9 tx/s)",
+    "details": "Gian lận gốc: 13 | Giao dịch lệch thứ tự (Out-of-order <=30s): 13",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793117209666",
+    "timestamp": "2026-10-27 23:06:49.666",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 17 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 17 giao dịch mới trong 4.42s",
+    "count": 17,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793117195181",
+    "timestamp": "2026-10-27 23:06:35.181",
+    "source": "Spark Stateful: cap_nhat_trang_thai.py",
+    "target": "Delta Lake: silver.trang_thai_khach_hang",
+    "action": "Stateful MERGE trạng thái 41 tài khoản (Timeout 30d)",
+    "details": "Cập nhật cửa sổ trượt 1h/24h/7d/30d từ 43 giao dịch mới trong 15.3s",
+    "count": 41,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793117181703",
+    "timestamp": "2026-10-27 23:06:21.703",
+    "source": "Phân hệ Kiểm toán",
+    "target": "Truy xuất lịch sử dữ liệu (Phiên bản v0)",
+    "action": "Tái lập tập dữ liệu huấn luyện của Mô hình v1 (12,984 bản ghi)",
+    "details": "Đối chiếu khớp 100%: Độ chính xác Top 200 = 0.48 & PR-AUC = 0.8814",
+    "count": 12984,
+    "status": "SUCCESS"
+  },
+  {
+    "id": "EVT_1793117175737",
+    "timestamp": "2026-10-27 23:06:15.737",
+    "source": "Bộ phát Kafka (creditcard.csv)",
+    "target": "Kafka Topic: transactions",
+    "action": "Phát 60 giao dịch (Step 1h=10s, Tốc độ 22.2 tx/s)",
+    "details": "Gian lận gốc: 6 | Giao dịch lệch thứ tự (Out-of-order <=30s): 8",
+    "count": 60,
+    "status": "SUCCESS"
+  },
+  {
     "id": "EVT_1793116648559",
     "timestamp": "2026-10-27 22:57:28.559",
     "source": "Phân hệ Kiểm toán",

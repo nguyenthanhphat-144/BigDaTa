@@ -1,4 +1,6 @@
 127.0.0.1 localhost
+127.0.0.1 127.0.0.1
+127.0.0.1 LAPTOP-V1270HSV
 127.0.0.1 kafka
 127.0.0.1 namenode1
 127.0.0.1 datanode1
