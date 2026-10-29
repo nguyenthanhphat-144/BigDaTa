@@ -114,16 +114,17 @@ docker exec airflow airflow dags list-runs
 ## 📂 5. Danh Mục Hồ Sơ Minh Chứng & Giao Diện Đối Chiếu (Truy Cập Trực Tiếp)
 
 1. **Báo cáo chính thức (Tích hợp đầy đủ Code + Log + Ảnh + Git History)**: [`BigDaTa_nhom15.pdf`](BigDaTa_nhom15.pdf) và [`BigDaTa_nhom15.docx`](BigDaTa_nhom15.docx)
-2. **Gói hồ sơ nộp trọn bộ nén `.zip` dự phòng**: [`BigDaTa_nhom15_HoSoNop_DayDu.zip`](BigDaTa_nhom15_HoSoNop_DayDu.zip)
-3. **Nhật ký thực hiện & Đóng góp thành viên**: [`NHAT_KY_THUC_HIEN.md`](NHAT_KY_THUC_HIEN.md)
-4. **6 tệp log thực thi thật ([`docs/minh_chung/`](docs/minh_chung/))**:
+2. **Video Quay Màn Hình Demo Vận Hành Hệ Thống Thực Tế (`MP4`)**: [`Recording 2026-10-28 002535.mp4`](Recording%202026-10-28%20002535.mp4) *(Link tải trực tiếp tốc độ cao qua GitHub Release: [Tải Video Demo MP4](https://github.com/nguyenthanhphat-144/BigDaTa/releases/download/v2.0/Recording_2026-10-28_002535.mp4))*
+3. **Gói hồ sơ nộp trọn bộ nén `.zip` dự phòng**: [`BigDaTa_nhom15_HoSoNop_DayDu.zip`](BigDaTa_nhom15_HoSoNop_DayDu.zip)
+4. **Nhật ký thực hiện & Đóng góp thành viên**: [`NHAT_KY_THUC_HIEN.md`](NHAT_KY_THUC_HIEN.md)
+5. **6 tệp log thực thi thật ([`docs/minh_chung/`](docs/minh_chung/))**:
    - [`01_kiem_tra_hdfs.log`](docs/minh_chung/01_kiem_tra_hdfs.log): Kết quả `hdfs dfsadmin -report`, `hdfs dfs -du -h /lakehouse`, `hdfs dfs -ls -R /lakehouse`, `hdfs dfs -cat` và `hdfs fsck /lakehouse -files -blocks -locations` (`HEALTHY`, `replication=3`).
    - [`02_kafka_streaming.log`](docs/minh_chung/02_kafka_streaming.log): Chi tiết `kafka-topics.sh --describe`, bản tin mẫu `transactions`/`alerts` và `kafka-consumer-groups.sh --describe --all-groups`.
    - [`03_spark_lakehouse_queries.log`](docs/minh_chung/03_spark_lakehouse_queries.log): Kết quả Spark SQL đọc trực tiếp từ `hdfs://namenode1:9000/lakehouse/...`, `DESCRIBE HISTORY`, Time Travel (`VERSION AS OF 0`) và Change Data Feed (`readChangeFeed=true`).
    - [`04_ml_benchmarks.log`](docs/minh_chung/04_ml_benchmarks.log): Bảng đối sánh 6 mô hình ML, Top 12 đặc trưng quan trọng và lịch sử Model Registry trên HDFS.
    - [`05_acceptance_tests.log`](docs/minh_chung/05_acceptance_tests.log): Log chạy `tests/test_acceptance.py` vượt qua 100% tất cả bài kiểm thử nghiệm thu (`7/7 OK`).
    - [`06_airflow_dag_pipeline.log`](docs/minh_chung/06_airflow_dag_pipeline.log): Kết quả chạy thật 4 DAG trong container Apache Airflow (`airflow dags list-runs` + task logs `SUCCESS`).
-5. **Bộ 10 ảnh chụp giao diện thực tế ([`docs/screenshots/`](docs/screenshots/))**:
+6. **Bộ 10 ảnh chụp giao diện thực tế ([`docs/screenshots/`](docs/screenshots/))**:
    - [`00_so_do_kien_truc_5_tang.png`](docs/screenshots/00_so_do_kien_truc_5_tang.png): Sơ đồ kiến trúc 5 tầng của hệ thống.
    - [`01_pipeline_tong_quan.png`](docs/screenshots/01_pipeline_tong_quan.png): Giao diện Flask Dashboard tổng quan & trạng thái cụm HDFS 3 DataNodes.
    - [`02_hang_doi_canh_bao_va_tham_dinh.png`](docs/screenshots/02_hang_doi_canh_bao_va_tham_dinh.png): Hàng đợi cảnh báo rủi ro cao, XAI Top 3 & bàn thẩm định Human-in-the-Loop.
