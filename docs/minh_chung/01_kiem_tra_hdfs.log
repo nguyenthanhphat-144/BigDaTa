@@ -1,0 +1,759 @@
+================================================================================================
+MINH CHỨNG 01: KIỂM TRA HẠ TẦNG CỤM HADOOP HDFS (1 NAMENODE + 3 DATANODES, REPLICATION=3)
+Thời điểm trích xuất: 2026-10-29 14:07:06
+================================================================================================
+
+$ docker exec namenode1 hdfs dfsadmin -report
+Configured Capacity: 3243303530496 (2.95 TB)
+Present Capacity: 3052742083189 (2.78 TB)
+DFS Remaining: 3052246933504 (2.78 TB)
+DFS Used: 495149685 (472.21 MB)
+DFS Used%: 0.02%
+Replicated Blocks:
+	Under replicated blocks: 0
+	Blocks with corrupt replicas: 0
+	Missing blocks: 0
+	Missing blocks (with replication factor 1): 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+Erasure Coded Block Groups: 
+	Low redundancy block groups: 0
+	Block groups with corrupt internal blocks: 0
+	Missing block groups: 0
+	Low redundancy blocks with highest priority to recover: 0
+	Pending deletion blocks: 0
+
+-------------------------------------------------
+Live datanodes (3):
+
+Name: 172.19.0.5:9876 (datanode2.bigdata2_default)
+Hostname: datanode2
+Decommission Status : Normal
+Configured Capacity: 1081101176832 (1006.85 GB)
+DFS Used: 165164231 (157.51 MB)
+Non DFS Used: 8528001849 (7.94 GB)
+DFS Remaining: 1017415655424 (947.54 GB)
+DFS Used%: 0.02%
+DFS Remaining%: 94.11%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 1
+Last contact: Thu Oct 29 07:07:06 UTC 2026
+Last Block Report: Thu Oct 29 06:32:04 UTC 2026
+Num of Blocks: 210
+
+
+Name: 172.19.0.6:9886 (datanode3.bigdata2_default)
+Hostname: datanode3
+Decommission Status : Normal
+Configured Capacity: 1081101176832 (1006.85 GB)
+DFS Used: 165114521 (157.47 MB)
+Non DFS Used: 8528084327 (7.94 GB)
+DFS Remaining: 1017415622656 (947.54 GB)
+DFS Used%: 0.02%
+DFS Remaining%: 94.11%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 1
+Last contact: Thu Oct 29 07:07:08 UTC 2026
+Last Block Report: Thu Oct 29 06:32:02 UTC 2026
+Num of Blocks: 210
+
+
+Name: 172.19.0.8:9866 (datanode1.bigdata2_default)
+Hostname: datanode1
+Decommission Status : Normal
+Configured Capacity: 1081101176832 (1006.85 GB)
+DFS Used: 164870933 (157.23 MB)
+Non DFS Used: 8528295147 (7.94 GB)
+DFS Remaining: 1017415655424 (947.54 GB)
+DFS Used%: 0.02%
+DFS Remaining%: 94.11%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+Xceivers: 1
+Last contact: Thu Oct 29 07:07:07 UTC 2026
+Last Block Report: Thu Oct 29 06:32:04 UTC 2026
+Num of Blocks: 210
+
+$ docker exec namenode1 hdfs dfs -du -h /lakehouse
+12.0 K   36.1 K   /lakehouse/_audit
+2.2 K    6.7 K    /lakehouse/_checkpoints
+30.9 K   92.7 K   /lakehouse/_quarantine
+828.5 K  2.4 M    /lakehouse/bronze
+429.7 K  1.3 M    /lakehouse/gold
+51.1 K   153.4 K  /lakehouse/models
+143.8 M  431.5 M  /lakehouse/raw
+9.9 M    29.7 M   /lakehouse/silver
+0        0        /lakehouse/warehouse
+
+$ docker exec namenode1 hdfs dfs -ls -R /lakehouse
+drwxr-xr-x   - root  supergroup          0 2026-10-29 07:06 /lakehouse/_audit
+drwxr-xr-x   - root  supergroup          0 2026-10-29 07:03 /lakehouse/_audit/audit
+-rw-r--r--   3 root  supergroup       1243 2026-10-29 07:03 /lakehouse/_audit/audit/bootstrap_summary.json
+drwxr-xr-x   - root  supergroup          0 2026-10-29 06:58 /lakehouse/_audit/bronze
+-rw-r--r--   3 root  supergroup        162 2026-10-29 06:58 /lakehouse/_audit/bronze/schema_metadata.json
+drwxr-xr-x   - root  supergroup          0 2026-10-29 07:06 /lakehouse/_audit/gold
+-rw-r--r--   3 root  supergroup        170 2026-10-29 07:05 /lakehouse/_audit/gold/batch_0_summary.json
+-rw-r--r--   3 root  supergroup        167 2026-10-29 07:05 /lakehouse/_audit/gold/batch_1_summary.json
+-rw-r--r--   3 root  supergroup        168 2026-10-29 07:05 /lakehouse/_audit/gold/batch_2_summary.json
+-rw-r--r--   3 root  supergroup       1428 2026-10-29 07:06 /lakehouse/_audit/gold/drift_latest.json
+-rw-r--r--   3 root  supergroup        144 2026-10-29 06:58 /lakehouse/_audit/gold/schema_metadata.json
+drwxr-xr-x   - root  supergroup          0 2026-10-29 07:06 /lakehouse/_audit/maintenance
+-rw-r--r--   3 root  supergroup        284 2026-10-29 07:06 /lakehouse/_audit/maintenance/zorder_latest.json
+drwxr-xr-x   - root  supergroup          0 2026-10-29 07:06 /lakehouse/_audit/models
+-rw-r--r--   3 root  supergroup        191 2026-10-29 07:06 /lakehouse/_audit/models/airflow_model_v2_evaluation.json
+-rw-r--r--   3 root  supergroup        194 2026-10-29 06:43 /lakehouse/_audit/models/airflow_model_v4_evaluation.json
+-rw-r--r--   3 root  supergroup       6976 2026-10-29 07:00 /lakehouse/_audit/models/model_v1_metadata.json
+-rw-r--r--   3 root  supergroup        262 2026-10-29 07:06 /lakehouse/_audit/models/model_v2_retrain_audit.json
+drwxr-xr-x   - root  supergroup          0 2026-10-29 07:02 /lakehouse/_audit/silver
+-rw-r--r--   3 root  supergroup        101 2026-10-29 07:02 /lakehouse/_audit/silver/hygiene_report.json
+-rw-r--r--   3 root  supergroup        168 2026-10-29 06:58 /lakehouse/_audit/silver/schema_metadata.json
+-rw-r--r--   3 root  supergroup        164 2026-10-29 07:01 /lakehouse/_audit/silver/state_batch_1.json
+-rw-r--r--   3 root  supergroup        169 2026-10-29 06:40 /lakehouse/_audit/silver/training_snapshot_v0.json
+-rw-r--r--   3 root  supergroup        169 2026-10-29 06:51 /lakehouse/_audit/silver/training_snapshot_v1.json
+-rw-r--r--   3 root  supergroup        169 2026-10-29 06:59 /lakehouse/_audit/silver/training_snapshot_v2.json
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:04 /lakehouse/_checkpoints
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:04 /lakehouse/_checkpoints/cham_diem
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:05 /lakehouse/_checkpoints/cham_diem/commits
+-rw-r--r--   3 Admin supergroup         41 2026-10-29 07:05 /lakehouse/_checkpoints/cham_diem/commits/0
+-rw-r--r--   3 Admin supergroup         41 2026-10-29 07:05 /lakehouse/_checkpoints/cham_diem/commits/1
+-rw-r--r--   3 Admin supergroup         41 2026-10-29 07:05 /lakehouse/_checkpoints/cham_diem/commits/2
+-rw-r--r--   3 Admin supergroup         45 2026-10-29 07:04 /lakehouse/_checkpoints/cham_diem/metadata
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:05 /lakehouse/_checkpoints/cham_diem/offsets
+-rw-r--r--   3 Admin supergroup        681 2026-10-29 07:04 /lakehouse/_checkpoints/cham_diem/offsets/0
+-rw-r--r--   3 Admin supergroup        693 2026-10-29 07:05 /lakehouse/_checkpoints/cham_diem/offsets/1
+-rw-r--r--   3 Admin supergroup        693 2026-10-29 07:05 /lakehouse/_checkpoints/cham_diem/offsets/2
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:04 /lakehouse/_checkpoints/cham_diem/sources
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:04 /lakehouse/_checkpoints/cham_diem/sources/0
+-rw-r--r--   3 Admin supergroup         40 2026-10-29 07:04 /lakehouse/_checkpoints/cham_diem/sources/0/0
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:02 /lakehouse/_quarantine
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:02 /lakehouse/_quarantine/_delta_log
+-rw-r--r--   3 Admin supergroup       7995 2026-10-29 07:02 /lakehouse/_quarantine/_delta_log/00000000000000000000.json
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:02 /lakehouse/_quarantine/_delta_log/_commits
+-rw-r--r--   3 Admin supergroup      11880 2026-10-29 07:02 /lakehouse/_quarantine/part-00000-335d6ecb-5108-42b1-aa05-6db9366d6f84-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      11755 2026-10-29 07:02 /lakehouse/_quarantine/part-00002-ba710410-6e71-4824-9b32-c4d1db4e3af5-c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:35 /lakehouse/bronze
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:01 /lakehouse/bronze/giao_dich
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:05 /lakehouse/bronze/giao_dich/_delta_log
+-rw-r--r--   3 Admin supergroup       3940 2026-10-29 06:35 /lakehouse/bronze/giao_dich/_delta_log/00000000000000000000.json
+-rw-r--r--   3 Admin supergroup       3899 2026-10-29 06:35 /lakehouse/bronze/giao_dich/_delta_log/00000000000000000001.json
+-rw-r--r--   3 Admin supergroup       2887 2026-10-29 07:01 /lakehouse/bronze/giao_dich/_delta_log/00000000000000000002.json
+-rw-r--r--   3 Admin supergroup       8394 2026-10-29 07:02 /lakehouse/bronze/giao_dich/_delta_log/00000000000000000003.json
+-rw-r--r--   3 Admin supergroup       4469 2026-10-29 07:03 /lakehouse/bronze/giao_dich/_delta_log/00000000000000000004.json
+-rw-r--r--   3 Admin supergroup       7898 2026-10-29 07:04 /lakehouse/bronze/giao_dich/_delta_log/00000000000000000005.json
+-rw-r--r--   3 Admin supergroup       7904 2026-10-29 07:05 /lakehouse/bronze/giao_dich/_delta_log/00000000000000000006.json
+-rw-r--r--   3 Admin supergroup       7900 2026-10-29 07:05 /lakehouse/bronze/giao_dich/_delta_log/00000000000000000007.json
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:35 /lakehouse/bronze/giao_dich/_delta_log/_commits
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:05 /lakehouse/bronze/giao_dich/ngay=2026-10-29
+-rw-r--r--   3 Admin supergroup      11212 2026-10-29 07:02 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-01bc6cae-0160-46d9-adbc-2b996d04a917.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup     162260 2026-10-29 07:01 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-2b3da93f-5573-497c-a41f-f788166069e2.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      22773 2026-10-29 07:05 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-822524b5-95d1-41c8-ba63-f1c7d1407c9c.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup     163376 2026-10-29 07:03 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-a1f1beb4-2249-48cb-b095-bd52917858c3.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup     102430 2026-10-29 07:04 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-e757f0e5-ec0c-4cd8-9ec1-af643ff5860d.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      18089 2026-10-29 07:05 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-fb088b7d-3111-4215-80bb-f7ff8cd30d34.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup     101777 2026-10-29 07:04 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00001-0fd5eb4c-178c-41b2-ad07-c9adad834ec7.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      18392 2026-10-29 07:05 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00001-401d3742-0502-4257-b618-1ede77d40d54.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      20900 2026-10-29 07:05 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00001-7fb70be1-b4ed-4f8a-97a9-944df910d3fe.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      11212 2026-10-29 07:02 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00001-d8c74e5d-5467-4653-b30b-fc028341b8dd.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      23710 2026-10-29 07:05 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00002-3342e02a-536c-4c80-9bf3-2896b99b91a7.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      11137 2026-10-29 07:02 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00002-4f395629-8c02-4cf4-8f37-68a770309f40.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      19733 2026-10-29 07:05 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00002-ba6f577e-bf09-488c-b693-c9f8667cba09.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup     102835 2026-10-29 07:04 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00002-e4bbd14c-08c2-4689-9531-3e6e493f6316.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      11255 2026-10-29 07:02 /lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00003-28de868d-b2f6-444a-bcb2-cbd6aff82bd3.c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:36 /lakehouse/gold
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/_change_data
+-rw-r--r--   3 Admin supergroup       6330 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-210df8ba-7edd-4744-a60d-bcabc1d36880.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       6258 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-4d6c7005-5776-4dd8-98bc-fdacb906b017.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       6274 2026-10-29 07:01 /lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-b38ec061-5229-4633-8207-fe3b31169275.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       6274 2026-10-29 07:01 /lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-e8e64884-6c13-484e-90d7-4f566a64f253.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       6290 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-f6ac08fd-4b6d-4c22-a43c-6c7cc10c9f80.c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/_delta_log
+-rw-r--r--   3 Admin supergroup       2210 2026-10-29 06:36 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000000.json
+-rw-r--r--   3 Admin supergroup       2141 2026-10-29 06:36 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000001.json
+-rw-r--r--   3 Admin supergroup       1821 2026-10-29 07:01 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000002.json
+-rw-r--r--   3 Admin supergroup       2914 2026-10-29 07:01 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000003.json
+-rw-r--r--   3 Admin supergroup       2914 2026-10-29 07:01 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000004.json
+-rw-r--r--   3 Admin supergroup       2913 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000005.json
+-rw-r--r--   3 Admin supergroup       2914 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000006.json
+-rw-r--r--   3 Admin supergroup       2911 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000007.json
+-rw-r--r--   3 Admin supergroup       1821 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000008.json
+-rw-r--r--   3 Admin supergroup       1818 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000009.json
+-rw-r--r--   3 Admin supergroup      25518 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000010.checkpoint.parquet
+-rw-r--r--   3 Admin supergroup       1823 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000010.json
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:36 /lakehouse/gold/diem_rui_ro/_delta_log/_commits
+-rw-r--r--   3 Admin supergroup       4796 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/_delta_log/_last_checkpoint
+-rw-r--r--   3 Admin supergroup       2034 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/part-00000-03e6ed8b-07bd-42aa-900f-d3d1867c36c0-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       2004 2026-10-29 06:36 /lakehouse/gold/diem_rui_ro/part-00000-0821ce18-1caa-49d7-9c54-f2beb8676d65-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      38984 2026-10-29 07:01 /lakehouse/gold/diem_rui_ro/part-00000-1bd13e19-5d45-4f48-ae67-0986bfa906a3.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       2034 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/part-00000-43e5b6c8-c4f8-4b7d-b692-10010a97fe4d-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      38948 2026-10-29 07:01 /lakehouse/gold/diem_rui_ro/part-00000-89b8b499-f68c-46ca-8944-a16c9b09563b-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      38985 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/part-00000-bb3f745e-b2e9-4ce2-bdfa-4a68b5a1c079.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      38979 2026-10-29 07:01 /lakehouse/gold/diem_rui_ro/part-00000-c56a1bca-8eb4-43f6-b477-e485649d12e6.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      39001 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/part-00000-d86c0d72-5b9d-4b63-86ea-b1105ed384f1.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       2034 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/part-00000-e3ca9962-db1b-4898-8ff8-3517e37ad1ac-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      38986 2026-10-29 07:02 /lakehouse/gold/diem_rui_ro/part-00000-ea907f91-6f20-44b1-b063-f9ff1da6f60f.c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      61530 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/part-00001-5b8e827b-8793-439c-a2ae-293a5e523f3d-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      11268 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/part-00001-c404e9c7-3b37-48d1-8ca0-1f80e8d973d6-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      14160 2026-10-29 07:05 /lakehouse/gold/diem_rui_ro/part-00001-f398bd9a-5bc1-429a-ae86-0cd627bb30ea-c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:06 /lakehouse/gold/theo_doi_drift
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:06 /lakehouse/gold/theo_doi_drift/_delta_log
+-rw-r--r--   3 Admin supergroup       1059 2026-10-29 06:36 /lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000000.json
+-rw-r--r--   3 root  supergroup        285 2026-10-29 07:00 /lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000001.json
+-rw-r--r--   3 Admin supergroup       2782 2026-10-29 07:02 /lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000002.json
+-rw-r--r--   3 root  supergroup        285 2026-10-29 07:06 /lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000003.json
+-rw-r--r--   3 root  supergroup        321 2026-10-29 07:06 /lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000004.json
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:36 /lakehouse/gold/theo_doi_drift/_delta_log/_commits
+-rw-r--r--   3 root  supergroup       3905 2026-10-29 07:00 /lakehouse/gold/theo_doi_drift/part-00000-af1e17ec-15b9-4545-919c-fbe685ad0408-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       1614 2026-10-29 07:02 /lakehouse/gold/theo_doi_drift/part-00000-b121e89c-dc94-4832-b0dd-a0ccb0b00f1b-c000.snappy.parquet
+-rw-r--r--   3 root  supergroup       3573 2026-10-29 07:06 /lakehouse/gold/theo_doi_drift/part-00000-d3f1cff2-3843-48cf-adb1-1a0a214e80df-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup        659 2026-10-29 06:36 /lakehouse/gold/theo_doi_drift/part-00000-e5b13222-d68a-4d20-93f0-67553afaf1e2-c000.snappy.parquet
+-rw-r--r--   3 root  supergroup       3905 2026-10-29 07:06 /lakehouse/gold/theo_doi_drift/part-00000-feb6d12c-0a37-4958-9ca0-322596abcc2d-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       1552 2026-10-29 07:02 /lakehouse/gold/theo_doi_drift/part-00001-0bd16f4e-9aca-411b-869f-b4fe3b9d6f71-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       1549 2026-10-29 07:02 /lakehouse/gold/theo_doi_drift/part-00002-51030a56-e69d-4144-bbe3-ac8c129b09ec-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       1616 2026-10-29 07:02 /lakehouse/gold/theo_doi_drift/part-00003-4e0b260e-6d14-47be-88a8-cbf35b92b4f1-c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/metadata
+-rw-r--r--   3 Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/metadata/_SUCCESS
+-rw-r--r--   3 Admin supergroup        247 2026-10-29 07:00 /lakehouse/models/model_v1/metadata/part-00000
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/0_VectorAssembler_02e22023e444
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/0_VectorAssembler_02e22023e444/metadata
+-rw-r--r--   3 Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/0_VectorAssembler_02e22023e444/metadata/_SUCCESS
+-rw-r--r--   3 Admin supergroup        547 2026-10-29 07:00 /lakehouse/models/model_v1/stages/0_VectorAssembler_02e22023e444/metadata/part-00000
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/data
+-rw-r--r--   3 Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/data/_SUCCESS
+-rw-r--r--   3 Admin supergroup      45399 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/data/part-00000-4612c97f-f7fc-489f-8859-12953e7fe36f-c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/metadata
+-rw-r--r--   3 Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/metadata/_SUCCESS
+-rw-r--r--   3 Admin supergroup        802 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/metadata/part-00000
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/treesMetadata
+-rw-r--r--   3 Admin supergroup          0 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/treesMetadata/_SUCCESS
+-rw-r--r--   3 Admin supergroup       5381 2026-10-29 07:00 /lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/treesMetadata/part-00000-ed29bc4a-3e0b-416f-b4f8-839cac099d0a-c000.snappy.parquet
+drwxr-xr-x   - root  supergroup          0 2026-10-29 06:34 /lakehouse/raw
+-rw-r--r--   3 root  supergroup  150828752 2026-10-29 06:34 /lakehouse/raw/creditcard.csv
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:40 /lakehouse/silver
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:02 /lakehouse/silver/ket_luan_tham_dinh
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:02 /lakehouse/silver/ket_luan_tham_dinh/_delta_log
+-rw-r--r--   3 Admin supergroup       1172 2026-10-29 06:36 /lakehouse/silver/ket_luan_tham_dinh/_delta_log/00000000000000000000.json
+-rw-r--r--   3 Admin supergroup       3648 2026-10-29 07:02 /lakehouse/silver/ket_luan_tham_dinh/_delta_log/00000000000000000001.json
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:36 /lakehouse/silver/ket_luan_tham_dinh/_delta_log/_commits
+-rw-r--r--   3 Admin supergroup       2376 2026-10-29 07:02 /lakehouse/silver/ket_luan_tham_dinh/part-00000-b36c99fa-08b8-4be0-ba20-59389b2553c2-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup        806 2026-10-29 06:36 /lakehouse/silver/ket_luan_tham_dinh/part-00000-fea9cbc7-525a-40b6-b2db-0729b4f943f3-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       2375 2026-10-29 07:02 /lakehouse/silver/ket_luan_tham_dinh/part-00001-b08ccfdb-e6b5-4ffa-9366-a26c1960df93-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       2376 2026-10-29 07:02 /lakehouse/silver/ket_luan_tham_dinh/part-00002-fa373d11-1bf9-485d-a4ad-7def0c781c49-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup       2225 2026-10-29 07:02 /lakehouse/silver/ket_luan_tham_dinh/part-00003-5372a3e6-68c5-4dd5-be97-5f30a2cf171f-c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:58 /lakehouse/silver/tap_huan_luyen
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:59 /lakehouse/silver/tap_huan_luyen/_delta_log
+-rw-r--r--   3 Admin supergroup       8580 2026-10-29 06:40 /lakehouse/silver/tap_huan_luyen/_delta_log/00000000000000000000.json
+-rw-r--r--   3 Admin supergroup       5372 2026-10-29 06:51 /lakehouse/silver/tap_huan_luyen/_delta_log/00000000000000000001.json
+-rw-r--r--   3 Admin supergroup       5372 2026-10-29 06:59 /lakehouse/silver/tap_huan_luyen/_delta_log/00000000000000000002.json
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:40 /lakehouse/silver/tap_huan_luyen/_delta_log/_commits
+-rw-r--r--   3 Admin supergroup    1823136 2026-10-29 06:51 /lakehouse/silver/tap_huan_luyen/part-00000-28bd35e4-578f-40d7-b7ab-9b43da2c8c94-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup    1823136 2026-10-29 06:40 /lakehouse/silver/tap_huan_luyen/part-00000-2926d59c-f6fb-42f6-a0f5-26908fd962a1-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup    1823136 2026-10-29 06:59 /lakehouse/silver/tap_huan_luyen/part-00000-6e642065-6f07-4d23-b1e3-9d0db9960c2d-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup    1618233 2026-10-29 06:59 /lakehouse/silver/tap_huan_luyen/part-00001-1b416380-dbc2-415c-aab0-0b5e6d12a899-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup    1618233 2026-10-29 06:40 /lakehouse/silver/tap_huan_luyen/part-00001-41a8d3f8-77d7-4767-9e2f-b9f998863187-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup    1618233 2026-10-29 06:51 /lakehouse/silver/tap_huan_luyen/part-00001-6673b538-bc41-4688-a0ba-05aa1f97148b-c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:01 /lakehouse/silver/trang_thai_khach_hang
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 07:01 /lakehouse/silver/trang_thai_khach_hang/_delta_log
+-rw-r--r--   3 Admin supergroup       1666 2026-10-29 06:36 /lakehouse/silver/trang_thai_khach_hang/_delta_log/00000000000000000000.json
+-rw-r--r--   3 Admin supergroup       2177 2026-10-29 07:01 /lakehouse/silver/trang_thai_khach_hang/_delta_log/00000000000000000001.json
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:36 /lakehouse/silver/trang_thai_khach_hang/_delta_log/_commits
+-rw-r--r--   3 Admin supergroup       1378 2026-10-29 06:36 /lakehouse/silver/trang_thai_khach_hang/part-00000-8f93a83a-f957-4191-acfe-20f0030a3bfa-c000.snappy.parquet
+-rw-r--r--   3 Admin supergroup      22805 2026-10-29 07:01 /lakehouse/silver/trang_thai_khach_hang/part-00000-d68a2510-ecbe-4ed6-bb9a-006946754ed4-c000.snappy.parquet
+drwxr-xr-x   - Admin supergroup          0 2026-10-29 06:35 /lakehouse/warehouse
+
+$ docker exec namenode1 sh -c "hdfs dfs -cat /lakehouse/raw/creditcard.csv | head -n 6"
+"Time","V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13","V14","V15","V16","V17","V18","V19","V20","V21","V22","V23","V24","V25","V26","V27","V28","Amount","Class"
+0,-1.3598071336738,-0.0727811733098497,2.53634673796914,1.37815522427443,-0.338320769942518,0.462387777762292,0.239598554061257,0.0986979012610507,0.363786969611213,0.0907941719789316,-0.551599533260813,-0.617800855762348,-0.991389847235408,-0.311169353699879,1.46817697209427,-0.470400525259478,0.207971241929242,0.0257905801985591,0.403992960255733,0.251412098239705,-0.018306777944153,0.277837575558899,-0.110473910188767,0.0669280749146731,0.128539358273528,-0.189114843888824,0.133558376740387,-0.0210530534538215,149.62,"0"
+0,1.19185711131486,0.26615071205963,0.16648011335321,0.448154078460911,0.0600176492822243,-0.0823608088155687,-0.0788029833323113,0.0851016549148104,-0.255425128109186,-0.166974414004614,1.61272666105479,1.06523531137287,0.48909501589608,-0.143772296441519,0.635558093258208,0.463917041022171,-0.114804663102346,-0.183361270123994,-0.145783041325259,-0.0690831352230203,-0.225775248033138,-0.638671952771851,0.101288021253234,-0.339846475529127,0.167170404418143,0.125894532368176,-0.00898309914322813,0.0147241691924927,2.69,"0"
+1,-1.35835406159823,-1.34016307473609,1.77320934263119,0.379779593034328,-0.503198133318193,1.80049938079263,0.791460956450422,0.247675786588991,-1.51465432260583,0.207642865216696,0.624501459424895,0.066083685268831,0.717292731410831,-0.165945922763554,2.34586494901581,-2.89008319444231,1.10996937869599,-0.121359313195888,-2.26185709530414,0.524979725224404,0.247998153469754,0.771679401917229,0.909412262347719,-0.689280956490685,-0.327641833735251,-0.139096571514147,-0.0553527940384261,-0.0597518405929204,378.66,"0"
+1,-0.966271711572087,-0.185226008082898,1.79299333957872,-0.863291275036453,-0.0103088796030823,1.24720316752486,0.23760893977178,0.377435874652262,-1.38702406270197,-0.0549519224713749,-0.226487263835401,0.178228225877303,0.507756869957169,-0.28792374549456,-0.631418117709045,-1.0596472454325,-0.684092786345479,1.96577500349538,-1.2326219700892,-0.208037781160366,-0.108300452035545,0.00527359678253453,-0.190320518742841,-1.17557533186321,0.647376034602038,-0.221928844458407,0.0627228487293033,0.0614576285006353,123.5,"0"
+2,-1.15823309349523,0.877736754848451,1.548717846511,0.403033933955121,-0.407193377311653,0.0959214624684256,0.592940745385545,-0.270532677192282,0.817739308235294,0.753074431976354,-0.822842877946363,0.53819555014995,1.3458515932154,-1.11966983471731,0.175121130008994,-0.451449182813529,-0.237033239362776,-0.0381947870352842,0.803486924960175,0.408542360392758,-0.00943069713232919,0.79827849458971,-0.137458079619063,0.141266983824769,-0.206009587619756,0.502292224181569,0.219422229513348,0.215153147499206,69.99,"0"
+
+$ docker exec namenode1 hdfs dfs -cat /lakehouse/bronze/giao_dich/_delta_log/00000000000000000000.json
+{"commitInfo":{"timestamp":1793255736526,"operation":"WRITE","operationParameters":{"mode":"Overwrite","partitionBy":"[\"ngay\"]"},"isolationLevel":"Serializable","isBlindAppend":false,"operationMetrics":{"numFiles":"0","numOutputRows":"0","numOutputBytes":"0"},"engineInfo":"Apache-Spark/3.5.1 Delta-Lake/3.2.0","txnId":"f3a4b0e7-7328-4c96-b798-5a221002e751"}}
+{"metaData":{"id":"a26dfa65-80d7-4a71-9276-ab758da29944","format":{"provider":"parquet","options":{}},"schemaString":"{\"type\":\"struct\",\"fields\":[{\"name\":\"ma_giao_dich\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"thoi_diem\",\"type\":\"timestamp\",\"nullable\":true,\"metadata\":{}},{\"name\":\"thoi_diem_nhan\",\"type\":\"timestamp\",\"nullable\":true,\"metadata\":{}},{\"name\":\"tai_khoan_nguon\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"tai_khoan_dich\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"loai\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"so_tien\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"so_du_truoc_nguon\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"so_du_sau_nguon\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"so_du_truoc_dich\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"so_du_sau_dich\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"kenh\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"ngay\",\"type\":\"date\",\"nullable\":true,\"metadata\":{}},{\"name\":\"ma_thiet_bi\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"dia_chi_ip\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v1\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v2\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v3\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v4\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v5\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v6\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v7\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v8\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v9\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v10\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v11\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v12\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v13\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v14\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v15\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v16\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v17\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v18\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v19\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v20\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v21\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v22\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v23\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v24\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v25\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v26\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v27\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}},{\"name\":\"v28\",\"type\":\"double\",\"nullable\":true,\"metadata\":{}}]}","partitionColumns":["ngay"],"configuration":{"delta.enableChangeDataFeed":"true"},"createdTime":1793255720606}}
+{"protocol":{"minReaderVersion":1,"minWriterVersion":4}}
+
+$ docker exec namenode1 hdfs fsck /lakehouse -files -blocks -locations
+FSCK started by root (auth:SIMPLE) from /172.19.0.4 for path /lakehouse at Thu Oct 29 07:07:18 UTC 2026
+/lakehouse <dir>
+/lakehouse/_audit <dir>
+/lakehouse/_audit/audit <dir>
+/lakehouse/_audit/audit/bootstrap_summary.json 1243 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742061_1237 len=1243 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_audit/bronze <dir>
+/lakehouse/_audit/bronze/schema_metadata.json 162 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742000_1176 len=162 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/_audit/gold <dir>
+/lakehouse/_audit/gold/batch_0_summary.json 170 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742072_1248 len=170 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_audit/gold/batch_1_summary.json 167 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742082_1258 len=167 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_audit/gold/batch_2_summary.json 168 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742094_1270 len=168 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_audit/gold/drift_latest.json 1428 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742098_1274 len=1428 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_audit/gold/schema_metadata.json 144 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742002_1178 len=144 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_audit/maintenance <dir>
+/lakehouse/_audit/maintenance/zorder_latest.json 284 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742099_1275 len=284 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_audit/models <dir>
+/lakehouse/_audit/models/airflow_model_v2_evaluation.json 191 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742103_1279 len=191 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_audit/models/airflow_model_v4_evaluation.json 194 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741986_1162 len=194 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_audit/models/model_v1_metadata.json 6976 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742015_1191 len=6976 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/_audit/models/model_v2_retrain_audit.json 262 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742102_1278 len=262 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/_audit/silver <dir>
+/lakehouse/_audit/silver/hygiene_report.json 101 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742052_1228 len=101 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/_audit/silver/schema_metadata.json 168 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742001_1177 len=168 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_audit/silver/state_batch_1.json 164 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742018_1194 len=164 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/_audit/silver/training_snapshot_v0.json 169 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741985_1161 len=169 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_audit/silver/training_snapshot_v1.json 169 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741993_1169 len=169 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_audit/silver/training_snapshot_v2.json 169 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742006_1182 len=169 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/_checkpoints <dir>
+/lakehouse/_checkpoints/cham_diem <dir>
+/lakehouse/_checkpoints/cham_diem/commits <dir>
+/lakehouse/_checkpoints/cham_diem/commits/0 41 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742073_1249 len=41 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/_checkpoints/cham_diem/commits/1 41 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742083_1259 len=41 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_checkpoints/cham_diem/commits/2 41 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742095_1271 len=41 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/_checkpoints/cham_diem/metadata 45 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742062_1238 len=45 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_checkpoints/cham_diem/offsets <dir>
+/lakehouse/_checkpoints/cham_diem/offsets/0 681 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742064_1240 len=681 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_checkpoints/cham_diem/offsets/1 693 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742074_1250 len=693 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_checkpoints/cham_diem/offsets/2 693 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742084_1260 len=693 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_checkpoints/cham_diem/sources <dir>
+/lakehouse/_checkpoints/cham_diem/sources/0 <dir>
+/lakehouse/_checkpoints/cham_diem/sources/0/0 40 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742063_1239 len=40 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_quarantine <dir>
+/lakehouse/_quarantine/_delta_log <dir>
+/lakehouse/_quarantine/_delta_log/00000000000000000000.json 7995 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742051_1227 len=7995 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/_quarantine/_delta_log/_commits <dir>
+/lakehouse/_quarantine/part-00000-335d6ecb-5108-42b1-aa05-6db9366d6f84-c000.snappy.parquet 11880 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742050_1226 len=11880 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/_quarantine/part-00002-ba710410-6e71-4824-9b32-c4d1db4e3af5-c000.snappy.parquet 11755 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742049_1225 len=11755 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/bronze <dir>
+/lakehouse/bronze/giao_dich <dir>
+/lakehouse/bronze/giao_dich/_delta_log <dir>
+/lakehouse/bronze/giao_dich/_delta_log/00000000000000000000.json 3940 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741965_1141 len=3940 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/bronze/giao_dich/_delta_log/00000000000000000001.json 3899 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741966_1142 len=3899 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/bronze/giao_dich/_delta_log/00000000000000000002.json 2887 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742020_1196 len=2887 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/_delta_log/00000000000000000003.json 8394 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742048_1224 len=8394 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/bronze/giao_dich/_delta_log/00000000000000000004.json 4469 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742060_1236 len=4469 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/bronze/giao_dich/_delta_log/00000000000000000005.json 7898 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742068_1244 len=7898 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/_delta_log/00000000000000000006.json 7904 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742078_1254 len=7904 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/bronze/giao_dich/_delta_log/00000000000000000007.json 7900 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742088_1264 len=7900 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/_delta_log/_commits <dir>
+/lakehouse/bronze/giao_dich/ngay=2026-10-29 <dir>
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-01bc6cae-0160-46d9-adbc-2b996d04a917.c000.snappy.parquet 11212 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742046_1222 len=11212 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-2b3da93f-5573-497c-a41f-f788166069e2.c000.snappy.parquet 162260 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742019_1195 len=162260 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-822524b5-95d1-41c8-ba63-f1c7d1407c9c.c000.snappy.parquet 22773 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742085_1261 len=22773 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-a1f1beb4-2249-48cb-b095-bd52917858c3.c000.snappy.parquet 163376 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742059_1235 len=163376 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-e757f0e5-ec0c-4cd8-9ec1-af643ff5860d.c000.snappy.parquet 102430 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742066_1242 len=102430 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00000-fb088b7d-3111-4215-80bb-f7ff8cd30d34.c000.snappy.parquet 18089 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742077_1253 len=18089 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00001-0fd5eb4c-178c-41b2-ad07-c9adad834ec7.c000.snappy.parquet 101777 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742065_1241 len=101777 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00001-401d3742-0502-4257-b618-1ede77d40d54.c000.snappy.parquet 18392 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742076_1252 len=18392 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00001-7fb70be1-b4ed-4f8a-97a9-944df910d3fe.c000.snappy.parquet 20900 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742087_1263 len=20900 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00001-d8c74e5d-5467-4653-b30b-fc028341b8dd.c000.snappy.parquet 11212 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742045_1221 len=11212 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00002-3342e02a-536c-4c80-9bf3-2896b99b91a7.c000.snappy.parquet 23710 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742086_1262 len=23710 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00002-4f395629-8c02-4cf4-8f37-68a770309f40.c000.snappy.parquet 11137 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742047_1223 len=11137 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00002-ba6f577e-bf09-488c-b693-c9f8667cba09.c000.snappy.parquet 19733 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742075_1251 len=19733 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00002-e4bbd14c-08c2-4689-9531-3e6e493f6316.c000.snappy.parquet 102835 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742067_1243 len=102835 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/bronze/giao_dich/ngay=2026-10-29/part-00003-28de868d-b2f6-444a-bcb2-cbd6aff82bd3.c000.snappy.parquet 11255 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742044_1220 len=11255 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold <dir>
+/lakehouse/gold/diem_rui_ro <dir>
+/lakehouse/gold/diem_rui_ro/_change_data <dir>
+/lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-210df8ba-7edd-4744-a60d-bcabc1d36880.c000.snappy.parquet 6330 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742034_1210 len=6330 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-4d6c7005-5776-4dd8-98bc-fdacb906b017.c000.snappy.parquet 6258 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742031_1207 len=6258 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-b38ec061-5229-4633-8207-fe3b31169275.c000.snappy.parquet 6274 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742025_1201 len=6274 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-e8e64884-6c13-484e-90d7-4f566a64f253.c000.snappy.parquet 6274 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742028_1204 len=6274 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_change_data/cdc-00000-f6ac08fd-4b6d-4c22-a43c-6c7cc10c9f80.c000.snappy.parquet 6290 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742037_1213 len=6290 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log <dir>
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000000.json 2210 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741972_1148 len=2210 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000001.json 2141 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741973_1149 len=2141 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000002.json 1821 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742022_1198 len=1821 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000003.json 2914 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742026_1202 len=2914 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000004.json 2914 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742029_1205 len=2914 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000005.json 2913 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742032_1208 len=2913 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000006.json 2914 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742035_1211 len=2914 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000007.json 2911 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742038_1214 len=2911 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000008.json 1821 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742071_1247 len=1821 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000009.json 1818 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742081_1257 len=1818 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000010.checkpoint.parquet 25518 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742092_1268 len=25518 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/00000000000000000010.json 1823 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742091_1267 len=1823 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/_delta_log/_commits <dir>
+/lakehouse/gold/diem_rui_ro/_delta_log/_last_checkpoint 4796 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742093_1269 len=4796 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-03e6ed8b-07bd-42aa-900f-d3d1867c36c0-c000.snappy.parquet 2034 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742079_1255 len=2034 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-0821ce18-1caa-49d7-9c54-f2beb8676d65-c000.snappy.parquet 2004 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741971_1147 len=2004 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-1bd13e19-5d45-4f48-ae67-0986bfa906a3.c000.snappy.parquet 38984 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742027_1203 len=38984 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-43e5b6c8-c4f8-4b7d-b692-10010a97fe4d-c000.snappy.parquet 2034 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742089_1265 len=2034 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-89b8b499-f68c-46ca-8944-a16c9b09563b-c000.snappy.parquet 38948 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742021_1197 len=38948 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-bb3f745e-b2e9-4ce2-bdfa-4a68b5a1c079.c000.snappy.parquet 38985 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742030_1206 len=38985 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-c56a1bca-8eb4-43f6-b477-e485649d12e6.c000.snappy.parquet 38979 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742024_1200 len=38979 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-d86c0d72-5b9d-4b63-86ea-b1105ed384f1.c000.snappy.parquet 39001 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742036_1212 len=39001 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-e3ca9962-db1b-4898-8ff8-3517e37ad1ac-c000.snappy.parquet 2034 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742069_1245 len=2034 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00000-ea907f91-6f20-44b1-b063-f9ff1da6f60f.c000.snappy.parquet 38986 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742033_1209 len=38986 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00001-5b8e827b-8793-439c-a2ae-293a5e523f3d-c000.snappy.parquet 61530 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742070_1246 len=61530 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00001-c404e9c7-3b37-48d1-8ca0-1f80e8d973d6-c000.snappy.parquet 11268 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742080_1256 len=11268 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/diem_rui_ro/part-00001-f398bd9a-5bc1-429a-ae86-0cd627bb30ea-c000.snappy.parquet 14160 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742090_1266 len=14160 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/theo_doi_drift <dir>
+/lakehouse/gold/theo_doi_drift/_delta_log <dir>
+/lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000000.json 1059 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741975_1151 len=1059 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000001.json 285 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742008_1184 len=285 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000002.json 2782 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742057_1233 len=2782 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000003.json 285 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742097_1273 len=285 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/theo_doi_drift/_delta_log/00000000000000000004.json 321 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742101_1277 len=321 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/theo_doi_drift/_delta_log/_commits <dir>
+/lakehouse/gold/theo_doi_drift/part-00000-af1e17ec-15b9-4545-919c-fbe685ad0408-c000.snappy.parquet 3905 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742007_1183 len=3905 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/gold/theo_doi_drift/part-00000-b121e89c-dc94-4832-b0dd-a0ccb0b00f1b-c000.snappy.parquet 1614 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742054_1230 len=1614 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/theo_doi_drift/part-00000-d3f1cff2-3843-48cf-adb1-1a0a214e80df-c000.snappy.parquet 3573 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742100_1276 len=3573 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/theo_doi_drift/part-00000-e5b13222-d68a-4d20-93f0-67553afaf1e2-c000.snappy.parquet 659 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741974_1150 len=659 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/theo_doi_drift/part-00000-feb6d12c-0a37-4958-9ca0-322596abcc2d-c000.snappy.parquet 3905 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742096_1272 len=3905 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/gold/theo_doi_drift/part-00001-0bd16f4e-9aca-411b-869f-b4fe3b9d6f71-c000.snappy.parquet 1552 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742055_1231 len=1552 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/theo_doi_drift/part-00002-51030a56-e69d-4144-bbe3-ac8c129b09ec-c000.snappy.parquet 1549 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742053_1229 len=1549 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/gold/theo_doi_drift/part-00003-4e0b260e-6d14-47be-88a8-cbf35b92b4f1-c000.snappy.parquet 1616 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742056_1232 len=1616 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/models <dir>
+/lakehouse/models/model_v1 <dir>
+/lakehouse/models/model_v1/metadata <dir>
+/lakehouse/models/model_v1/metadata/_SUCCESS 0 bytes, replicated: replication=3, 0 block(s):  OK
+
+/lakehouse/models/model_v1/metadata/part-00000 247 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742010_1186 len=247 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/models/model_v1/stages <dir>
+/lakehouse/models/model_v1/stages/0_VectorAssembler_02e22023e444 <dir>
+/lakehouse/models/model_v1/stages/0_VectorAssembler_02e22023e444/metadata <dir>
+/lakehouse/models/model_v1/stages/0_VectorAssembler_02e22023e444/metadata/_SUCCESS 0 bytes, replicated: replication=3, 0 block(s):  OK
+
+/lakehouse/models/model_v1/stages/0_VectorAssembler_02e22023e444/metadata/part-00000 547 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742011_1187 len=547 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff <dir>
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/data <dir>
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/data/_SUCCESS 0 bytes, replicated: replication=3, 0 block(s):  OK
+
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/data/part-00000-4612c97f-f7fc-489f-8859-12953e7fe36f-c000.snappy.parquet 45399 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742014_1190 len=45399 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/metadata <dir>
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/metadata/_SUCCESS 0 bytes, replicated: replication=3, 0 block(s):  OK
+
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/metadata/part-00000 802 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742012_1188 len=802 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/treesMetadata <dir>
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/treesMetadata/_SUCCESS 0 bytes, replicated: replication=3, 0 block(s):  OK
+
+/lakehouse/models/model_v1/stages/1_RandomForestClassifier_8fdb1e08a0ff/treesMetadata/part-00000-ed29bc4a-3e0b-416f-b4f8-839cac099d0a-c000.snappy.parquet 5381 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742013_1189 len=5381 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/raw <dir>
+/lakehouse/raw/creditcard.csv 150828752 bytes, replicated: replication=3, 2 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741963_1139 len=134217728 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+1. BP-912878437-172.19.0.2-1792157541974:blk_1073741964_1140 len=16611024 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/silver <dir>
+/lakehouse/silver/ket_luan_tham_dinh <dir>
+/lakehouse/silver/ket_luan_tham_dinh/_delta_log <dir>
+/lakehouse/silver/ket_luan_tham_dinh/_delta_log/00000000000000000000.json 1172 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741970_1146 len=1172 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/silver/ket_luan_tham_dinh/_delta_log/00000000000000000001.json 3648 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742043_1219 len=3648 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/silver/ket_luan_tham_dinh/_delta_log/_commits <dir>
+/lakehouse/silver/ket_luan_tham_dinh/part-00000-b36c99fa-08b8-4be0-ba20-59389b2553c2-c000.snappy.parquet 2376 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742041_1217 len=2376 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/silver/ket_luan_tham_dinh/part-00000-fea9cbc7-525a-40b6-b2db-0729b4f943f3-c000.snappy.parquet 806 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741969_1145 len=806 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/silver/ket_luan_tham_dinh/part-00001-b08ccfdb-e6b5-4ffa-9366-a26c1960df93-c000.snappy.parquet 2375 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742040_1216 len=2375 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/silver/ket_luan_tham_dinh/part-00002-fa373d11-1bf9-485d-a4ad-7def0c781c49-c000.snappy.parquet 2376 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742039_1215 len=2376 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/silver/ket_luan_tham_dinh/part-00003-5372a3e6-68c5-4dd5-be97-5f30a2cf171f-c000.snappy.parquet 2225 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742042_1218 len=2225 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/silver/tap_huan_luyen <dir>
+/lakehouse/silver/tap_huan_luyen/_delta_log <dir>
+/lakehouse/silver/tap_huan_luyen/_delta_log/00000000000000000000.json 8580 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741984_1160 len=8580 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/silver/tap_huan_luyen/_delta_log/00000000000000000001.json 5372 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741992_1168 len=5372 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/silver/tap_huan_luyen/_delta_log/00000000000000000002.json 5372 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742005_1181 len=5372 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/silver/tap_huan_luyen/_delta_log/_commits <dir>
+/lakehouse/silver/tap_huan_luyen/part-00000-28bd35e4-578f-40d7-b7ab-9b43da2c8c94-c000.snappy.parquet 1823136 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741991_1167 len=1823136 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/silver/tap_huan_luyen/part-00000-2926d59c-f6fb-42f6-a0f5-26908fd962a1-c000.snappy.parquet 1823136 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741982_1158 len=1823136 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/silver/tap_huan_luyen/part-00000-6e642065-6f07-4d23-b1e3-9d0db9960c2d-c000.snappy.parquet 1823136 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742004_1180 len=1823136 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/silver/tap_huan_luyen/part-00001-1b416380-dbc2-415c-aab0-0b5e6d12a899-c000.snappy.parquet 1618233 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742003_1179 len=1618233 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/silver/tap_huan_luyen/part-00001-41a8d3f8-77d7-4767-9e2f-b9f998863187-c000.snappy.parquet 1618233 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741983_1159 len=1618233 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/silver/tap_huan_luyen/part-00001-6673b538-bc41-4688-a0ba-05aa1f97148b-c000.snappy.parquet 1618233 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741990_1166 len=1618233 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/silver/trang_thai_khach_hang <dir>
+/lakehouse/silver/trang_thai_khach_hang/_delta_log <dir>
+/lakehouse/silver/trang_thai_khach_hang/_delta_log/00000000000000000000.json 1666 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741968_1144 len=1666 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/silver/trang_thai_khach_hang/_delta_log/00000000000000000001.json 2177 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742017_1193 len=2177 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK]]
+
+/lakehouse/silver/trang_thai_khach_hang/_delta_log/_commits <dir>
+/lakehouse/silver/trang_thai_khach_hang/part-00000-8f93a83a-f957-4191-acfe-20f0030a3bfa-c000.snappy.parquet 1378 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073741967_1143 len=1378 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK]]
+
+/lakehouse/silver/trang_thai_khach_hang/part-00000-d68a2510-ecbe-4ed6-bb9a-006946754ed4-c000.snappy.parquet 22805 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-912878437-172.19.0.2-1792157541974:blk_1073742016_1192 len=22805 Live_repl=3  [DatanodeInfoWithStorage[172.19.0.6:9886,DS-c0e17b1e-5075-48ed-9f98-f3e9c6065d1f,DISK], DatanodeInfoWithStorage[172.19.0.8:9866,DS-94719152-b6a1-40bd-aa2d-4c0c8f9e491f,DISK], DatanodeInfoWithStorage[172.19.0.5:9876,DS-d9940a9e-5456-4a61-af82-be83e9a84d16,DISK]]
+
+/lakehouse/warehouse <dir>
+
+Status: HEALTHY
+ Number of data-nodes:	3
+ Number of racks:		1
+ Total dirs:			52
+ Total symlinks:		0
+
+Replicated Blocks:
+ Total size:	162602171 B
+ Total files:	127
+ Total blocks (validated):	123 (avg. block size 1321968 B)
+ Minimally replicated blocks:	123 (100.0 %)
+ Over-replicated blocks:	0 (0.0 %)
+ Under-replicated blocks:	0 (0.0 %)
+ Mis-replicated blocks:		0 (0.0 %)
+ Default replication factor:	3
+ Average block replication:	3.0
+ Missing blocks:		0
+ Corrupt blocks:		0
+ Missing replicas:		0 (0.0 %)
+
+Erasure Coded Block Groups:
+ Total size:	0 B
+ Total files:	0
+ Total block groups (validated):	0
+ Minimally erasure-coded block groups:	0
+ Over-erasure-coded block groups:	0
+ Under-erasure-coded block groups:	0
+ Unsatisfactory placement block groups:	0
+ Average block group size:	0.0
+ Missing block groups:		0
+ Corrupt block groups:		0
+ Missing internal blocks:	0
+FSCK ended at Thu Oct 29 07:07:18 UTC 2026 in 54 milliseconds
+
+
+The filesystem under path '/lakehouse' is HEALTHY

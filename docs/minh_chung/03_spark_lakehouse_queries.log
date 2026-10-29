@@ -1,0 +1,182 @@
+===============================================================================================
+MINH CHỨNG 03: TRUY VẤN TRỰC TIẾP SPARK SQL & DELTA LAKE TRÊN HADOOP HDFS (/lakehouse)
+Thời điểm trích xuất: 2026-10-29 14:13:52
+Spark Version      : 3.5.1
+fs.defaultFS       : hdfs://namenode1:9000
+dfs.replication    : 3
+use.dn.hostname    : true
+===============================================================================================
+
+[1] ĐỌC TẬP DỮ LIỆU GỐC TRỰC TIẾP TỪ HDFS (hdfs://namenode1:9000/lakehouse/raw/creditcard.csv)
+  -> URI: hdfs://namenode1:9000/lakehouse/raw/creditcard.csv
+  -> Tổng số bản ghi đọc trực tiếp qua Spark HDFS Client: 284,807 dòng | Gian lận (Class=1): 492 dòng (0.173%)
++----+------------------+-------------------+------------------+------------------+------+-----+
+|Time|V1                |V2                 |V14               |V17               |Amount|Class|
++----+------------------+-------------------+------------------+------------------+------+-----+
+|0.0 |-1.3598071336738  |-0.0727811733098497|-0.311169353699879|0.207971241929242 |149.62|0    |
+|0.0 |1.19185711131486  |0.26615071205963   |-0.143772296441519|-0.114804663102346|2.69  |0    |
+|1.0 |-1.35835406159823 |-1.34016307473609  |-0.165945922763554|1.10996937869599  |378.66|0    |
+|1.0 |-0.966271711572087|-0.185226008082898 |-0.28792374549456 |-0.684092786345479|123.5 |0    |
+|2.0 |-1.15823309349523 |0.877736754848451  |-1.11966983471731 |-0.237033239362776|69.99 |0    |
++----+------------------+-------------------+------------------+------------------+------+-----+
+only showing top 5 rows
+
+
+[2] BẢNG MEDALLION TRÊN HDFS: BRONZE - bronze.giao_dich
+  -> Đường dẫn HDFS: hdfs://namenode1:9000/lakehouse/bronze/giao_dich
+  -> Tổng số bản ghi hiện tại: 1,584
++-------------+-----------------------+---------------+-------+------+----------+
+|ma_giao_dich |thoi_diem              |tai_khoan_nguon|so_tien|kenh  |ngay      |
++-------------+-----------------------+---------------+-------+------+----------+
+|TX_77B64844EE|2026-10-29 14:05:20.706|ACC_101962     |250.0  |APP   |2026-10-29|
+|TX_3E63AC27A3|2026-10-29 14:05:20.614|ACC_100996     |6.25   |ONLINE|2026-10-29|
+|TX_4A58940F71|2026-10-29 14:05:20.995|ACC_101548     |37.8   |APP   |2026-10-29|
+|TX_62B6BBE7F6|2026-10-29 14:05:21.276|ACC_100392     |4.0    |ATM   |2026-10-29|
+|TX_F78F32498E|2026-10-29 14:05:20.867|ACC_100140     |99.99  |APP   |2026-10-29|
+|TX_7647FCA0D4|2026-10-29 14:05:20.545|ACC_100005     |3159.08|APP   |2026-10-29|
++-------------+-----------------------+---------------+-------+------+----------+
+only showing top 6 rows
+
+
+[3] BẢNG MEDALLION TRÊN HDFS: SILVER STATE - silver.trang_thai_khach_hang
+  -> Đường dẫn HDFS: hdfs://namenode1:9000/lakehouse/silver/trang_thai_khach_hang
+  -> Tổng số bản ghi hiện tại: 715
++----------+--------+---------+-------------+-----------------------+
+|tai_khoan |so_gd_1h|so_gd_24h|tong_tien_24h|lan_gd_gan_nhat        |
++----------+--------+---------+-------------+-----------------------+
+|ACC_100000|2       |2        |41.03        |2026-10-29 14:01:03.601|
+|ACC_100001|2       |2        |681.6        |2026-10-29 14:01:02.303|
+|ACC_100002|2       |2        |7594.15      |2026-10-29 14:00:52.373|
+|ACC_100003|2       |2        |475.81       |2026-10-29 14:01:01.678|
+|ACC_100004|1       |1        |459.07       |2026-10-29 14:00:50.732|
+|ACC_100006|1       |1        |2023.93      |2026-10-29 14:00:56.092|
++----------+--------+---------+-------------+-----------------------+
+only showing top 6 rows
+
+
+[4] BẢNG MEDALLION TRÊN HDFS: SILVER LABELS - silver.ket_luan_tham_dinh
+  -> Đường dẫn HDFS: hdfs://namenode1:9000/lakehouse/silver/ket_luan_tham_dinh
+  -> Tổng số bản ghi hiện tại: 5
++-------------+---------------+--------------------------+
+|ma_giao_dich |nguoi_tham_dinh|thoi_diem_ket_luan        |
++-------------+---------------+--------------------------+
+|TX_3A652664B1|ThamDinhVien_03|2026-10-29 13:50:40.115587|
+|TX_59585CF55B|ThamDinhVien_01|2026-10-29 13:46:40.115587|
+|TX_228C4E484B|ThamDinhVien_02|2026-10-29 13:48:40.115587|
+|TX_3BF55C996A|ThamDinhVien_01|2026-10-29 13:52:40.115587|
+|TX_8AA4503521|ThamDinhVien_02|2026-10-29 13:54:40.115587|
++-------------+---------------+--------------------------+
+
+
+[5] BẢNG MEDALLION TRÊN HDFS: SILVER TRAIN - silver.tap_huan_luyen
+  -> Đường dẫn HDFS: hdfs://namenode1:9000/lakehouse/silver/tap_huan_luyen
+  -> Tổng số bản ghi hiện tại: 12,984
++------------+---------------+-------+--------+---------------+--------+
+|ma_giao_dich|tai_khoan_nguon|so_tien|so_gd_1h|z_score_so_tien|is_fraud|
++------------+---------------+-------+--------+---------------+--------+
+|TX_00000001 |ACC_100001     |149.9  |0       |3.996          |0       |
+|TX_00001201 |ACC_100001     |39.0   |0       |-4.436         |0       |
+|TX_00002401 |ACC_100001     |2.69   |0       |-1.1701        |0       |
+|TX_00003601 |ACC_100001     |1719.4 |0       |21.5874        |0       |
+|TX_00004801 |ACC_100001     |45.43  |0       |-0.5208        |0       |
+|TX_00006001 |ACC_100001     |33.65  |0       |-0.4804        |0       |
++------------+---------------+-------+--------+---------------+--------+
+only showing top 6 rows
+
+
+[6] BẢNG MEDALLION TRÊN HDFS: GOLD SCORES - gold.diem_rui_ro
+  -> Đường dẫn HDFS: hdfs://namenode1:9000/lakehouse/gold/diem_rui_ro
+  -> Tổng số bản ghi hiện tại: 1,580
++-------------+---------------+-------+-----------+---------+--------------------+-----------------+
+|ma_giao_dich |tai_khoan_nguon|so_tien|diem_rui_ro|do_tre_ms|trang_thai_tham_dinh|phien_ban_mo_hinh|
++-------------+---------------+-------+-----------+---------+--------------------+-----------------+
+|TX_F78F32498E|ACC_100140     |99.99  |0.9937     |262      |CHUA_THAM_DINH      |model_v1         |
+|TX_AE903144D2|ACC_100063     |2376.28|0.99       |457      |CHUA_THAM_DINH      |model_v1         |
+|TX_040DA4619A|ACC_100029     |1258.99|0.9889     |711      |CHUA_THAM_DINH      |model_v1         |
+|TX_5230259B44|ACC_100098     |2009.7 |0.9854     |289      |CHUA_THAM_DINH      |model_v1         |
+|TX_F0024A24B2|ACC_100001     |4501.33|0.9558     |625      |CHUA_THAM_DINH      |model_v1         |
+|TX_22B7AC352C|ACC_100149     |170.92 |0.9474     |965      |CHUA_THAM_DINH      |model_v1         |
++-------------+---------------+-------+-----------+---------+--------------------+-----------------+
+only showing top 6 rows
+
+
+[7] BẢNG MEDALLION TRÊN HDFS: GOLD DRIFT - gold.theo_doi_drift
+  -> Đường dẫn HDFS: hdfs://namenode1:9000/lakehouse/gold/theo_doi_drift
+  -> Tổng số bản ghi hiện tại: 23
++----------+-------------+------+------------+------------+
+|ngay      |ten_dac_trung|psi   |ks_statistic|muc_do      |
++----------+-------------+------+------------+------------+
+|2026-10-29|v2           |0.0188|0.0303      |on_dinh     |
+|2026-10-29|v1           |0.9843|0.3042      |nghiem_trong|
+|2026-10-29|so_tien      |0.0427|0.081       |on_dinh     |
+|2026-10-29|v12          |0.5316|0.2297      |nghiem_trong|
+|2026-10-29|v10          |0.034 |0.0453      |on_dinh     |
+|2026-10-29|v4           |0.1261|0.1439      |canh_bao    |
++----------+-------------+------+------------+------------+
+only showing top 6 rows
+
+
+[8] VÙNG CÁCH LY DỮ LIỆU LỖI QUARANTINE TRÊN HDFS (hdfs://namenode1:9000/lakehouse/_quarantine)
+  -> Tổng số bản ghi bị cách ly (trùng khóa / thiếu tài khoản / sai loại GD): 2
++----------------+---------------+-----------------+-------+----------------------+
+|ma_giao_dich    |tai_khoan_nguon|loai             |so_tien|quarantine_reason     |
++----------------+---------------+-----------------+-------+----------------------+
+|TX_QUARANTINE_02|ACC_100005     |LOAI_SAI_QUY_DINH|210.0  |LOAI_GD_KHONG_XAC_DINH|
+|TX_QUARANTINE_01|               |THANH_TOAN       |85.0   |THIEU_TAI_KHOAN_NGUON |
++----------------+---------------+-----------------+-------+----------------------+
+
+
+[9] KIỂM TOÁN DELTA TRANSACTION LOG (DESCRIBE HISTORY) TRÊN HDFS
+--- Lịch sử phiên bản bảng bronze.giao_dich (hdfs://namenode1:9000/lakehouse/bronze/giao_dich) ---
++-------+-----------------------+---------+----------------------------------------------------------------------------------------------+
+|version|timestamp              |operation|operationParameters                                                                           |
++-------+-----------------------+---------+----------------------------------------------------------------------------------------------+
+|7      |2026-10-29 14:05:28.351|WRITE    |{mode -> Append, partitionBy -> ["ngay"]}                                                     |
+|6      |2026-10-29 14:05:23.112|WRITE    |{mode -> Append, partitionBy -> ["ngay"]}                                                     |
+|5      |2026-10-29 14:04:58.625|WRITE    |{mode -> Append, partitionBy -> ["ngay"]}                                                     |
+|4      |2026-10-29 14:03:04.901|OPTIMIZE |{predicate -> [], zOrderBy -> ["tai_khoan_nguon","thoi_diem"], clusterBy -> [], auto -> false}|
+|3      |2026-10-29 14:02:30.724|WRITE    |{mode -> Append, partitionBy -> ["ngay"]}                                                     |
++-------+-----------------------+---------+----------------------------------------------------------------------------------------------+
+only showing top 5 rows
+
+--- Lịch sử phiên bản bảng gold.diem_rui_ro (hdfs://namenode1:9000/lakehouse/gold/diem_rui_ro) ---
++-------+-----------------------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|version|timestamp              |operation|operationParameters                                                                                                                                                  |
++-------+-----------------------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|10     |2026-10-29 14:05:29.558|WRITE    |{mode -> Append, partitionBy -> []}                                                                                                                                  |
+|9      |2026-10-29 14:05:25.056|WRITE    |{mode -> Append, partitionBy -> []}                                                                                                                                  |
+|8      |2026-10-29 14:05:04.878|WRITE    |{mode -> Append, partitionBy -> []}                                                                                                                                  |
+|7      |2026-10-29 14:02:20.941|MERGE    |{predicate -> ["(ma_giao_dich#58223 = ma_gd#58255)"], matchedPredicates -> [{"actionType":"update"}], notMatchedPredicates -> [], notMatchedBySourcePredicates -> []}|
+|6      |2026-10-29 14:02:12.506|MERGE    |{predicate -> ["(ma_giao_dich#56564 = ma_gd#56596)"], matchedPredicates -> [{"actionType":"update"}], notMatchedPredicates -> [], notMatchedBySourcePredicates -> []}|
++-------+-----------------------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+only showing top 5 rows
+
+--- Lịch sử phiên bản bảng silver.tap_huan_luyen (hdfs://namenode1:9000/lakehouse/silver/tap_huan_luyen) ---
++-------+-----------------------+---------+--------------------------------------+
+|version|timestamp              |operation|operationParameters                   |
++-------+-----------------------+---------+--------------------------------------+
+|2      |2026-10-29 13:59:03.646|WRITE    |{mode -> Overwrite, partitionBy -> []}|
+|1      |2026-10-29 13:51:24.303|WRITE    |{mode -> Overwrite, partitionBy -> []}|
+|0      |2026-10-29 13:40:27.779|WRITE    |{mode -> Overwrite, partitionBy -> []}|
++-------+-----------------------+---------+--------------------------------------+
+
+
+[10] KIỂM CHỨNG DELTA TIME TRAVEL (SELECT * FROM ... VERSION AS OF 0)
+  -> Số bản ghi tại VERSION AS OF 0 của hdfs://namenode1:9000/lakehouse/silver/tap_huan_luyen: 12,984
+
+[11] KIỂM CHỨNG DELTA CHANGE DATA FEED (CDF - readChangeFeed=true)
+  -> Tổng số sự kiện thay đổi CDF ghi nhận trên hdfs://namenode1:9000/lakehouse/gold/diem_rui_ro: 1,590
++-------------+-----------+--------------------+----------------+---------------+
+|ma_giao_dich |diem_rui_ro|trang_thai_tham_dinh|_change_type    |_commit_version|
++-------------+-----------+--------------------+----------------+---------------+
+|TX_3BF55C996A|0.9967     |CHUA_THAM_DINH      |update_preimage |6              |
+|TX_3BF55C996A|0.9967     |GIAN_LAN            |update_postimage|6              |
+|TX_8AA4503521|0.9965     |CHUA_THAM_DINH      |update_preimage |7              |
+|TX_8AA4503521|0.9965     |HOP_LE              |update_postimage|7              |
+|TX_59585CF55B|0.997      |CHUA_THAM_DINH      |update_preimage |3              |
+|TX_59585CF55B|0.997      |GIAN_LAN            |update_postimage|3              |
+|TX_228C4E484B|0.9969     |CHUA_THAM_DINH      |update_preimage |4              |
+|TX_228C4E484B|0.9969     |GIAN_LAN            |update_postimage|4              |
++-------------+-----------+--------------------+----------------+---------------+
+only showing top 8 rows
+

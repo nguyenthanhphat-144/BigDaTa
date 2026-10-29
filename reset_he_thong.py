@@ -84,66 +84,34 @@ def reset_models():
 
 
 def reset_checkpoints():
-    print("[2/5] Xóa sạch thư mục điểm kiểm soát (checkpoints)...")
+    print("[2/5] Xóa sạch thư mục điểm kiểm soát (checkpoints trên HDFS & Local)...")
     if os.path.exists(CHECKPOINTS_DIR):
         shutil.rmtree(CHECKPOINTS_DIR, ignore_errors=True)
     os.makedirs(CHECKPOINTS_DIR, exist_ok=True)
-    print("  -> Thư mục checkpoints đã được làm mới hoàn toàn.")
+    try:
+        import subprocess
+        subprocess.run(
+            ["docker", "exec", "namenode1", "hdfs", "dfs", "-rm", "-r", "-f", "/lakehouse/_checkpoints"],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15
+        )
+    except Exception:
+        pass
+    print("  -> Thư mục checkpoints trên HDFS và Local đã được làm mới hoàn toàn.")
 
 
 def reset_lakehouse_tables():
-    print("[3/5] Xóa toàn bộ dữ liệu giao dịch cũ trong Hồ dữ liệu (Lakehouse)...")
-    if os.path.exists(QUARANTINE_DIR):
-        shutil.rmtree(QUARANTINE_DIR, ignore_errors=True)
-    os.makedirs(QUARANTINE_DIR, exist_ok=True)
-
-    delta_tables = [
-        BRONZE_GIAO_DICH,
-        SILVER_TRANG_THAI,
-        SILVER_KET_LUAN,
-        GOLD_DIEM_RUI_RO,
-        GOLD_THEO_DOI_DRIFT
-    ]
-    need_spark = False
-    for tbl in delta_tables:
-        if not os.path.exists(tbl):
-            os.makedirs(tbl, exist_ok=True)
-            need_spark = True
-            continue
-
-        # Delete all parquet data files and partition folders (e.g. ngay=...)
-        for item in os.listdir(tbl):
-            if item == "_delta_log":
-                continue
-            item_path = os.path.join(tbl, item)
-            try:
-                if os.path.isdir(item_path):
-                    shutil.rmtree(item_path, ignore_errors=True)
-                else:
-                    os.remove(item_path)
-            except Exception:
-                pass
-
-        # In _delta_log, keep version 0, remove versions > 0
-        log_dir = os.path.join(tbl, "_delta_log")
-        v0_file = os.path.join(log_dir, "00000000000000000000.json") if os.path.exists(log_dir) else None
-        if log_dir and os.path.exists(log_dir) and v0_file and os.path.exists(v0_file):
-            for f in os.listdir(log_dir):
-                # Keep 00000000000000000000.json and .00000000000000000000.json.crc
-                if "00000000000000000000" in f:
-                    continue
-                try:
-                    f_path = os.path.join(log_dir, f)
-                    if os.path.isdir(f_path):
-                        shutil.rmtree(f_path, ignore_errors=True)
-                    else:
-                        os.remove(f_path)
-                except Exception:
-                    pass
-        else:
-            need_spark = True
-
-        print(f"  -> Đã làm sạch bảng về phiên bản v0 (0 bản ghi): {os.path.basename(tbl)}")
+    print("[3/5] Xóa toàn bộ dữ liệu giao dịch cũ trong Hồ dữ liệu HDFS (/lakehouse)...")
+    import subprocess
+    for sub in ["/lakehouse/bronze", "/lakehouse/silver", "/lakehouse/gold", "/lakehouse/_quarantine"]:
+        try:
+            subprocess.run(
+                ["docker", "exec", "namenode1", "hdfs", "dfs", "-rm", "-r", "-f", sub],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15
+            )
+            print(f"  -> Đã dọn sạch phân vùng HDFS: {sub}")
+        except Exception as e:
+            print(f"  [!] Lưu ý HDFS {sub}: {e}")
+    need_spark = True
 
     # Clean temporary runtime files (triggers, heartbeats)
     for tmp_f in glob.glob(os.path.join(TMP_DIR, "*")):

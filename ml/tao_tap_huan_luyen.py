@@ -18,7 +18,8 @@ from delta.tables import DeltaTable
 
 from config.settings import (
     BRONZE_GIAO_DICH, SILVER_TRANG_THAI, SILVER_KET_LUAN,
-    SILVER_TAP_HUAN_LUYEN, CREDITCARD_CSV, get_spark_session,
+    SILVER_TAP_HUAN_LUYEN, CREDITCARD_CSV, HDFS_CREDITCARD_CSV,
+    ensure_creditcard_on_hdfs, get_spark_session,
     log_pipeline_event, write_hdfs_marker
 )
 
@@ -71,13 +72,25 @@ class TrainingDatasetBuilder:
         return pit_df
 
     def load_labeled_dataset(self, num_normals=15000, augment_factor=2, save_delta_snapshot=True):
-        """Builds point-in-time training dataset from creditcard.csv + reviewer labels
-        in silver.ket_luan_tham_dinh, and saves a Delta Lake versioned snapshot for Time Travel.
+        """Builds point-in-time training dataset directly from HDFS raw dataset
+        (hdfs://namenode1:9000/lakehouse/raw/creditcard.csv) + reviewer labels in
+        silver.ket_luan_tham_dinh, and saves a Delta Lake versioned snapshot on HDFS for Time Travel.
         """
-        print(f"[DatasetBuilder] Đọc nguồn dữ liệu gốc từ {CREDITCARD_CSV}...")
-        pdf = pd.read_csv(CREDITCARD_CSV)
-        frauds = pdf[pdf["Class"] == 1]
-        normals = pdf[pdf["Class"] == 0]
+        hdfs_csv_uri = ensure_creditcard_on_hdfs()
+        print(f"[DatasetBuilder] Spark đọc trực tiếp nguồn dữ liệu gốc từ HDFS: {hdfs_csv_uri}...")
+        raw_hdfs_sdf = (
+            self.spark.read
+            .option("header", "true")
+            .option("inferSchema", "true")
+            .csv(hdfs_csv_uri)
+        )
+        total_hdfs_rows = raw_hdfs_sdf.count()
+        print(f"[DatasetBuilder] Đã đọc thành công {total_hdfs_rows:,} bản ghi từ HDFS ({hdfs_csv_uri}).")
+        frauds_pdf = raw_hdfs_sdf.filter(F.col("Class") == 1).toPandas()
+        frac = min(1.0, float(num_normals * 1.15) / max(float(total_hdfs_rows), 1.0))
+        normals_pdf = raw_hdfs_sdf.filter(F.col("Class") == 0).sample(withReplacement=False, fraction=frac, seed=42).limit(num_normals).toPandas()
+        frauds = frauds_pdf
+        normals = normals_pdf
 
         np.random.seed(42)
         fraud_list = [frauds]
@@ -89,8 +102,7 @@ class TrainingDatasetBuilder:
                 fraud_list.append(f_aug)
         all_frauds = pd.concat(fraud_list).sort_values("Time").reset_index(drop=True)
 
-        idx_sample = np.linspace(0, len(normals) - 1, num_normals).astype(int)
-        sampled_normals = normals.iloc[idx_sample]
+        sampled_normals = normals.sort_values("Time").reset_index(drop=True)
 
         combined_pdf = pd.concat([all_frauds, sampled_normals]).sort_values("Time").reset_index(drop=True)
 

@@ -9,6 +9,10 @@ echo [0] Dam bao cum Docker (Kafka, Zookeeper, 1 NameNode, 3 DataNodes) dang cha
 cd /d "%~dp0"
 docker compose up -d
 
+echo [0.1] Don dep tat ca tien trinh Python cu dang chay ngam de tranh xung dot lock file...
+taskkill /F /IM python.exe >nul 2>&1
+timeout /t 1 >nul
+
 set "PYTHON_EXE=%~dp0venv311\Scripts\python.exe"
 set "TMP_DIR=%~dp0tmp"
 

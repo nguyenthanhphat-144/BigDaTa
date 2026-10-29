@@ -13,14 +13,27 @@ ENV/
 creditcard.csv
 
 # ==========================================
-# Temporary scratch files
+# Temporary scratch & private local files
+# ==========================================
 tmp/
 *.log
+!docs/minh_chung/
+!docs/minh_chung/*.log
+airflow/logs/
+airflow/airflow.db
+airflow/airflow.cfg
+airflow/webserver_config.py
 .system_generated/
 .user_uploaded/
 scratch/
 test_*.docx
 /test_*.py
+BAO_CAO_NHIEM_VU_*.docx
+BigDaTa2_Code_va_LichSu_Gemini.zip
+TOAN_BO_LICH_SU_HOI_DAP_GEMINI.md
+build_member_docx.py
+export_to_gemini.py
+gen_doc_*.py
 
 # ==========================================
 # Python Bytecode & Cache

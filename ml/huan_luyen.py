@@ -20,7 +20,7 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.ml.functions import vector_to_array
 
 from config.settings import (
-    MODELS_DIR, SILVER_TAP_HUAN_LUYEN, get_spark_session,
+    MODELS_DIR, HDFS_MODELS_DIR, SILVER_TAP_HUAN_LUYEN, get_spark_session,
     log_pipeline_event, write_hdfs_marker
 )
 from ml.tao_tap_huan_luyen import TrainingDatasetBuilder
@@ -156,6 +156,9 @@ class FraudModelTrainer:
         train_df, val_df, test_df = self.chronological_split(full_df)
         weighted_train_df, pos_weight = self.add_class_weights(train_df)
         undersampled_train_df = self.apply_undersampling(train_df, target_ratio=20)
+        weighted_train_df = weighted_train_df.cache()
+        undersampled_train_df = undersampled_train_df.cache()
+        test_df = test_df.cache()
 
         assembler = VectorAssembler(inputCols=self.FEATURE_COLS, outputCol="features", handleInvalid="skip")
 
@@ -165,14 +168,14 @@ class FraudModelTrainer:
                 "name": "GBTClassifier (WeightCol)",
                 "algorithm_group": "GBTClassifier",
                 "strategy": "WeightCol (Nghịch đảo tần suất)",
-                "classifier": GBTClassifier(featuresCol="features", labelCol="is_fraud", weightCol="weight", maxIter=20, maxDepth=5, seed=42),
+                "classifier": GBTClassifier(featuresCol="features", labelCol="is_fraud", weightCol="weight", maxIter=35, maxDepth=4, stepSize=0.05, subsamplingRate=0.8, seed=42),
                 "data": weighted_train_df
             },
             {
                 "name": "GBTClassifier (Undersampling 1:20)",
                 "algorithm_group": "GBTClassifier",
                 "strategy": "Undersampling 1:20",
-                "classifier": GBTClassifier(featuresCol="features", labelCol="is_fraud", maxIter=20, maxDepth=5, seed=42),
+                "classifier": GBTClassifier(featuresCol="features", labelCol="is_fraud", maxIter=30, maxDepth=4, stepSize=0.05, subsamplingRate=0.8, seed=42),
                 "data": undersampled_train_df
             },
             {
@@ -264,12 +267,23 @@ class FraudModelTrainer:
             else:
                 version_tag = "model_v1"
 
+        hdfs_model_path = f"{HDFS_MODELS_DIR}/{version_tag}"
+        print(f"[ModelRegistry] Luu PipelineModel truc tiep len HDFS: {hdfs_model_path} (replication=3)...")
+        best_model.write().overwrite().save(hdfs_model_path)
+        if version_tag != "model_v1":
+            best_model.write().overwrite().save(f"{HDFS_MODELS_DIR}/model_v1")
+
         model_save_path = os.path.join(self.models_dir, version_tag)
-        best_model.write().overwrite().save(model_save_path)
-        # Also keep model_v1 available if this is the first run
+        local_model_uri = "file:///" + model_save_path.replace("\\", "/").lstrip("/")
+        best_model.write().overwrite().save(local_model_uri)
         v1_path = os.path.join(self.models_dir, "model_v1")
         if not os.path.exists(v1_path):
-            best_model.write().overwrite().save(v1_path)
+            v1_uri = "file:///" + v1_path.replace("\\", "/").lstrip("/")
+            best_model.write().overwrite().save(v1_uri)
+
+        weighted_train_df.unpersist()
+        undersampled_train_df.unpersist()
+        test_df.unpersist()
 
         best_metrics = [r for r in results if r["model_name"] == best_name][0]
 
@@ -303,7 +317,10 @@ class FraudModelTrainer:
             try:
                 with open(meta_path, "r", encoding="utf-8") as f:
                     prev_meta = json.load(f)
-                    history_list = prev_meta.get("version_history", [])
+                    history_list = [
+                        h for h in prev_meta.get("version_history", [])
+                        if str(h.get("delta_training_table", "")).startswith("hdfs://")
+                    ]
             except Exception:
                 history_list = []
 
@@ -355,6 +372,7 @@ class FraudModelTrainer:
             "pr_curve": pr_curve_points,
             "version_history": history_list,
             "feature_columns": self.FEATURE_COLS,
+            "hdfs_model_path": hdfs_model_path,
             "model_path": model_save_path
         }
 

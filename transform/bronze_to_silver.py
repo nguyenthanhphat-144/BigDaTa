@@ -30,7 +30,8 @@ class BronzeToSilverTransformer:
     def __init__(self, spark=None):
         set_console_title("[CUA SO 3 - CHUAN HOA BRONZE -> SILVER] File: transform/bronze_to_silver.py")
         self.spark = spark or get_spark_session("BronzeToSilverTransformer")
-        os.makedirs(QUARANTINE_DIR, exist_ok=True)
+        if not str(QUARANTINE_DIR).startswith("hdfs://"):
+            os.makedirs(QUARANTINE_DIR, exist_ok=True)
 
     def process_and_quarantine(self):
         """Reads bronze.giao_dich, isolates invalid/corrupt records into _quarantine,

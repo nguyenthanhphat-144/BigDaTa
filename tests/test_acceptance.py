@@ -18,7 +18,7 @@ from pyspark.sql import functions as F
 from config.settings import (
     BRONZE_GIAO_DICH, SILVER_TRANG_THAI, SILVER_KET_LUAN,
     SILVER_TAP_HUAN_LUYEN, GOLD_DIEM_RUI_RO, GOLD_THEO_DOI_DRIFT,
-    QUARANTINE_DIR, MODELS_DIR, get_spark_session
+    QUARANTINE_DIR, HDFS_CREDITCARD_CSV, MODELS_DIR, hdfs_list_status, get_spark_session
 )
 from core_delta.table_manager import DeltaTableManager
 from core_delta.schemas import BRONZE_GIAO_DICH_SCHEMA, SILVER_KET_LUAN_SCHEMA
@@ -109,6 +109,28 @@ class FraudDetectionAcceptanceTests(unittest.TestCase):
         print(f"  -> Số đặc trưng Drift mức 'nghiem_trong' (PSI >= 0.25): {severe_cnt}")
         self.assertGreater(fb_cnt, 0)
         self.assertGreater(severe_cnt, 0)
+
+    def test_07_direct_hdfs_medallion_storage_and_replication(self):
+        """[Bổ sung HDFS] Xác minh Spark đọc/ghi trực tiếp trên hdfs://namenode1:9000/lakehouse với replication=3."""
+        print("\n[Kiểm chứng HDFS] Kiểm tra toàn bộ đường dẫn Medallion trên hdfs://namenode1:9000/lakehouse...")
+        for name, uri in [
+            ("RAW CSV", HDFS_CREDITCARD_CSV),
+            ("BRONZE", BRONZE_GIAO_DICH),
+            ("SILVER STATE", SILVER_TRANG_THAI),
+            ("SILVER LABELS", SILVER_KET_LUAN),
+            ("SILVER TRAIN", SILVER_TAP_HUAN_LUYEN),
+            ("GOLD SCORES", GOLD_DIEM_RUI_RO),
+            ("GOLD DRIFT", GOLD_THEO_DOI_DRIFT),
+            ("QUARANTINE", QUARANTINE_DIR),
+        ]:
+            self.assertTrue(uri.startswith("hdfs://namenode1:9000/lakehouse/"), f"{name} phải nằm trên HDFS!")
+            items = hdfs_list_status(uri)
+            print(f"  -> {name:14s}: {uri} (objects={len(items)})")
+            self.assertGreater(len(items), 0, f"{name} trên HDFS không được rỗng!")
+        raw_status = hdfs_list_status("/lakehouse/raw")
+        csv_item = [x for x in raw_status if x.get("pathSuffix") == "creditcard.csv"][0]
+        print(f"  -> creditcard.csv trên HDFS: size={csv_item['length']:,} bytes | replication={csv_item['replication']}")
+        self.assertEqual(int(csv_item["replication"]), 3, "Hệ số nhân bản HDFS bắt buộc bằng 3!")
 
 
 if __name__ == "__main__":

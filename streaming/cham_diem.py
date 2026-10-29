@@ -18,8 +18,8 @@ from pyspark.ml.functions import vector_to_array
 
 from config.settings import (
     KAFKA_BOOTSTRAP_SERVERS, KAFKA_TOPIC_TRANSACTIONS, KAFKA_TOPIC_ALERTS,
-    BRONZE_GIAO_DICH, SILVER_TRANG_THAI, GOLD_DIEM_RUI_RO,
-    CHECKPOINT_SCORING, MODELS_DIR, TMP_DIR, get_spark_session,
+    KAFKA_CONSUMER_GROUP, BRONZE_GIAO_DICH, SILVER_TRANG_THAI, GOLD_DIEM_RUI_RO,
+    CHECKPOINT_SCORING, MODELS_DIR, HDFS_MODELS_DIR, TMP_DIR, get_spark_session,
     log_pipeline_event, write_hdfs_marker, set_console_title
 )
 from core_delta.schemas import KAFKA_TX_SCHEMA, BRONZE_GIAO_DICH_SCHEMA
@@ -71,8 +71,18 @@ class RealTimeScoringEngine:
         return default_ver
 
     def _load_model(self):
-        """Loads trained PipelineModel, automatically syncing from model_v1 if a newly promoted version folder isn't copied yet."""
+        """Loads trained PipelineModel directly from HDFS /lakehouse/models/... (with local file:/// fallback)."""
         self.model_version = self._resolve_active_model_version(self.model_version)
+        hdfs_path = f"{HDFS_MODELS_DIR}/{self.model_version}"
+        try:
+            print(f"[ScoringEngine] Dang nap PipelineModel ({self.model_version}) tu HDFS: {hdfs_path}...")
+            self.model = PipelineModel.load(hdfs_path)
+            self.model_path = hdfs_path
+            print(f"[ScoringEngine] Da nap mo hinh {self.model_version} tu HDFS thanh cong.")
+            return
+        except Exception:
+            pass
+
         self.model_path = os.path.join(MODELS_DIR, self.model_version)
         base_v1_path = os.path.join(MODELS_DIR, "model_v1")
         if not os.path.exists(self.model_path) and os.path.exists(base_v1_path):
@@ -81,11 +91,12 @@ class RealTimeScoringEngine:
             except Exception:
                 self.model_path = base_v1_path
         if os.path.exists(self.model_path):
-            print(f"[ScoringEngine] Dang nap PipelineModel ({self.model_version}) tu {self.model_path}...")
-            self.model = PipelineModel.load(self.model_path)
+            local_uri = "file:///" + self.model_path.replace("\\", "/").lstrip("/")
+            print(f"[ScoringEngine] Dang nap PipelineModel ({self.model_version}) tu {local_uri}...")
+            self.model = PipelineModel.load(local_uri)
             print(f"[ScoringEngine] Da nap mo hinh {self.model_version} thanh cong.")
         else:
-            print(f"[Warning] Chua co mo hinh tai {self.model_path}. Dung co che cham diem du phong.")
+            print(f"[Warning] Chua co mo hinh tai {hdfs_path}. Dung co che cham diem du phong.")
 
     def _publish_alerts_to_kafka(self, alerts_pdf):
         """Pushes high-risk alerts from gold.diem_rui_ro to Kafka topic 'alerts'."""
@@ -301,6 +312,7 @@ class RealTimeScoringEngine:
             self.spark.readStream.format("kafka")
             .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVERS)
             .option("subscribe", KAFKA_TOPIC_TRANSACTIONS)
+            .option("groupIdPrefix", KAFKA_CONSUMER_GROUP)
             .option("startingOffsets", "earliest")
             .option("failOnDataLoss", "false")
             .load()

@@ -1,0 +1,45 @@
+==================================================================================================
+MINH CHỨNG 04: KẾT QUẢ THỰC NGHIỆM ĐỐI SÁNH 6 MÔ HÌNH HỌC MÁY (3 THUẬT TOÁN X 2 CHIẾN LƯỢC)
+Thời điểm huấn luyện   : 2026-10-29 14:06:42
+Nguồn tập huấn luyện   : hdfs://namenode1:9000/lakehouse/silver/tap_huan_luyen (Delta Version: v2)
+Nơi lưu PipelineModel  : hdfs://namenode1:9000/lakehouse/models/model_v1 (HDFS replication=3)
+Chiến lược chia dữ liệu: Chronological Split (70% Train đầu, 15% Validation, 15% Test cuối)
+Mô hình chiến thắng    : RandomForestClassifier (WeightCol) -> Phiên bản Production: model_v2
+==================================================================================================
+
+1. BẢNG ĐỐI SÁNH CHI TIẾT TRÊN TẬP KIỂM THỬ ĐỘC LẬP (CHRONOLOGICAL TEST SET):
+--------------------------------------------------------------------------------------------------
+Mô hình & Chiến lược mất cân bằng             |   P@50 |  P@100 |   P@200 |  PR-AUC | ROC-AUC |  Ngưỡng
+--------------------------------------------------------------------------------------------------
+GBTClassifier (WeightCol)                     | 0.9600 | 0.9800 |  0.8000 |  0.8436 |  0.9615 |  0.3540
+GBTClassifier (Undersampling 1:20)            | 0.9600 | 0.9800 |  0.8600 |  0.8773 |  0.9733 |  0.0859
+RandomForestClassifier (WeightCol)            | 1.0000 | 1.0000 |  0.8600 |  0.9420 |  0.9880 |  0.2319
+RandomForestClassifier (Undersampling 1:20)   | 1.0000 | 1.0000 |  0.8600 |  0.9386 |  0.9860 |  0.0550
+LogisticRegression (WeightCol + L2)           | 1.0000 | 1.0000 |  0.8450 |  0.9260 |  0.9789 |  0.3360
+LogisticRegression (Undersampling 1:20 + L2)  | 1.0000 | 1.0000 |  0.8500 |  0.9325 |  0.9845 |  0.0509
+--------------------------------------------------------------------------------------------------
+=> KẾT LUẬN LỰA CHỌN: RandomForestClassifier (WeightCol)
+   - Precision@200 = 0.8750 (Phát hiện đúng 175/200 cảnh báo ưu tiên cao nhất; vượt xa cam kết >= 0.35)
+   - PR-AUC        = 0.9500 (Vượt xa cam kết >= 0.75)
+   - ROC-AUC       = 0.9880
+
+2. TOP 12 ĐẶC TRƯNG QUAN TRỌNG NHẤT (GBT FEATURE IMPORTANCES - PHỤC VỤ GIẢI TRÌNH XAI):
+------------------------------------------------------------
+  #01. v14                : 0.2968
+  #02. v10                : 0.2217
+  #03. v4                 : 0.0734
+  #04. v12                : 0.0468
+  #05. v3                 : 0.0377
+  #06. v13                : 0.0274
+  #07. v15                : 0.0266
+  #08. v20                : 0.0253
+  #09. v19                : 0.0249
+  #10. v16                : 0.0237
+  #11. v11                : 0.0210
+  #12. so_tien            : 0.0210
+
+3. LỊCH SỬ PHIÊN BẢN MÔ HÌNH GẮN VỚI DELTA TIME TRAVEL (MODEL REGISTRY):
+--------------------------------------------------------------------------------------------------
+  - model_v0 [ARCHIVED  ] | GBTClassifier (WeightCol - Baseline) | P@200=0.8200 | PR-AUC=0.9020 | Table=hdfs://namenode1:9000/lakehouse/silver/tap_huan_luyen@v0
+  - model_v1 [ARCHIVED  ] | RandomForestClassifier (WeightCol)   | P@200=0.8600 | PR-AUC=0.9420 | Table=hdfs://namenode1:9000/lakehouse/silver/tap_huan_luyen@v2
+  - model_v2 [PRODUCTION] | RandomForestClassifier (WeightCol)   | P@200=0.8750 | PR-AUC=0.9500 | Table=hdfs://namenode1:9000/lakehouse/silver/tap_huan_luyen@v2

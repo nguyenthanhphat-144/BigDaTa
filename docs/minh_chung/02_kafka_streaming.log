@@ -1,0 +1,101 @@
+================================================================================================
+MINH CHỨNG 02: CẤU HÌNH APACHE KAFKA TOPICS, BẢN TIN MẪU & TRẠNG THÁI CONSUMER GROUPS THẬT
+Thời điểm trích xuất: 2026-10-29 14:05:35
+================================================================================================
+
+$ docker exec kafka kafka-topics.sh --bootstrap-server localhost:9092 --list
+__consumer_offsets
+alerts
+transactions
+
+$ docker exec kafka kafka-topics.sh --bootstrap-server localhost:9092 --describe
+Topic: alerts	TopicId: RWcF2kDsSDeHY4B0uxzLlA	PartitionCount: 3	ReplicationFactor: 1	Configs: segment.bytes=1073741824
+	Topic: alerts	Partition: 0	Leader: 1	Replicas: 1	Isr: 1
+	Topic: alerts	Partition: 1	Leader: 1	Replicas: 1	Isr: 1
+	Topic: alerts	Partition: 2	Leader: 1	Replicas: 1	Isr: 1
+Topic: transactions	TopicId: xhKNNJDYTOqsuqFWyjk_Aw	PartitionCount: 3	ReplicationFactor: 1	Configs: segment.bytes=1073741824
+	Topic: transactions	Partition: 0	Leader: 1	Replicas: 1	Isr: 1
+	Topic: transactions	Partition: 1	Leader: 1	Replicas: 1	Isr: 1
+	Topic: transactions	Partition: 2	Leader: 1	Replicas: 1	Isr: 1
+Topic: __consumer_offsets	TopicId: uVP9ZL5ASZSkWnc-v-z6nA	PartitionCount: 50	ReplicationFactor: 1	Configs: compression.type=producer,cleanup.policy=compact,segment.bytes=104857600
+	Topic: __consumer_offsets	Partition: 0	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 1	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 2	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 3	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 4	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 5	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 6	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 7	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 8	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 9	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 10	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 11	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 12	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 13	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 14	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 15	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 16	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 17	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 18	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 19	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 20	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 21	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 22	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 23	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 24	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 25	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 26	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 27	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 28	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 29	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 30	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 31	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 32	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 33	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 34	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 35	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 36	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 37	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 38	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 39	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 40	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 41	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 42	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 43	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 44	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 45	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 46	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 47	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 48	Leader: 1	Replicas: 1	Isr: 1
+	Topic: __consumer_offsets	Partition: 49	Leader: 1	Replicas: 1	Isr: 1
+
+$ docker exec kafka kafka-consumer-groups.sh --bootstrap-server localhost:9092 --list
+bd02_spark_cap_nhat_trang_thai_stream
+bd02_spark_cham_diem_stream
+bd02_web_alerts_consumer
+
+$ docker exec kafka kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --all-groups
+GROUP                                 TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                     HOST            CLIENT-ID
+bd02_spark_cap_nhat_trang_thai_stream transactions    0          359             359             0               spark-stateful-executor-01-77b30775-5f20-4171-970c-0e912d06bf48 /172.19.0.1     spark-stateful-executor-01
+bd02_spark_cap_nhat_trang_thai_stream transactions    1          369             369             0               spark-stateful-executor-01-77b30775-5f20-4171-970c-0e912d06bf48 /172.19.0.1     spark-stateful-executor-01
+bd02_spark_cap_nhat_trang_thai_stream transactions    2          352             352             0               spark-stateful-executor-01-77b30775-5f20-4171-970c-0e912d06bf48 /172.19.0.1     spark-stateful-executor-01
+
+GROUP                       TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                    HOST            CLIENT-ID
+bd02_spark_cham_diem_stream transactions    0          359             359             0               spark-scoring-executor-01-75df7041-eaff-4226-b50c-3716dcf45415 /172.19.0.1     spark-scoring-executor-01
+bd02_spark_cham_diem_stream transactions    1          369             369             0               spark-scoring-executor-01-75df7041-eaff-4226-b50c-3716dcf45415 /172.19.0.1     spark-scoring-executor-01
+bd02_spark_cham_diem_stream transactions    2          352             352             0               spark-scoring-executor-01-75df7041-eaff-4226-b50c-3716dcf45415 /172.19.0.1     spark-scoring-executor-01
+
+GROUP                    TOPIC           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID                                                          HOST            CLIENT-ID
+bd02_web_alerts_consumer alerts          0          61              61              0               flask-dashboard-alert-reader-01-c5fad4be-53b6-4ba7-8dc8-9bf30c4d0ee8 /172.19.0.1     flask-dashboard-alert-reader-01
+bd02_web_alerts_consumer alerts          1          48              48              0               flask-dashboard-alert-reader-01-c5fad4be-53b6-4ba7-8dc8-9bf30c4d0ee8 /172.19.0.1     flask-dashboard-alert-reader-01
+bd02_web_alerts_consumer alerts          2          46              46              0               flask-dashboard-alert-reader-01-c5fad4be-53b6-4ba7-8dc8-9bf30c4d0ee8 /172.19.0.1     flask-dashboard-alert-reader-01
+
+$ docker exec kafka kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic transactions --from-beginning --max-messages 3
+{"ma_giao_dich": "TX_D20140ACC8", "thoi_diem": "2026-10-29 14:00:48.075", "thoi_diem_nhan": "2026-10-29 14:00:48.821", "tai_khoan_nguon": "ACC_101469", "tai_khoan_dich": "MERCH_200175", "loai": "RUT_TIEN", "so_tien": 49.01, "so_du_truoc_nguon": 890.36, "so_du_sau_nguon": 841.35, "so_du_truoc_dich": 40885.53, "so_du_sau_dich": 40934.54, "kenh": "ONLINE", "ma_thiet_bi": "DEV_1026", "dia_chi_ip": "192.168.24.163", "is_fraud_ground_truth": 0, "is_out_of_order": false, "v1": -1.42161573129831, "v2": 0.47342975207909, "v3": 1.18994735232088, "v4": 0.721421766591406, "v5": 0.22239883772137, "v6": 0.460909350237775, "v7": -0.243491584672133, "v8": 0.910755133061277, "v9": -0.23917711453819, "v10": -0.314077263250663, "v11": -0.730267233229272, "v12": -0.965443401971435, "v13": -2.41517926883047, "v14": 0.969192549299694, "v15": 0.46242176289222, "v16": 0.598247213125175, "v17": -0.52208965807683, "v18": 1.286243723832, "v19": 1.35983513564642, "v20": 0.191284323013594, "v21": -0.187856564848537, "v22": -0.928745477164591, "v23": -0.181448241518986, "v24": -1.17482213803192, "v25": 0.37979189425098, "v26": -0.611087605343728, "v27": 0.204308412124068, "v28": -0.0211557264186329}
+{"ma_giao_dich": "TX_D3FC0249B0", "thoi_diem": "2026-10-29 14:00:48.675", "thoi_diem_nhan": "2026-10-29 14:00:48.850", "tai_khoan_nguon": "ACC_100889", "tai_khoan_dich": "MERCH_200176", "loai": "THANH_TOAN", "so_tien": 13.06, "so_du_truoc_nguon": 1594.4, "so_du_sau_nguon": 1581.34, "so_du_truoc_dich": 17456.76, "so_du_sau_dich": 17469.82, "kenh": "APP", "ma_thiet_bi": "DEV_1295", "dia_chi_ip": "192.168.49.66", "is_fraud_ground_truth": 0, "is_out_of_order": false, "v1": -1.03856039477611, "v2": -0.135781127728185, "v3": 2.45389330532478, "v4": -0.639070277899136, "v5": 0.498147777777211, "v6": -0.487959652002121, "v7": 0.153829074574382, "v8": -0.10521666909299, "v9": -1.48274888602323, "v10": 0.175581962964309, "v11": -0.336725356187371, "v12": 0.117109066696585, "v13": 1.03703850139653, "v14": -0.390724534767366, "v15": 0.649330973695508, "v16": -1.40911781883791, "v17": -0.369846882934018, "v18": 0.687247179242959, "v19": -1.97808900684447, "v20": -0.2595941515392, "v21": -0.464367125619846, "v22": -0.919592451155286, "v23": -0.0069477145817814, "v24": 0.0025404315821364, "v25": 0.155604361436524, "v26": -0.707916197770262, "v27": -0.0864713870538381, "v28": -0.131505956620916}
+{"ma_giao_dich": "TX_319FA1613C", "thoi_diem": "2026-10-29 14:00:48.181", "thoi_diem_nhan": "2026-10-29 14:00:48.893", "tai_khoan_nguon": "ACC_100976", "tai_khoan_dich": "MERCH_200003", "loai": "THANH_TOAN", "so_tien": 34.99, "so_du_truoc_nguon": 2804.63, "so_du_sau_nguon": 2769.64, "so_du_truoc_dich": 42913.68, "so_du_sau_dich": 42948.67, "kenh": "ONLINE", "ma_thiet_bi": "DEV_1214", "dia_chi_ip": "192.168.138.192", "is_fraud_ground_truth": 0, "is_out_of_order": false, "v1": -0.378524951538227, "v2": -0.379758337901309, "v3": 1.34493715805682, "v4": -2.49284165023077, "v5": 0.229356100300124, "v6": 0.169178807802184, "v7": 0.0917495756410954, "v8": -0.0039719936164703, "v9": -0.836497801322494, "v10": 0.0896534848824355, "v11": 0.308255713328712, "v12": -0.526243501289351, "v13": -0.132097883876467, "v14": -0.620877197238838, "v15": -1.12603948231165, "v16": 1.58232616228111, "v17": -0.643162699001146, "v18": -0.393983778890989, "v19": 0.258552555547205, "v20": 0.20318725855387, "v21": 0.383585248328969, "v22": 1.08124258181127, "v23": -0.274909227401851, "v24": 0.374449561153128, "v25": 0.0036571665040978, "v26": -0.242246653277584, "v27": -0.0704045665755944, "v28": -0.092400124185007}
+
+$ docker exec kafka kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic alerts --from-beginning --max-messages 3
+{"ma_giao_dich": "TX_228C4E484B", "diem_rui_ro": 0.9969, "xep_hang_trong_ngay": 2, "tai_khoan_nguon": "ACC_100063", "tai_khoan_dich": "MERCH_200269", "so_tien": 2956.18, "loai": "RUT_TIEN", "kenh": "APP", "phien_ban_mo_hinh": "model_v1", "do_tre_ms": 919, "thoi_diem": "2026-10-29 14:00:37.406000"}
+{"ma_giao_dich": "TX_3BF55C996A", "diem_rui_ro": 0.9967, "xep_hang_trong_ngay": 4, "tai_khoan_nguon": "ACC_100024", "tai_khoan_dich": "MERCH_200400", "so_tien": 1320.11, "loai": "CHUYEN_KHOAN", "kenh": "ONLINE", "phien_ban_mo_hinh": "model_v1", "do_tre_ms": 404, "thoi_diem": "2026-10-29 14:00:51.524000"}
+{"ma_giao_dich": "TX_8AA4503521", "diem_rui_ro": 0.9965, "xep_hang_trong_ngay": 5, "tai_khoan_nguon": "ACC_100101", "tai_khoan_dich": "MERCH_200079", "so_tien": 80.22, "loai": "RUT_TIEN", "kenh": "ONLINE", "phien_ban_mo_hinh": "model_v1", "do_tre_ms": 605, "thoi_diem": "2026-10-29 14:00:52.133000"}

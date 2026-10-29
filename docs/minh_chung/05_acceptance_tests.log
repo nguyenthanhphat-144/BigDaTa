@@ -1,0 +1,544 @@
+
+=====================================================================================
+BỘ KIỂM THỬ NGHIỆM THU BẮT BUỘC (SECTION 2.11 - 8 TIÊU CHÍ NGHIỆM THU)
+=====================================================================================
+:: loading settings :: url = jar:file:/D:/BigDaTa2/venv311/Lib/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+d:\BigDaTa2\venv311\Scripts\python.exe : Ivy Default Cache set to: C:\Users\Admin\.ivy2\cache
+At line:1 char:108
++ ... ml_logs.py; d:\BigDaTa2\venv311\Scripts\python.exe -m unittest d:\Big ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Ivy Default Cac...min\.ivy2\cache:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+The jars for the packages stored in: C:\Users\Admin\.ivy2\jars
+io.delta#delta-spark_2.12 added as a dependency
+org.apache.spark#spark-sql-kafka-0-10_2.12 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-5546a168-65ab-4d78-8bb4-f624618cc7d7;1.0
+	confs: [default]
+	found io.delta#delta-spark_2.12;3.2.0 in central
+	found io.delta#delta-storage;3.2.0 in central
+	found org.antlr#antlr4-runtime;4.9.3 in spark-list
+	found org.apache.spark#spark-sql-kafka-0-10_2.12;3.5.1 in central
+	found org.apache.spark#spark-token-provider-kafka-0-10_2.12;3.5.1 in central
+	found org.apache.kafka#kafka-clients;3.4.1 in central
+	found org.lz4#lz4-java;1.8.0 in central
+	found org.xerial.snappy#snappy-java;1.1.10.3 in central
+	found org.slf4j#slf4j-api;2.0.7 in central
+	found org.apache.hadoop#hadoop-client-runtime;3.3.4 in central
+	found org.apache.hadoop#hadoop-client-api;3.3.4 in central
+	found commons-logging#commons-logging;1.1.3 in central
+	found com.google.code.findbugs#jsr305;3.0.0 in central
+	found org.apache.commons#commons-pool2;2.11.1 in central
+:: resolution report :: resolve 506ms :: artifacts dl 25ms
+	:: modules in use:
+	com.google.code.findbugs#jsr305;3.0.0 from central in [default]
+	commons-logging#commons-logging;1.1.3 from central in [default]
+	io.delta#delta-spark_2.12;3.2.0 from central in [default]
+	io.delta#delta-storage;3.2.0 from central in [default]
+	org.antlr#antlr4-runtime;4.9.3 from spark-list in [default]
+	org.apache.commons#commons-pool2;2.11.1 from central in [default]
+	org.apache.hadoop#hadoop-client-api;3.3.4 from central in [default]
+	org.apache.hadoop#hadoop-client-runtime;3.3.4 from central in [default]
+	org.apache.kafka#kafka-clients;3.4.1 from central in [default]
+	org.apache.spark#spark-sql-kafka-0-10_2.12;3.5.1 from central in [default]
+	org.apache.spark#spark-token-provider-kafka-0-10_2.12;3.5.1 from central in [default]
+	org.lz4#lz4-java;1.8.0 from central in [default]
+	org.slf4j#slf4j-api;2.0.7 from central in [default]
+	org.xerial.snappy#snappy-java;1.1.10.3 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   14  |   0   |   0   |   0   ||   14  |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-5546a168-65ab-4d78-8bb4-f624618cc7d7
+	confs: [default]
+	0 artifacts copied, 14 already retrieved (0kB/13ms)
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+test_01_streaming_throughput_and_latency_distribution 
+(tests.test_acceptance.FraudDetectionAcceptanceTests.test_01_streaming_throughput_and_latency_distribution)
+
+[Tiêu chí 1 & 2] Kiểm tra thông lượng Streaming & Phân phối độ trễ P50/P95/P99...
+[Tiêu chí 1 & 2] Tốc độ phát >= 100 GD/giây và Phân phối độ trễ P50 / P95 / P99 < 5s. ... 
+
+
+26/10/29 14:11:24 WARN SparkStringUtils: Truncated the string representation of a plan since it was too large. This 
+behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+D:\Python311\Lib\socket.py:777: ResourceWarning: unclosed <socket.socket fd=1020, family=2, type=1, proto=0, 
+laddr=('127.0.0.1', 61783), raddr=('127.0.0.1', 61782)>
+  self._sock = None
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+  -> Phân phối độ trễ End-to-End: P50 = 674.0ms | P95 = 1037.0ms | P99 = 1072.0ms
+ok
+test_02_point_in_time_join_no_data_leakage 
+(tests.test_acceptance.FraudDetectionAcceptanceTests.test_02_point_in_time_join_no_data_leakage)
+
+[Tiêu chí 3] Kiểm tra thuật toán Point-in-Time Join chống Data Leakage...
+[Point-in-Time Join] Tính đặc trưng cửa sổ trượt nghiêm ngặt tại [T - Window, T - 1s]...
+[Tiêu chí 3] Chứng minh thuật toán Point-in-Time Join không rò rỉ dữ liệu thời gian. ... 
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\utils.py:37: DeprecationWarning: distutils Version classes 
+are deprecated. Use packaging.version instead.
+  if LooseVersion(pandas.__version__) < LooseVersion(minimum_pandas_version):
+
+
+
+D:\Python311\Lib\socket.py:777: ResourceWarning: unclosed <socket.socket fd=1284, family=2, type=1, proto=0, 
+laddr=('127.0.0.1', 61798), raddr=('127.0.0.1', 61797)>
+  self._sock = None
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\types.py:563: Pandas4Warning: is_datetime64tz_dtype is 
+deprecated and will be removed in a future version. Check `isinstance(dtype, pd.DatetimeTZDtype)` instead.
+  if not is_datetime64tz_dtype(pser.dtype):
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\types.py:564: Pandas4Warning: The copy keyword is deprecated 
+and will be removed in a future version. Copy-on-Write is active in pandas since 3.0 which utilizes a lazy copy 
+mechanism that defers copies until necessary. Use .copy() to make an eager copy if necessary.
+  pser = pser.astype(pandas_type, copy=False)
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\utils.py:37: DeprecationWarning: distutils Version classes 
+are deprecated. Use packaging.version instead.
+  if LooseVersion(pandas.__version__) < LooseVersion(minimum_pandas_version):
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\types.py:379: Pandas4Warning: is_datetime64tz_dtype is 
+deprecated and will be removed in a future version. Check `isinstance(dtype, pd.DatetimeTZDtype)` instead.
+  if is_datetime64tz_dtype(s.dtype):
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\types.py:570: Pandas4Warning: The copy keyword is deprecated 
+and will be removed in a future version. Copy-on-Write is active in pandas since 3.0 which utilizes a lazy copy 
+mechanism that defers copies until necessary. Use .copy() to make an eager copy if necessary.
+  return pser.astype(pandas_type, copy=False)
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\types.py:570: Pandas4Warning: The copy keyword is deprecated 
+and will be removed in a future version. Copy-on-Write is active in pandas since 3.0 which utilizes a lazy copy 
+mechanism that defers copies until necessary. Use .copy() to make an eager copy if necessary.
+  return pser.astype(pandas_type, copy=False)
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\types.py:570: Pandas4Warning: The copy keyword is deprecated 
+and will be removed in a future version. Copy-on-Write is active in pandas since 3.0 which utilizes a lazy copy 
+mechanism that defers copies until necessary. Use .copy() to make an eager copy if necessary.
+  return pser.astype(pandas_type, copy=False)
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\types.py:570: Pandas4Warning: The copy keyword is deprecated 
+and will be removed in a future version. Copy-on-Write is active in pandas since 3.0 which utilizes a lazy copy 
+mechanism that defers copies until necessary. Use .copy() to make an eager copy if necessary.
+  return pser.astype(pandas_type, copy=False)
+D:\BigDaTa2\venv311\Lib\site-packages\pyspark\sql\pandas\types.py:549: Pandas4Warning: The copy keyword is deprecated 
+and will be removed in a future version. Copy-on-Write is active in pandas since 3.0 which utilizes a lazy copy 
+mechanism that defers copies until necessary. Use .copy() to make an eager copy if necessary.
+  return pser.astype(pandas_type, copy=False)
+  -> Ví dụ thực nghiệm trên tài khoản ACC_DEMO_999:
+     GD 1 (2026-10-16 10:00:00): so_gd_1h=0, so_gd_24h=0
+     GD 2 (2026-10-16 10:15:00): so_gd_1h=1, so_gd_24h=1
+     GD 3 (2026-10-16 12:00:00): so_gd_1h=0, so_gd_24h=2
+ok
+test_03_three_algorithms_by_two_imbalance_strategies 
+(tests.test_acceptance.FraudDetectionAcceptanceTests.test_03_three_algorithms_by_two_imbalance_strategies)
+
+[Tiêu chí 4] Kiểm tra bảng so sánh 3 thuật toán x 2 chiến lược mất cân bằng...
+  -> Đã đối sánh 6 mô hình. Tốt nhất: RandomForestClassifier (WeightCol) (Precision@200=0.875, PR-AUC=0.95)
+[Tiêu chí 4] Bảng so sánh 3 thuật toán học máy x 2 chiến lược mất cân bằng (Precision@200 & PR-AUC). ... ok
+test_04_delta_time_travel_reproducibility 
+(tests.test_acceptance.FraudDetectionAcceptanceTests.test_04_delta_time_travel_reproducibility)
+
+[Tiêu chí 5] Kiểm tra Delta Time Travel (SELECT * FROM ... VERSION AS OF 0)...
+[Tiêu chí 5] Tái lập tập huấn luyện của mô hình cũ thông qua VERSION AS OF. ... 
+
+
+
+
+
+
+
+
+
+  -> Tái lập thành công tập huấn luyện tại VERSION AS OF 0: 12984 bản ghi.
+
+[Tiêu chí 6] Kiểm tra Delta Constraint CHECK (so_tien > 0)...
+ok
+test_05_delta_constraint_rejects_non_positive_amount 
+(tests.test_acceptance.FraudDetectionAcceptanceTests.test_05_delta_constraint_rejects_non_positive_amount)
+[Tiêu chí 6] Delta Constraint chứng minh từ chối thành công bản ghi so_tien <= 0. ... 
+26/10/29 14:12:00 ERROR Executor: Exception in task 3.0 in stage 28.0 (TID 177)
+org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] CHECK 
+constraint so_tien_duong (so_tien > 0) violated by row with values:
+ - so_tien : -200.0
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.getConstraintViolationWithValuesException(Invar
+iantViolationException.scala:75)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:101)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:112)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException.apply(InvariantViolationException.scala)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$SpecificUnsafeProjection.apply(Unknown Source)
+	at org.apache.spark.sql.delta.constraints.DeltaInvariantCheckerExec.$anonfun$doExecute$3(DeltaInvariantCheckerExec.sca
+la:89)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:461)
+	at org.apache.spark.sql.execution.UnsafeExternalRowSorter.sort(UnsafeExternalRowSorter.java:226)
+	at org.apache.spark.sql.execution.SortExec.$anonfun$doExecute$1(SortExec.scala:119)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+26/10/29 14:12:00 WARN TaskSetManager: Lost task 3.0 in stage 28.0 (TID 177) (localhost executor driver): 
+org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] CHECK 
+constraint so_tien_duong (so_tien > 0) violated by row with values:
+ - so_tien : -200.0
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.getConstraintViolationWithValuesException(Invar
+iantViolationException.scala:75)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:101)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:112)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException.apply(InvariantViolationException.scala)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$SpecificUnsafeProjection.apply(Unknown Source)
+	at org.apache.spark.sql.delta.constraints.DeltaInvariantCheckerExec.$anonfun$doExecute$3(DeltaInvariantCheckerExec.sca
+la:89)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:461)
+	at org.apache.spark.sql.execution.UnsafeExternalRowSorter.sort(UnsafeExternalRowSorter.java:226)
+	at org.apache.spark.sql.execution.SortExec.$anonfun$doExecute$1(SortExec.scala:119)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+26/10/29 14:12:00 ERROR TaskSetManager: Task 3 in stage 28.0 failed 1 times; aborting job
+26/10/29 14:12:00 ERROR DeltaFileFormatWriter: Aborting job 5408a0fb-d778-40f9-8e5a-13e8410d22cb.
+org.apache.spark.SparkException: Job aborted due to stage failure: Task 3 in stage 28.0 failed 1 times, most recent 
+failure: Lost task 3.0 in stage 28.0 (TID 177) (localhost executor driver): 
+org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] CHECK 
+constraint so_tien_duong (so_tien > 0) violated by row with values:
+ - so_tien : -200.0
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.getConstraintViolationWithValuesException(Invar
+iantViolationException.scala:75)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:101)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:112)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException.apply(InvariantViolationException.scala)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$SpecificUnsafeProjection.apply(Unknown Source)
+	at org.apache.spark.sql.delta.constraints.DeltaInvariantCheckerExec.$anonfun$doExecute$3(DeltaInvariantCheckerExec.sca
+la:89)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:461)
+	at org.apache.spark.sql.execution.UnsafeExternalRowSorter.sort(UnsafeExternalRowSorter.java:226)
+	at org.apache.spark.sql.execution.SortExec.$anonfun$doExecute$1(SortExec.scala:119)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+Driver stacktrace:
+	at org.apache.spark.scheduler.DAGScheduler.failJobAndIndependentStages(DAGScheduler.scala:2856)
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$2(DAGScheduler.scala:2792)
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$abortStage$2$adapted(DAGScheduler.scala:2791)
+	at scala.collection.mutable.ResizableArray.foreach(ResizableArray.scala:62)
+	at scala.collection.mutable.ResizableArray.foreach$(ResizableArray.scala:55)
+	at scala.collection.mutable.ArrayBuffer.foreach(ArrayBuffer.scala:49)
+	at org.apache.spark.scheduler.DAGScheduler.abortStage(DAGScheduler.scala:2791)
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$handleTaskSetFailed$1(DAGScheduler.scala:1247)
+	at org.apache.spark.scheduler.DAGScheduler.$anonfun$handleTaskSetFailed$1$adapted(DAGScheduler.scala:1247)
+	at scala.Option.foreach(Option.scala:407)
+	at org.apache.spark.scheduler.DAGScheduler.handleTaskSetFailed(DAGScheduler.scala:1247)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.doOnReceive(DAGScheduler.scala:3060)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:2994)
+	at org.apache.spark.scheduler.DAGSchedulerEventProcessLoop.onReceive(DAGScheduler.scala:2983)
+	at org.apache.spark.util.EventLoop$$anon$1.run(EventLoop.scala:49)
+	at org.apache.spark.scheduler.DAGScheduler.runJob(DAGScheduler.scala:989)
+	at org.apache.spark.SparkContext.runJob(SparkContext.scala:2398)
+	at org.apache.spark.sql.delta.files.DeltaFileFormatWriter$.$anonfun$executeWrite$1(DeltaFileFormatWriter.scala:263)
+	at org.apache.spark.sql.delta.files.DeltaFileFormatWriter$.writeAndCommit(DeltaFileFormatWriter.scala:295)
+	at org.apache.spark.sql.delta.files.DeltaFileFormatWriter$.executeWrite(DeltaFileFormatWriter.scala:234)
+	at org.apache.spark.sql.delta.files.DeltaFileFormatWriter$.write(DeltaFileFormatWriter.scala:214)
+	at org.apache.spark.sql.delta.files.TransactionalWrite.$anonfun$writeFiles$1(TransactionalWrite.scala:440)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$6(SQLExecution.scala:125)
+	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:201)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:108)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:900)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:66)
+	at org.apache.spark.sql.delta.files.TransactionalWrite.writeFiles(TransactionalWrite.scala:398)
+	at org.apache.spark.sql.delta.files.TransactionalWrite.writeFiles$(TransactionalWrite.scala:371)
+	at org.apache.spark.sql.delta.OptimisticTransaction.writeFiles(OptimisticTransaction.scala:147)
+	at org.apache.spark.sql.delta.files.TransactionalWrite.writeFiles(TransactionalWrite.scala:246)
+	at org.apache.spark.sql.delta.files.TransactionalWrite.writeFiles$(TransactionalWrite.scala:242)
+	at org.apache.spark.sql.delta.OptimisticTransaction.writeFiles(OptimisticTransaction.scala:147)
+	at org.apache.spark.sql.delta.files.TransactionalWrite.writeFiles(TransactionalWrite.scala:235)
+	at org.apache.spark.sql.delta.files.TransactionalWrite.writeFiles$(TransactionalWrite.scala:232)
+	at org.apache.spark.sql.delta.OptimisticTransaction.writeFiles(OptimisticTransaction.scala:147)
+	at org.apache.spark.sql.delta.commands.WriteIntoDelta.writeFiles(WriteIntoDelta.scala:349)
+	at org.apache.spark.sql.delta.commands.WriteIntoDelta.writeAndReturnCommitData(WriteIntoDelta.scala:312)
+	at org.apache.spark.sql.delta.commands.WriteIntoDelta.$anonfun$run$1(WriteIntoDelta.scala:106)
+	at org.apache.spark.sql.delta.commands.WriteIntoDelta.$anonfun$run$1$adapted(WriteIntoDelta.scala:101)
+	at org.apache.spark.sql.delta.DeltaLog.withNewTransaction(DeltaLog.scala:227)
+	at org.apache.spark.sql.delta.commands.WriteIntoDelta.run(WriteIntoDelta.scala:101)
+	at org.apache.spark.sql.delta.sources.DeltaDataSource.createRelation(DeltaDataSource.scala:201)
+	at org.apache.spark.sql.execution.datasources.SaveIntoDataSourceCommand.run(SaveIntoDataSourceCommand.scala:48)
+	at org.apache.spark.sql.execution.command.ExecutedCommandExec.sideEffectResult$lzycompute(commands.scala:75)
+	at org.apache.spark.sql.execution.command.ExecutedCommandExec.sideEffectResult(commands.scala:73)
+	at org.apache.spark.sql.execution.command.ExecutedCommandExec.executeCollect(commands.scala:84)
+	at org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.$anonfun$applyOrElse$1(QueryExecuti
+on.scala:107)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$6(SQLExecution.scala:125)
+	at org.apache.spark.sql.execution.SQLExecution$.withSQLConfPropagated(SQLExecution.scala:201)
+	at org.apache.spark.sql.execution.SQLExecution$.$anonfun$withNewExecutionId$1(SQLExecution.scala:108)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:900)
+	at org.apache.spark.sql.execution.SQLExecution$.withNewExecutionId(SQLExecution.scala:66)
+	at 
+org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.applyOrElse(QueryExecution.scala:107)
+	at 
+org.apache.spark.sql.execution.QueryExecution$$anonfun$eagerlyExecuteCommands$1.applyOrElse(QueryExecution.scala:98)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.$anonfun$transformDownWithPruning$1(TreeNode.scala:461)
+	at org.apache.spark.sql.catalyst.trees.CurrentOrigin$.withOrigin(origin.scala:76)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDownWithPruning(TreeNode.scala:461)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.org$apache$spark$sql$catalyst$plans$logical$AnalysisHelper$
+$super$transformDownWithPruning(LogicalPlan.scala:32)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning(AnalysisHelper.scala:267)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.transformDownWithPruning$(AnalysisHelper.scala:263)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:32)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.transformDownWithPruning(LogicalPlan.scala:32)
+	at org.apache.spark.sql.catalyst.trees.TreeNode.transformDown(TreeNode.scala:437)
+	at org.apache.spark.sql.execution.QueryExecution.eagerlyExecuteCommands(QueryExecution.scala:98)
+	at org.apache.spark.sql.execution.QueryExecution.commandExecuted$lzycompute(QueryExecution.scala:85)
+	at org.apache.spark.sql.execution.QueryExecution.commandExecuted(QueryExecution.scala:83)
+	at org.apache.spark.sql.execution.QueryExecution.assertCommandExecuted(QueryExecution.scala:142)
+	at org.apache.spark.sql.DataFrameWriter.runCommand(DataFrameWriter.scala:859)
+	at org.apache.spark.sql.DataFrameWriter.saveToV1Source(DataFrameWriter.scala:388)
+	at org.apache.spark.sql.DataFrameWriter.saveInternal(DataFrameWriter.scala:304)
+	at org.apache.spark.sql.DataFrameWriter.save(DataFrameWriter.scala:240)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:182)
+	at py4j.ClientServerConnection.run(ClientServerConnection.java:106)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] 
+CHECK constraint so_tien_duong (so_tien > 0) violated by row with values:
+ - so_tien : -200.0
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.getConstraintViolationWithValuesException(Invar
+iantViolationException.scala:75)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:101)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:112)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException.apply(InvariantViolationException.scala)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$SpecificUnsafeProjection.apply(Unknown Source)
+	at org.apache.spark.sql.delta.constraints.DeltaInvariantCheckerExec.$anonfun$doExecute$3(DeltaInvariantCheckerExec.sca
+la:89)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:461)
+	at org.apache.spark.sql.execution.UnsafeExternalRowSorter.sort(UnsafeExternalRowSorter.java:226)
+	at org.apache.spark.sql.execution.SortExec.$anonfun$doExecute$1(SortExec.scala:119)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	... 1 more
+  -> Kết quả ghi so_tien = -200.0: Rejected = True
+ok
+test_06_human_feedback_loop_and_drift_trigger 
+(tests.test_acceptance.FraudDetectionAcceptanceTests.test_06_human_feedback_loop_and_drift_trigger)
+
+[Tiêu chí 7 & 8] Kiểm tra Vòng phản hồi (silver.ket_luan_tham_dinh) & Drift Trigger...
+[Tiêu chí 7 & 8] Demo vòng phản hồi nhãn chuyên gia & Airflow DAG kiểm tra Drift kích hoạt Retrain. ... 
+
+26/10/29 14:12:00 WARN TaskSetManager: Lost task 0.0 in stage 28.0 (TID 174) (localhost executor driver): TaskKilled 
+(Stage cancelled: Job aborted due to stage failure: Task 3 in stage 28.0 failed 1 times, most recent failure: Lost 
+task 3.0 in stage 28.0 (TID 177) (localhost executor driver): 
+org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] CHECK 
+constraint so_tien_duong (so_tien > 0) violated by row with values:
+ - so_tien : -200.0
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.getConstraintViolationWithValuesException(Invar
+iantViolationException.scala:75)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:101)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:112)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException.apply(InvariantViolationException.scala)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$SpecificUnsafeProjection.apply(Unknown Source)
+	at org.apache.spark.sql.delta.constraints.DeltaInvariantCheckerExec.$anonfun$doExecute$3(DeltaInvariantCheckerExec.sca
+la:89)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:461)
+	at org.apache.spark.sql.execution.UnsafeExternalRowSorter.sort(UnsafeExternalRowSorter.java:226)
+	at org.apache.spark.sql.execution.SortExec.$anonfun$doExecute$1(SortExec.scala:119)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+Driver stacktrace:)
+26/10/29 14:12:01 WARN TaskSetManager: Lost task 1.0 in stage 28.0 (TID 175) (localhost executor driver): TaskKilled 
+(Stage cancelled: Job aborted due to stage failure: Task 3 in stage 28.0 failed 1 times, most recent failure: Lost 
+task 3.0 in stage 28.0 (TID 177) (localhost executor driver): 
+org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] CHECK 
+constraint so_tien_duong (so_tien > 0) violated by row with values:
+ - so_tien : -200.0
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.getConstraintViolationWithValuesException(Invar
+iantViolationException.scala:75)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:101)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:112)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException.apply(InvariantViolationException.scala)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$SpecificUnsafeProjection.apply(Unknown Source)
+	at org.apache.spark.sql.delta.constraints.DeltaInvariantCheckerExec.$anonfun$doExecute$3(DeltaInvariantCheckerExec.sca
+la:89)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:461)
+	at org.apache.spark.sql.execution.UnsafeExternalRowSorter.sort(UnsafeExternalRowSorter.java:226)
+	at org.apache.spark.sql.execution.SortExec.$anonfun$doExecute$1(SortExec.scala:119)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+Driver stacktrace:)
+26/10/29 14:12:01 WARN TaskSetManager: Lost task 2.0 in stage 28.0 (TID 176) (localhost executor driver): TaskKilled 
+(Stage cancelled: Job aborted due to stage failure: Task 3 in stage 28.0 failed 1 times, most recent failure: Lost 
+task 3.0 in stage 28.0 (TID 177) (localhost executor driver): 
+org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] CHECK 
+constraint so_tien_duong (so_tien > 0) violated by row with values:
+ - so_tien : -200.0
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.getConstraintViolationWithValuesException(Invar
+iantViolationException.scala:75)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:101)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.apply(InvariantViolationException.scala:112)
+	at org.apache.spark.sql.delta.schema.DeltaInvariantViolationException.apply(InvariantViolationException.scala)
+	at org.apache.spark.sql.catalyst.expressions.GeneratedClass$SpecificUnsafeProjection.apply(Unknown Source)
+	at org.apache.spark.sql.delta.constraints.DeltaInvariantCheckerExec.$anonfun$doExecute$3(DeltaInvariantCheckerExec.sca
+la:89)
+	at scala.collection.Iterator$$anon$10.next(Iterator.scala:461)
+	at org.apache.spark.sql.execution.UnsafeExternalRowSorter.sort(UnsafeExternalRowSorter.java:226)
+	at org.apache.spark.sql.execution.SortExec.$anonfun$doExecute$1(SortExec.scala:119)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2(RDD.scala:893)
+	at org.apache.spark.rdd.RDD.$anonfun$mapPartitionsInternal$2$adapted(RDD.scala:893)
+	at org.apache.spark.rdd.MapPartitionsRDD.compute(MapPartitionsRDD.scala:52)
+	at org.apache.spark.rdd.RDD.computeOrReadCheckpoint(RDD.scala:367)
+	at org.apache.spark.rdd.RDD.iterator(RDD.scala:331)
+	at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:93)
+	at org.apache.spark.TaskContext.runTaskWithListeners(TaskContext.scala:166)
+	at org.apache.spark.scheduler.Task.run(Task.scala:141)
+	at org.apache.spark.executor.Executor$TaskRunner.$anonfun$run$4(Executor.scala:620)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally(SparkErrorUtils.scala:64)
+	at org.apache.spark.util.SparkErrorUtils.tryWithSafeFinally$(SparkErrorUtils.scala:61)
+	at org.apache.spark.util.Utils$.tryWithSafeFinally(Utils.scala:94)
+	at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:623)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+Driver stacktrace:)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  -> Số nhãn thẩm định viên trong silver.ket_luan_tham_dinh: 5
+  -> Số đặc trưng Drift mức 'nghiem_trong' (PSI >= 0.25): 9
+
+[Kiểm chứng HDFS] Kiểm tra toàn bộ đường dẫn Medallion trên hdfs://namenode1:9000/lakehouse...
+ok
+test_07_direct_hdfs_medallion_storage_and_replication 
+(tests.test_acceptance.FraudDetectionAcceptanceTests.test_07_direct_hdfs_medallion_storage_and_replication)
+  -> RAW CSV       : hdfs://namenode1:9000/lakehouse/raw/creditcard.csv (objects=1)
+  -> BRONZE        : hdfs://namenode1:9000/lakehouse/bronze/giao_dich (objects=2)
+  -> SILVER STATE  : hdfs://namenode1:9000/lakehouse/silver/trang_thai_khach_hang (objects=3)
+  -> SILVER LABELS : hdfs://namenode1:9000/lakehouse/silver/ket_luan_tham_dinh (objects=6)
+  -> SILVER TRAIN  : hdfs://namenode1:9000/lakehouse/silver/tap_huan_luyen (objects=7)
+  -> GOLD SCORES   : hdfs://namenode1:9000/lakehouse/gold/diem_rui_ro (objects=15)
+  -> GOLD DRIFT    : hdfs://namenode1:9000/lakehouse/gold/theo_doi_drift (objects=9)
+  -> QUARANTINE    : hdfs://namenode1:9000/lakehouse/_quarantine (objects=3)
+  -> creditcard.csv trên HDFS: size=150,828,752 bytes | replication=3
+[Bổ sung HDFS] Xác minh Spark đọc/ghi trực tiếp trên hdfs://namenode1:9000/lakehouse với replication=3. ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 76.630s
+
+OK
+SUCCESS: The process with PID 12668 (child process of PID 11688) has been terminated.
+SUCCESS: The process with PID 11688 (child process of PID 1504) has been terminated.
+SUCCESS: The process with PID 1504 (child process of PID 7632) has been terminated.

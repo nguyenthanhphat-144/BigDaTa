@@ -12,8 +12,10 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
+from pyspark.sql import functions as F
 from config.settings import (
-    GOLD_THEO_DOI_DRIFT, CREDITCARD_CSV, get_spark_session,
+    GOLD_THEO_DOI_DRIFT, CREDITCARD_CSV, HDFS_CREDITCARD_CSV,
+    ensure_creditcard_on_hdfs, get_spark_session,
     log_pipeline_event, write_hdfs_marker
 )
 from core_delta.schemas import GOLD_THEO_DOI_DRIFT_SCHEMA
@@ -71,10 +73,18 @@ class DriftDetector:
             return "nghiem_trong"
 
     def run_drift_check(self, inject_severe_drift=True):
-        """Compares the recent 7-day window against the training baseline."""
-        print("=== BẮT ĐẦU KIỂM TRA CONCEPT DRIFT (PSI & KS-STATISTIC) ===")
-        pdf = pd.read_csv(CREDITCARD_CSV)
-        rename_dict = {f"V{i}": f"v{i}" for i in range(1, 29)}
+        """Compares the recent 7-day window against the training baseline read directly from HDFS."""
+        print("=== BẮT ĐẦU KIỂM TRA CONCEPT DRIFT TRÊN HDFS (PSI & KS-STATISTIC) ===")
+        hdfs_csv_uri = ensure_creditcard_on_hdfs()
+        raw_sdf = (
+            self.spark.read
+            .option("header", "true")
+            .option("inferSchema", "true")
+            .csv(hdfs_csv_uri)
+            .select(["Time", "Amount"] + [f"V{i}" for i in [1, 2, 3, 4, 10, 12, 14, 17]])
+        )
+        pdf = raw_sdf.sample(withReplacement=False, fraction=0.15, seed=42).orderBy("Time").toPandas()
+        rename_dict = {f"V{i}": f"v{i}" for i in [1, 2, 3, 4, 10, 12, 14, 17]}
         pdf.rename(columns=rename_dict, inplace=True)
         pdf["so_tien"] = pdf["Amount"].apply(lambda a: max(float(a), 0.01))
 

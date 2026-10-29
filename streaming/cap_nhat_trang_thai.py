@@ -17,7 +17,7 @@ from pyspark.sql.streaming.state import GroupStateTimeout
 from delta.tables import DeltaTable
 
 from config.settings import (
-    KAFKA_BOOTSTRAP_SERVERS, KAFKA_TOPIC_TRANSACTIONS,
+    KAFKA_BOOTSTRAP_SERVERS, KAFKA_TOPIC_TRANSACTIONS, KAFKA_STATE_CONSUMER_GROUP,
     SILVER_TRANG_THAI, CHECKPOINT_STATE, TMP_DIR, get_spark_session,
     log_pipeline_event, write_hdfs_marker, set_console_title
 )
@@ -203,6 +203,7 @@ class CustomerStateUpdater:
             self.spark.readStream.format("kafka")
             .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVERS)
             .option("subscribe", KAFKA_TOPIC_TRANSACTIONS)
+            .option("groupIdPrefix", KAFKA_STATE_CONSUMER_GROUP)
             .option("startingOffsets", "earliest")
             .option("failOnDataLoss", "false")
             .load()

@@ -1,17 +1,32 @@
 {
-  "bootstrapped_at": "2026-10-18 22:57:32",
+  "bootstrapped_at": "2026-10-29 14:03:08",
   "kafka_stats": {
-    "total_sent": 0,
-    "fraud_count": 0,
-    "out_of_order_count": 0,
-    "elapsed_sec": 0,
-    "tps": 0
+    "total_sent": 900,
+    "fraud_count": 103,
+    "out_of_order_count": 172,
+    "elapsed_sec": 18.37,
+    "tps": 49.0
   },
   "hygiene_stats": {
-    "total_raw": 0,
-    "invalid_quarantined": 0,
-    "duplicates_removed": 0,
-    "clean_records": 0
+    "total_raw": 504,
+    "invalid_quarantined": 2,
+    "duplicates_removed": 1,
+    "clean_records": 501
   },
-  "drift_level": "on_dinh"
+  "drift_level": "nghiem_trong",
+  "constraint_demo": {
+    "rejected": true,
+    "attempted_amount": -150.0,
+    "constraint": "ALTER TABLE bronze.giao_dich ADD CONSTRAINT so_tien_duong CHECK (so_tien > 0)",
+    "error_excerpt": "An error occurred while calling o2730.save.\n: org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: [DELTA_VIOLATE_CONSTRAINT_WITH_VALUES] CHECK constraint so_tien_duong (so_tien > 0) violated by row with values:\n - so_tien : -150.0\r\n\tat org.apache.spark.sql.delta.schema.DeltaInvariantViolationException$.getConstraintViolationWithValuesException(InvariantViolation"
+  },
+  "zorder_benchmark": {
+    "table_path": "hdfs://namenode1:9000/lakehouse/bronze/giao_dich",
+    "zorder_by": "tai_khoan_nguon, thoi_diem",
+    "sample_account": "ACC_100026",
+    "records_matched": 1,
+    "query_ms_before": 1032.49,
+    "query_ms_after": 433.65,
+    "speedup_percent": 58.0
+  }
 }

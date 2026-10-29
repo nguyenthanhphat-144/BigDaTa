@@ -6,3 +6,6 @@
 127.0.0.1 datanode1
 127.0.0.1 datanode2
 127.0.0.1 datanode3
+127.0.0.1 datanode1.bigdata2_default
+127.0.0.1 datanode2.bigdata2_default
+127.0.0.1 datanode3.bigdata2_default

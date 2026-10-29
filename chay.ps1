@@ -40,6 +40,11 @@ if (Test-Path (Join-Path $projectDir "venv311\Scripts\python.exe")) {
     $pythonExe = Join-Path $projectDir ".venv\Scripts\python.exe"
 }
 
+# 2.1. Don dep tat ca cac tien trinh Python cu dang chay ngam de tranh xung dot lock file
+Write-Host "`n[Don dep] Dang kiem tra va dung cac tien trinh Python cu dang chay ngam..." -ForegroundColor Cyan
+Stop-Process -Name python -Force -ErrorAction SilentlyContinue
+Start-Sleep -Milliseconds 800
+
 # 3. Kiem tra cum Docker (Kafka, Zookeeper, HDFS)
 Write-Host "`n[0/4] Kiem tra cum Docker (Kafka, Zookeeper, HDFS)..." -ForegroundColor Green
 docker compose up -d
